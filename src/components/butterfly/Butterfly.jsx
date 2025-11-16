@@ -23,6 +23,15 @@ export default function PositionedButterfly({ position }) {
           <div className="bit"></div>
         </div>
       </div>
+
+      <div className="sparkles">
+        <i class="sparkle"></i>
+        <i class="sparkle"></i>
+        <i class="sparkle"></i>
+        <i class="sparkle"></i>
+        <i class="sparkle"></i>
+        <i class="sparkle"></i>
+      </div>
     </Html>
   );
 }

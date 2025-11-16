@@ -11,9 +11,10 @@ $color-inset-light: rgba(214, 213, 207, 0.2);
 $color-inset-shadow: rgba(214, 213, 207, 0.1);
 
 // צבעי זוהר (glow) - לאפקט hover והספרקלים
-$glow-color: rgba(255, 224, 224, 0.8);
-$glow-color-bright: rgb(255, 242, 241);
-$glow-particles: rgba(255, 243, 243, 0.9);
+$glow-color: rgba(255, 200, 150, 0.6);
+$glow-color-bright: rgba(255, 220, 180, 1);
+$glow-particles: rgba(255, 235, 200, 0.9);
+$sparkle-white: rgba(255, 255, 255, 0.9);
 
 // מידות
 $container-size: 150px;
@@ -39,6 +40,57 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   position: relative;
   overflow: visible;
 }
+.sparkles {
+  width: 150px;
+  height: 100px;
+}
+.sparkle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: $sparkle-white;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: 0 0 8px $glow-color-bright, 0 0 15px $glow-color;
+
+  // כל ספרקל מקבל אנימציה שונה
+  &:nth-child(1) {
+    width: 4px;
+    height: 4px;
+    animation: sparkle1 2s ease-in-out infinite;
+  }
+
+  &:nth-child(2) {
+    width: 3px;
+    height: 3px;
+    animation: sparkle2 2.3s ease-in-out infinite 0.3s;
+  }
+
+  &:nth-child(3) {
+    width: 4px;
+    height: 4px;
+    animation: sparkle3 1.8s ease-in-out infinite 0.6s;
+  }
+
+  &:nth-child(4) {
+    width: 3px;
+    height: 3px;
+    animation: sparkle4 2.1s ease-in-out infinite 0.9s;
+  }
+
+  &:nth-child(5) {
+    width: 4px;
+    height: 4px;
+    animation: sparkle5 1.9s ease-in-out infinite 1.2s;
+  }
+
+  &:nth-child(6) {
+    width: 3px;
+    height: 3px;
+    animation: sparkle6 2.2s ease-in-out infinite 1.5s;
+  }
+}
 
 .butterfly {
   animation: fly $animation-duration $animation-timing infinite;
@@ -51,62 +103,31 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   width: $butterfly-width;
   cursor: pointer;
 
-  // ✨ Sparkles trail - שובל נוצץ סביב הפרפר
-  &::after {
-    content: "";
-    position: absolute;
-    width: 200px;
-    height: 200px;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: -1;
-    // 8 כוכבים נוצצים במיקומים שונים
-    background: radial-gradient(
-        circle at 20% 30%,
-        $glow-particles 0%,
-        transparent 2%
-      ),
-      radial-gradient(
-        circle at 80% 20%,
-        $glow-color-bright 0%,
-        transparent 1.5%
-      ),
-      radial-gradient(circle at 40% 70%, $glow-particles 0%, transparent 2%),
-      radial-gradient(circle at 90% 60%, $glow-color 0%, transparent 1.5%),
-      radial-gradient(circle at 10% 80%, $glow-particles 0%, transparent 2%),
-      radial-gradient(
-        circle at 60% 15%,
-        $glow-color-bright 0%,
-        transparent 1.5%
-      ),
-      radial-gradient(circle at 30% 50%, $glow-particles 0%, transparent 2%),
-      radial-gradient(circle at 75% 85%, $glow-color 0%, transparent 1.5%);
-    opacity: 0;
-    animation: sparkle-trail 2s ease-in-out infinite;
-  }
-
-  // 🌟 אפקט hover - זוהר והאצת ספרקלים
+  // 🌟 אפקט hover - זוהר בצבעים חמים
   &:hover {
-    // האצת אנימציית הספרקלים
-    &::after {
-      animation: sparkle-trail 1.5s ease-in-out infinite;
-    }
-
     // גוף הפרפר זוהר
     &::before {
       box-shadow: inset 0 0 0 3px $glow-particles,
         inset 2px -1px 0 0px $glow-particles,
         inset -2px 1px 0 0px $glow-particles,
         inset 1px 2px 0 0px $glow-particles,
-        inset -1px -2px 0 3px $glow-particles, 0 0 25px $glow-color,
-        0 0 50px $glow-color-bright, 0 0 75px $glow-color;
+        inset -1px -2px 0 3px $glow-particles, 0 0 30px $glow-color,
+        0 0 50px $glow-color-bright, 0 0 80px $glow-color;
     }
   }
 
   // גוף הפרפר (הגליל האמצעי)
   &::before {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(230, 240, 255, 0.9) 15%,
+      rgba(200, 220, 255, 0.85) 30%,
+      rgba(180, 200, 240, 0.85) 45%,
+      rgba(220, 200, 255, 0.85) 60%,
+      rgba(255, 220, 240, 0.9) 80%,
+      rgba(255, 255, 255, 0.95) 100%
+    );
     background: linear-gradient(
       249deg,
       $color-gradient-start,
@@ -178,6 +199,16 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   .bit {
     background: linear-gradient(
       135deg,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(230, 240, 255, 0.9) 15%,
+      rgba(200, 220, 255, 0.85) 30%,
+      rgba(180, 200, 240, 0.85) 45%,
+      rgba(220, 200, 255, 0.85) 60%,
+      rgba(255, 220, 240, 0.9) 80%,
+      rgba(255, 255, 255, 0.95) 100%
+    );
+    background: linear-gradient(
+      135deg,
       $color-wing-start 0%,
       $color-wing-end 100%
     );
@@ -189,9 +220,19 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
     &::after {
       content: "";
       display: inline-block;
+
       background: inset 0 0 20px rgb(214 213 207),
         inset 0 0 40px $color-inset-light, 0 2px 10px $color-inset-shadow;
     }
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(240, 250, 255, 0.85) 20%,
+      rgba(220, 235, 255, 0.8) 40%,
+      rgba(235, 220, 255, 0.8) 60%,
+      rgba(255, 235, 250, 0.85) 80%,
+      rgba(255, 255, 255, 0.9) 100%
+    );
 
     &,
     &::after {
@@ -206,11 +247,11 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
         inset 1px 2px 0 0px $color-shadow, inset -1px -2px 0 3px $color-shadow;
     }
 
-    // 🌟 זוהר הכנפיים על hover
+    // 🌟 זוהר הכנפיים על hover - צבעים חמים וזהובים
     .butterfly:hover & {
-      box-shadow: inset 0px 7px 20px 4px rgba(255, 240, 200, 0.6),
+      box-shadow: inset 0px 7px 20px 4px rgba(255, 220, 180, 0.7),
         inset 0 0 40px $glow-color, 0 2px 10px $glow-color-bright,
-        0 0 35px $glow-color, 0 0 60px $glow-color-bright, 0 0 80px $glow-color;
+        0 0 40px $glow-color, 0 0 70px $glow-color-bright, 0 0 100px $glow-color;
 
       &,
       &::after {
@@ -218,8 +259,8 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
           inset 2px -1px 0 0px $glow-particles,
           inset -2px 1px 0 0px $glow-particles,
           inset 1px 2px 0 0px $glow-particles,
-          inset -1px -2px 0 3px $glow-particles, 0 0 20px $glow-color,
-          0 0 35px $glow-color-bright;
+          inset -1px -2px 0 3px $glow-particles, 0 0 25px $glow-color,
+          0 0 40px $glow-color-bright;
       }
     }
 
@@ -302,24 +343,153 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   }
 }
 
-// ✨ אנימציית שובל הספרקלים
-@keyframes sparkle-trail {
+// ✨ אנימציות לספרקלים - כל אחד בנתיב שונה
+@keyframes sparkle1 {
   0% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.8) rotate(0deg);
+    left: 30%;
+    top: 20%;
+    transform: scale(0) translateY(0);
   }
-  20% {
+  15% {
     opacity: 1;
+    transform: scale(1) translateY(-5px);
   }
   50% {
     opacity: 0.8;
-    transform: translate(-50%, -50%) scale(1.2) rotate(180deg);
-  }
-  80% {
-    opacity: 0.4;
+    left: 70%;
+    top: 80%;
+    transform: scale(0.8) translateY(-10px);
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(1.5) rotate(360deg);
+    left: 90%;
+    top: 90%;
+    transform: scale(0) translateY(-20px);
+  }
+}
+
+@keyframes sparkle2 {
+  0% {
+    opacity: 0;
+    left: 70%;
+    top: 30%;
+    transform: scale(0) translateY(0);
+  }
+  15% {
+    opacity: 1;
+    transform: scale(1.2) translateY(-8px);
+  }
+  50% {
+    opacity: 0.9;
+    left: 20%;
+    top: 70%;
+    transform: scale(0.9) translateY(-15px);
+  }
+  100% {
+    opacity: 0;
+    left: 10%;
+    top: 85%;
+    transform: scale(0) translateY(-25px);
+  }
+}
+
+@keyframes sparkle3 {
+  0% {
+    opacity: 0;
+    left: 60%;
+    top: 15%;
+    transform: scale(0) translateY(0);
+  }
+  15% {
+    opacity: 1;
+    transform: scale(1) translateY(-6px);
+  }
+  50% {
+    opacity: 0.7;
+    left: 80%;
+    top: 60%;
+    transform: scale(0.7) translateY(-12px);
+  }
+  100% {
+    opacity: 0;
+    left: 95%;
+    top: 75%;
+    transform: scale(0) translateY(-18px);
+  }
+}
+
+@keyframes sparkle4 {
+  0% {
+    opacity: 0;
+    left: 25%;
+    top: 40%;
+    transform: scale(0) translateY(0);
+  }
+  15% {
+    opacity: 1;
+    transform: scale(1.1) translateY(-7px);
+  }
+  50% {
+    opacity: 0.8;
+    left: 55%;
+    top: 85%;
+    transform: scale(0.8) translateY(-14px);
+  }
+  100% {
+    opacity: 0;
+    left: 75%;
+    top: 95%;
+    transform: scale(0) translateY(-22px);
+  }
+}
+
+@keyframes sparkle5 {
+  0% {
+    opacity: 0;
+    left: 50%;
+    top: 25%;
+    transform: scale(0) translateY(0);
+  }
+  15% {
+    opacity: 1;
+    transform: scale(1) translateY(-5px);
+  }
+  50% {
+    opacity: 0.75;
+    left: 15%;
+    top: 65%;
+    transform: scale(0.75) translateY(-11px);
+  }
+  100% {
+    opacity: 0;
+    left: 5%;
+    top: 80%;
+    transform: scale(0) translateY(-19px);
+  }
+}
+
+@keyframes sparkle6 {
+  0% {
+    opacity: 0;
+    left: 80%;
+    top: 35%;
+    transform: scale(0) translateY(0);
+  }
+  15% {
+    opacity: 1;
+    transform: scale(1.2) translateY(-8px);
+  }
+  50% {
+    opacity: 0.85;
+    left: 40%;
+    top: 75%;
+    transform: scale(0.85) translateY(-16px);
+  }
+  100% {
+    opacity: 0;
+    left: 20%;
+    top: 90%;
+    transform: scale(0) translateY(-24px);
   }
 }
