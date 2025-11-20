@@ -40,6 +40,7 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   position: relative;
   overflow: visible;
 }
+
 .sparkles {
   width: 150px;
   height: 100px;
@@ -102,7 +103,7 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
     scaleX(-1);
   width: $butterfly-width;
   cursor: pointer;
-
+  animation: bounce 3s ease-in-out infinite;
   // 🌟 אפקט hover - זוהר בצבעים חמים
   &:hover {
     // גוף הפרפר זוהר
@@ -343,7 +344,6 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   }
 }
 
-// ✨ אנימציות לספרקלים - כל אחד בנתיב שונה
 @keyframes sparkle1 {
   0% {
     opacity: 0;
@@ -491,5 +491,18 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
     left: 20%;
     top: 90%;
     transform: scale(0) translateY(-24px);
+  }
+}
+@keyframes bounce {
+  0%,
+  100% {
+    transform-style: preserve-3d;
+    transform: rotateX(50deg) rotateY(20deg) rotateZ(-50deg) translateX(0px)
+      translateY(0px) scaleX(-1);
+  }
+  50% {
+    transform-style: preserve-3d;
+    transform: rotateX(50deg) rotateY(20deg) rotateZ(-50deg) translateX(-10px)
+      translateY(-20px) scaleX(-0.95);
   }
 }

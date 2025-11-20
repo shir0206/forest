@@ -1,24 +1,28 @@
 "use client";
-import React, { useRef, useEffect, Suspense, useState, useMemo } from "react";
+import React, {
+  useRef,
+  useEffect,
+  Suspense,
+  useState,
+  useCallback,
+} from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import {
   OrbitControls,
   Environment,
-  Html, // ייבוא רכיב Html
+  Html,
   useProgress,
-  TransformControls,
 } from "@react-three/drei";
 import * as THREE from "three";
 import gsap from "gsap";
 import Butterfly from "./butterfly/Butterfly";
+import Info from "./info/Info";
 
-// קומפוננטת טעינה
 function Loader() {
   const { progress } = useProgress();
   return <Html center>{progress.toFixed(0)} % loaded</Html>;
 }
 
-// Hook לשינוי דינמי של שדה הראייה (FOV)
 function useDynamicFov(controlsRef) {
   const { camera } = useThree();
   const [lastDistance, setLastDistance] = useState(null);
@@ -50,7 +54,6 @@ function useDynamicFov(controlsRef) {
   }, [camera, controlsRef, lastDistance]);
 }
 
-// קומפוננטת השליטה במצלמה
 function CameraControls({ runIntro }) {
   const controls = useRef();
   const { camera, gl } = useThree();
@@ -71,11 +74,10 @@ function CameraControls({ runIntro }) {
     return () => c.removeEventListener("change", handleChange);
   }, [camera]);
 
-  // אנימציית המבוא (Intro) באמצעות GSAP
   useEffect(() => {
     if (!runIntro) return;
     const c = controls.current;
-    c.enabled = false; // השבתת שליטת המשתמש במהלך האנימציה
+    c.enabled = false;
 
     const points = [
       new THREE.Vector3(-0.0069, -0.9996, -0.0255),
@@ -87,7 +89,7 @@ function CameraControls({ runIntro }) {
 
     const tl = gsap.timeline({
       onComplete: () => {
-        c.enabled = true; // החזרת שליטת המשתמש
+        c.enabled = true;
         console.log("🎬 Intro animation finished — user control restored");
       },
     });
@@ -126,6 +128,20 @@ function CameraControls({ runIntro }) {
 // קומפוננטת הסצנה הראשית
 export default function ForestScene() {
   const [runIntro, setRunIntro] = useState(true);
+  const [runInfo, setRunInfo] = useState(false);
+
+  const onClickRunInfo = useCallback(() => {
+    console.log("onClickRunInfo called");
+
+    setRunInfo((prevRunInfo) => {
+      console.log("Previous runInfo:", prevRunInfo);
+
+      const nextValue = !prevRunInfo;
+      console.log("Next runInfo:", nextValue);
+
+      return nextValue;
+    });
+  }, []);
 
   return (
     <div className="w-full h-screen bg-black">
@@ -139,7 +155,7 @@ export default function ForestScene() {
       >
         <Suspense fallback={<Loader />}>
           <Environment
-            files="./hdri/Gemini_Generated_Image_oo7v4roo7v4roo7v_upscayl_2x_digital-art-4x.done2(5).exr"
+            files="./hdri/Gemini_Generated_Image_oo7v4roo7v4roo7v_upscayl_2x_digital-art-4x.done2(3).exr"
             background={true}
           />
           <CameraControls runIntro={runIntro} />
@@ -147,7 +163,16 @@ export default function ForestScene() {
             position={[
               -0.5727975959985635, 0.06083208113596738, -0.4365143508459205,
             ]}
+            onClickHandler={onClickRunInfo}
           />
+
+          {runInfo && (
+            <Info
+              position={[
+                -0.5727975959985635, 0.06083208113596738, -0.4365143508459205,
+              ]}
+            />
+          )}
         </Suspense>
       </Canvas>
     </div>
