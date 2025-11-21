@@ -66,7 +66,7 @@ export default function Info({ position }: InfoProps) {
 
           <div className="features">
             <div className="feature">
-              <div className="feature-icon">✏️</div>
+              <Icon name="experience" className="feature-icon" />
               <div className="feature-text">
                 With hands-on experience at leading tech companies and MSc in
                 Information Systems, I turn complex ideas into functional
@@ -76,7 +76,7 @@ export default function Info({ position }: InfoProps) {
             </div>
 
             <div className="feature">
-              <div className="feature-icon">⚖️</div>
+              <Icon name="balance" className="feature-icon" />
               <div className="feature-text">
                 Each project is a dialogue: balancing what inspires you with
                 what serves your audience, creativity with strategy, vision with
@@ -99,7 +99,7 @@ export default function Info({ position }: InfoProps) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <span className="btn-icon">in</span>
+                <Icon name="linkedin" className="btn-icon" />
                 <span>LINKEDIN LINK</span>
               </a>
 
@@ -107,7 +107,7 @@ export default function Info({ position }: InfoProps) {
                 href="mailto:contact@example.com"
                 className="contact-btn email-btn"
               >
-                <span className="btn-icon">✉️</span>
+                <Icon name="mail" className="btn-icon" />
                 <span>MAIL LINK</span>
               </a>
             </div>
