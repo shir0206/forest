@@ -1,10 +1,14 @@
 "use client";
-import React from "react";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import "./info.scss";
+import { Icon } from "../icon/Icon";
 
-export default function Info({ position }) {
+interface InfoProps {
+  position: [number, number, number];
+}
+
+export default function Info({ position }: InfoProps) {
   return (
     <Html
       position={new THREE.Vector3(...position)}
@@ -25,21 +29,21 @@ export default function Info({ position }) {
 
           <div className="skills">
             <div className="skill-circle">
-              <div className="skill-icon">💻</div>
+              <Icon name="design" className="skill-icon" />
               <div className="skill-label">Design</div>
             </div>
 
             <div className="connector"></div>
 
             <div className="skill-circle">
-              <div className="skill-icon">🏛️</div>
+              <Icon name="architecture" className="skill-icon" />
               <div className="skill-label">Architecture</div>
             </div>
 
             <div className="connector"></div>
 
             <div className="skill-circle">
-              <div className="skill-icon">👤</div>
+              <Icon name="ux" className="skill-icon" />
               <div className="skill-label">
                 User
                 <br />
@@ -93,6 +97,7 @@ export default function Info({ position }) {
                 href="https://www.linkedin.com"
                 className="contact-btn linkedin-btn"
                 target="_blank"
+                rel="noopener noreferrer"
               >
                 <span className="btn-icon">in</span>
                 <span>LINKEDIN LINK</span>
