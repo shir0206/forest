@@ -12,7 +12,7 @@
   justify-content: center;
   overflow-x: hidden;
   position: relative;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Quicksand", sans-serif;
   color: #fff;
 }
 
@@ -125,8 +125,7 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
-  margin: 2.5rem 0;
+  margin: 2rem 0;
   flex-wrap: wrap;
 }
 
@@ -143,6 +142,10 @@ header {
   gap: 0.5rem;
   transition: 0.3s ease;
 
+  &:not(:first-child):not(:last-child) {
+    margin: -1rem;
+  }
+
   &:hover {
     transform: scale(1.1);
     background: rgba(255, 255, 255, 0.1);
@@ -151,7 +154,8 @@ header {
 }
 
 .skill-icon {
-  font-size: 2rem;
+  width: 2.5rem;
+  height: 2.5rem;
 }
 
 .skill-label {

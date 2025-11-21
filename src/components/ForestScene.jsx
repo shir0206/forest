@@ -130,7 +130,7 @@ export default function ForestScene() {
   const [runIntro, setRunIntro] = useState(true);
   const [runInfo, setRunInfo] = useState(false);
 
-  const onClickRunInfo = useCallback(() => {
+  const toggleInfo = useCallback(() => {
     console.log("onClickRunInfo called");
 
     setRunInfo((prevRunInfo) => {
@@ -163,7 +163,7 @@ export default function ForestScene() {
             position={[
               -0.5727975959985635, 0.06083208113596738, -0.4365143508459205,
             ]}
-            onClickHandler={onClickRunInfo}
+            onClickHandler={toggleInfo}
           />
 
           {runInfo && (

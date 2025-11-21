@@ -33,14 +33,10 @@ export default function Info({ position }: InfoProps) {
               <div className="skill-label">Design</div>
             </div>
 
-            <div className="connector"></div>
-
             <div className="skill-circle">
               <Icon name="architecture" className="skill-icon" />
               <div className="skill-label">Architecture</div>
             </div>
-
-            <div className="connector"></div>
 
             <div className="skill-circle">
               <Icon name="ux" className="skill-icon" />
