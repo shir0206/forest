@@ -1,14 +1,14 @@
 "use client";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
-import "./info.scss";
+import "./about.scss";
 import { Icon } from "../icon/Icon";
 
-interface InfoProps {
+interface AboutProps {
   position: [number, number, number];
 }
 
-export default function Info({ position }: InfoProps) {
+export default function About({ position }: AboutProps) {
   return (
     <Html
       position={new THREE.Vector3(...position)}

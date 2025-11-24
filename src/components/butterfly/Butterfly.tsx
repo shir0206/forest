@@ -4,16 +4,24 @@ import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import "./butterfly.scss";
 
-export default function PositionedButterfly({ position, onClickHandler }) {
+type PositionedButterflyProps = {
+  position: [number, number, number];
+  openAbout: (e: React.MouseEvent<HTMLDivElement>) => void;
+};
+
+export default function PositionedButterfly({
+  position,
+  openAbout,
+}: PositionedButterflyProps) {
   return (
     <Html
       position={new THREE.Vector3(...position)}
-      center // מרכז את הפרפר בנקודת המיקום התלת-ממדית
-      wrapperClass="butterfly-container" // קלאס עוטף לצורך הגדרת גודל בסיס
-      distanceFactor={2} // קובע את מידת השינוי בגודל בעת התרחקות/התקרבות
-      scale={[0.005, 0.005, 0.005]} // התאמת גודל הפרפר בתוך הסצנה
+      center // Center the butterfly at the 3D position point
+      wrapperClass="butterfly-container"
+      distanceFactor={2} // Determines the amount of size change when zooming in/out
+      scale={[0.005, 0.005, 0.005]} // Adjust the size of the butterfly within the scene
     >
-      <div className="butterfly" onClick={onClickHandler}>
+      <div className="butterfly" onClick={openAbout}>
         <div className="wing">
           <div className="bit"></div>
           <div className="bit"></div>
@@ -23,7 +31,6 @@ export default function PositionedButterfly({ position, onClickHandler }) {
           <div className="bit"></div>
         </div>
       </div>
-
       <div className="sparkles">
         <i className="sparkle"></i>
         <i className="sparkle"></i>
