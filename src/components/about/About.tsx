@@ -6,9 +6,10 @@ import { Icon } from "../icon/Icon";
 
 interface AboutProps {
   position: [number, number, number];
+  closeAbout: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
-export default function About({ position }: AboutProps) {
+export default function About({ position, closeAbout }: AboutProps) {
   return (
     <Html
       position={new THREE.Vector3(...position)}
@@ -19,6 +20,10 @@ export default function About({ position }: AboutProps) {
     >
       <div className="landing-body">
         <div className="container">
+          <button onClick={closeAbout}>
+            <Icon name="close" className="feature-icon" />
+          </button>
+
           <header>
             <h1 className="greeting">Nice to meet you!</h1>
             <div className="intro">

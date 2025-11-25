@@ -7,6 +7,7 @@ import { ReactComponent as DesignIcon } from "@/assets/icons/design.svg";
 import { ReactComponent as LinkedinIcon } from "@/assets/icons/linkedin.svg";
 import { ReactComponent as MailIcon } from "@/assets/icons/mail.svg";
 import { ReactComponent as UxIcon } from "@/assets/icons/ux.svg";
+import { ReactComponent as CloseIcon } from "@/assets/icons/close.svg";
 
 const icons = {
   architecture: ArchitectureIcon,
@@ -16,6 +17,7 @@ const icons = {
   linkedin: LinkedinIcon,
   mail: MailIcon,
   ux: UxIcon,
+  close: CloseIcon,
 };
 
 export type IconName = keyof typeof icons;
