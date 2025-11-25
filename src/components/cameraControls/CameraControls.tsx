@@ -46,6 +46,7 @@ export default function CameraControls({ runIntro }: CameraControlsProps) {
       new THREE.Vector3(-0.7787, -0.056, -0.6249),
       new THREE.Vector3(-0.5161, 0.1915, 0.8348),
       new THREE.Vector3(0.593, 0.1627, 0.7885),
+      new THREE.Vector3(0.6, 0.3191, 0.62346),
     ];
 
     const timeline = gsap.timeline({

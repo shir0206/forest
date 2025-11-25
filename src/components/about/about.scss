@@ -54,7 +54,6 @@
   padding: 3rem;
   z-index: 1;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 20px;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(20px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -89,14 +88,12 @@
 
 header {
   text-align: center;
-  margin-bottom: 3rem;
 }
 
 .greeting {
   font-family: "Corinthia", cursive;
   font-size: 3rem;
   font-weight: 400;
-  margin-bottom: 1rem;
   animation: slideDown 0.8s ease-out;
 }
 
@@ -125,7 +122,6 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 2rem 0;
   flex-wrap: wrap;
 }
 
@@ -197,15 +193,21 @@ header {
 
 .philosophy {
   text-align: center;
-  margin: 2rem 0;
-  padding: 0 1rem;
-  line-height: 1.6;
-  opacity: 0.95;
+}
+
+.separator-line {
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0),
+    rgb(255, 255, 255),
+    rgba(255, 255, 255, 0)
+  );
+  width: 80%;
 }
 
 /* FEATURES */
 .features {
-  margin: 3rem 0;
   display: grid;
   gap: 2rem;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -214,7 +216,6 @@ header {
 .feature {
   padding: 2rem;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 15px;
   transition: 0.3s ease;
   background: rgba(255, 255, 255, 0.05);
 
@@ -238,13 +239,11 @@ header {
 /* CTA */
 .cta {
   text-align: center;
-  margin: 3rem 0 2rem;
 }
 
 .cta-text {
   font-size: 1.3rem;
   line-height: 1.6;
-  margin-bottom: 2rem;
 }
 
 .contact-buttons {
@@ -309,6 +308,10 @@ header {
   .container {
     padding: 2rem 1.5rem;
     margin: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
   }
 
   h1 {
