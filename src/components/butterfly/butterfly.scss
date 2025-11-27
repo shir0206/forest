@@ -41,10 +41,26 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   overflow: visible;
 }
 
+.buttefly-button {
+  width: 300px;
+  height: 230px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+
 .sparkles {
   width: 150px;
   height: 100px;
+  position: relative;
+  justify-self: end;
+  align-self: end;
 }
+
 .sparkle {
   position: absolute;
   width: 3px;
@@ -60,36 +76,42 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
     width: 4px;
     height: 4px;
     animation: sparkle1 2s ease-in-out infinite;
+    background: red;
   }
 
   &:nth-child(2) {
     width: 3px;
     height: 3px;
     animation: sparkle2 2.3s ease-in-out infinite 0.3s;
+    background: blue;
   }
 
   &:nth-child(3) {
     width: 4px;
     height: 4px;
     animation: sparkle3 1.8s ease-in-out infinite 0.6s;
+    background: green;
   }
 
   &:nth-child(4) {
     width: 3px;
     height: 3px;
-    animation: sparkle4 2.1s ease-in-out infinite 0.9s;
+    animation: sparkle4 2s ease-in-out infinite 0.9s;
+    background: yellow;
   }
 
   &:nth-child(5) {
     width: 4px;
     height: 4px;
     animation: sparkle5 1.9s ease-in-out infinite 1.2s;
+    background: orange;
   }
 
   &:nth-child(6) {
     width: 3px;
     height: 3px;
     animation: sparkle6 2.2s ease-in-out infinite 1.5s;
+    background: pink;
   }
 }
 
@@ -372,7 +394,7 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
 @keyframes sparkle2 {
   0% {
     opacity: 0;
-    left: 70%;
+    left: 10%;
     top: 30%;
     transform: scale(0) translateY(0);
   }
@@ -397,7 +419,7 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
 @keyframes sparkle3 {
   0% {
     opacity: 0;
-    left: 60%;
+    left: 10%;
     top: 15%;
     transform: scale(0) translateY(0);
   }
@@ -428,7 +450,7 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   }
   15% {
     opacity: 1;
-    transform: scale(1.1) translateY(-7px);
+    transform: scale(1.1) translateY(-8px);
   }
   50% {
     opacity: 0.8;
@@ -447,7 +469,7 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
 @keyframes sparkle5 {
   0% {
     opacity: 0;
-    left: 50%;
+    left: 5%;
     top: 25%;
     transform: scale(0) translateY(0);
   }
@@ -458,21 +480,21 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   50% {
     opacity: 0.75;
     left: 15%;
-    top: 65%;
-    transform: scale(0.75) translateY(-11px);
+    top: 85%;
+    transform: scale(0.75) translateY(-12px);
   }
   100% {
     opacity: 0;
-    left: 5%;
-    top: 80%;
-    transform: scale(0) translateY(-19px);
+    left: 30%;
+    top: 95%;
+    transform: scale(0) translateY(-20px);
   }
 }
 
 @keyframes sparkle6 {
   0% {
     opacity: 0;
-    left: 80%;
+    left: 20%;
     top: 35%;
     transform: scale(0) translateY(0);
   }
@@ -482,13 +504,13 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   }
   50% {
     opacity: 0.85;
-    left: 40%;
+    left: 30%;
     top: 75%;
     transform: scale(0.85) translateY(-16px);
   }
   100% {
     opacity: 0;
-    left: 20%;
+    left: 60%;
     top: 90%;
     transform: scale(0) translateY(-24px);
   }

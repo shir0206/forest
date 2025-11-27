@@ -6,7 +6,7 @@ import "./butterfly.scss";
 
 type PositionedButterflyProps = {
   position: [number, number, number];
-  openAbout: (e: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => void;
+  openAbout: (e: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
 export default function PositionedButterfly({
@@ -21,8 +21,8 @@ export default function PositionedButterfly({
       distanceFactor={2} // Determines the amount of size change when zooming in/out
       scale={[0.005, 0.005, 0.005]} // Adjust the size of the butterfly within the scene
     >
-      <button onClick={openAbout}>
-        <div className="butterfly" onClick={openAbout}>
+      <button className="buttefly-button" onClick={openAbout}>
+        <div className="butterfly">
           <div className="wing">
             <div className="bit"></div>
             <div className="bit"></div>
