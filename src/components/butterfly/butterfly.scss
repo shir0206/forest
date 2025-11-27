@@ -1,4 +1,4 @@
-// פרמטרים - צבעים
+// Parameters - Colors
 $color-primary: #ff5544;
 $color-gradient-start: #d6d5ce;
 $color-gradient-end: #b4afa6;
@@ -10,13 +10,42 @@ $color-inset: rgba(214, 213, 207, 0.59);
 $color-inset-light: rgba(214, 213, 207, 0.2);
 $color-inset-shadow: rgba(214, 213, 207, 0.1);
 
-// צבעי זוהר (glow) - לאפקט hover והספרקלים
+// Glow colors - for hover effects and sparkles
 $glow-color: rgba(255, 200, 150, 0.6);
 $glow-color-bright: rgba(255, 220, 180, 1);
 $glow-particles: rgba(255, 235, 200, 0.9);
 $sparkle-white: rgba(255, 255, 255, 0.9);
 
-// מידות
+// Sparkle colors for individual sparkles
+$sparkle-red: #ff0000;
+$sparkle-blue: #0000ff;
+$sparkle-green: #008000;
+$sparkle-yellow: #ffff00;
+$sparkle-orange: #ffa500;
+$sparkle-pink: #ffc0cb;
+
+// Shadow color
+$shadow-color: #000000;
+
+// Body gradient colors
+$body-gradient-white: rgba(255, 255, 255, 0.95);
+$body-gradient-light-blue: rgba(230, 240, 255, 0.9);
+$body-gradient-blue: rgba(200, 220, 255, 0.85);
+$body-gradient-purple-blue: rgba(180, 200, 240, 0.85);
+$body-gradient-purple: rgba(220, 200, 255, 0.85);
+$body-gradient-pink: rgba(255, 220, 240, 0.9);
+
+// Wing gradient colors
+$wing-gradient-light: rgba(255, 255, 255, 0.9);
+$wing-gradient-blue: rgba(240, 250, 255, 0.85);
+$wing-gradient-light-blue: rgba(220, 235, 255, 0.8);
+$wing-gradient-light-purple: rgba(235, 220, 255, 0.8);
+$wing-gradient-pink: rgba(255, 235, 250, 0.85);
+
+// Wing hover effect color
+$wing-hover-glow: rgba(255, 220, 180, 0.7);
+
+// Sizes
 $container-size: 150px;
 $butterfly-width: 30px;
 $body-height: 110px;
@@ -26,7 +55,7 @@ $wing-large-width: 130px;
 $wing-small-height: 55px;
 $wing-small-width: 100px;
 
-// זמנים
+// Timing
 $animation-duration: 750ms;
 $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
 
@@ -71,47 +100,47 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   opacity: 0;
   box-shadow: 0 0 8px $glow-color-bright, 0 0 15px $glow-color;
 
-  // כל ספרקל מקבל אנימציה שונה
+  // Each sparkle gets a different animation
   &:nth-child(1) {
     width: 4px;
     height: 4px;
     animation: sparkle1 2s ease-in-out infinite;
-    background: red;
+    background: $sparkle-red;
   }
 
   &:nth-child(2) {
     width: 3px;
     height: 3px;
     animation: sparkle2 2.3s ease-in-out infinite 0.3s;
-    background: blue;
+    background: $sparkle-blue;
   }
 
   &:nth-child(3) {
     width: 4px;
     height: 4px;
     animation: sparkle3 1.8s ease-in-out infinite 0.6s;
-    background: green;
+    background: $sparkle-green;
   }
 
   &:nth-child(4) {
     width: 3px;
     height: 3px;
     animation: sparkle4 2s ease-in-out infinite 0.9s;
-    background: yellow;
+    background: $sparkle-yellow;
   }
 
   &:nth-child(5) {
     width: 4px;
     height: 4px;
     animation: sparkle5 1.9s ease-in-out infinite 1.2s;
-    background: orange;
+    background: $sparkle-orange;
   }
 
   &:nth-child(6) {
     width: 3px;
     height: 3px;
     animation: sparkle6 2.2s ease-in-out infinite 1.5s;
-    background: pink;
+    background: $sparkle-pink;
   }
 }
 
@@ -126,9 +155,9 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   width: $butterfly-width;
   cursor: pointer;
   animation: bounce 3s ease-in-out infinite;
-  // 🌟 אפקט hover - זוהר בצבעים חמים
+  // 🌟 Hover effect - glowing with warm colors
   &:hover {
-    // גוף הפרפר זוהר
+    // Butterfly body glows
     &::before {
       box-shadow: inset 0 0 0 3px $glow-particles,
         inset 2px -1px 0 0px $glow-particles,
@@ -139,17 +168,17 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
     }
   }
 
-  // גוף הפרפר (הגליל האמצעי)
+  // Butterfly body (the middle cylinder)
   &::before {
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.95) 0%,
-      rgba(230, 240, 255, 0.9) 15%,
-      rgba(200, 220, 255, 0.85) 30%,
-      rgba(180, 200, 240, 0.85) 45%,
-      rgba(220, 200, 255, 0.85) 60%,
-      rgba(255, 220, 240, 0.9) 80%,
-      rgba(255, 255, 255, 0.95) 100%
+      $body-gradient-white 0%,
+      $body-gradient-light-blue 15%,
+      $body-gradient-blue 30%,
+      $body-gradient-purple-blue 45%,
+      $body-gradient-purple 60%,
+      $body-gradient-pink 80%,
+      $body-gradient-white 100%
     );
     background: linear-gradient(
       249deg,
@@ -179,7 +208,7 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   animation: shadow $animation-duration $animation-timing infinite;
   animation-direction: alternate;
   animation-fill-mode: reverse;
-  background: #000;
+  background: $shadow-color;
   border-radius: 50%;
   display: block;
   height: 10px;
@@ -196,7 +225,7 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   position: absolute;
   top: 0;
 
-  // כנף שמאלית
+  // Left wing
   &:first-child {
     animation: leftflap $animation-duration $animation-timing infinite;
     animation-direction: alternate;
@@ -209,7 +238,7 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
     z-index: 3;
   }
 
-  // כנף ימנית
+  // Right wing
   &:last-child {
     animation: rightflap $animation-duration $animation-timing infinite;
     animation-direction: alternate;
@@ -222,13 +251,13 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   .bit {
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.95) 0%,
-      rgba(230, 240, 255, 0.9) 15%,
-      rgba(200, 220, 255, 0.85) 30%,
-      rgba(180, 200, 240, 0.85) 45%,
-      rgba(220, 200, 255, 0.85) 60%,
-      rgba(255, 220, 240, 0.9) 80%,
-      rgba(255, 255, 255, 0.95) 100%
+      $body-gradient-white 0%,
+      $body-gradient-light-blue 15%,
+      $body-gradient-blue 30%,
+      $body-gradient-purple-blue 45%,
+      $body-gradient-purple 60%,
+      $body-gradient-pink 80%,
+      $body-gradient-white 100%
     );
     background: linear-gradient(
       135deg,
@@ -244,17 +273,17 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
       content: "";
       display: inline-block;
 
-      background: inset 0 0 20px rgb(214 213 207),
-        inset 0 0 40px $color-inset-light, 0 2px 10px $color-inset-shadow;
+      background: inset 0 0 20px $color-inset, inset 0 0 40px $color-inset-light,
+        0 2px 10px $color-inset-shadow;
     }
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.9) 0%,
-      rgba(240, 250, 255, 0.85) 20%,
-      rgba(220, 235, 255, 0.8) 40%,
-      rgba(235, 220, 255, 0.8) 60%,
-      rgba(255, 235, 250, 0.85) 80%,
-      rgba(255, 255, 255, 0.9) 100%
+      $wing-gradient-light 0%,
+      $wing-gradient-blue 20%,
+      $wing-gradient-light-blue 40%,
+      $wing-gradient-light-purple 60%,
+      $wing-gradient-pink 80%,
+      $wing-gradient-light 100%
     );
 
     &,
@@ -270,9 +299,9 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
         inset 1px 2px 0 0px $color-shadow, inset -1px -2px 0 3px $color-shadow;
     }
 
-    // 🌟 זוהר הכנפיים על hover - צבעים חמים וזהובים
+    // 🌟 Wing glow on hover - warm and golden colors
     .butterfly:hover & {
-      box-shadow: inset 0px 7px 20px 4px rgba(255, 220, 180, 0.7),
+      box-shadow: inset 0px 7px 20px 4px $wing-hover-glow,
         inset 0 0 40px $glow-color, 0 2px 10px $glow-color-bright,
         0 0 40px $glow-color, 0 0 70px $glow-color-bright, 0 0 100px $glow-color;
 
@@ -287,7 +316,7 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
       }
     }
 
-    // חלק עליון גדול של הכנף
+    // Large upper part of the wing
     &:first-child {
       height: $wing-large-height;
       text-align: center;
@@ -303,7 +332,7 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
       }
     }
 
-    // חלק תחתון קטן של הכנף
+    // Small lower part of the wing
     &:last-child {
       height: $wing-small-height;
       transform: rotateZ(-40deg);
@@ -321,10 +350,10 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
 }
 
 // ============================================
-// אנימציות
+// Animations
 // ============================================
 
-// תנועת ריחוף של הפרפר
+// Butterfly hovering movement
 @keyframes fly {
   0% {
     transform: rotateX(50deg) rotateY(20deg) rotateZ(-50deg) translateZ(0px)
@@ -336,7 +365,7 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   }
 }
 
-// אנימציית הצל
+// Shadow animation
 @keyframes shadow {
   0% {
     transform: translateX(-40px) translateY(100px) scale(1, 1);
@@ -346,7 +375,7 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   }
 }
 
-// נפנוף כנף שמאלית
+// Left wing flapping
 @keyframes leftflap {
   0% {
     transform: rotateY(-20deg);
@@ -356,7 +385,7 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   }
 }
 
-// נפנוף כנף ימנית
+// Right wing flapping
 @keyframes rightflap {
   0% {
     transform: rotateY(200deg);
