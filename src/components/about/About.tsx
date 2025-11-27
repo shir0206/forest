@@ -6,7 +6,7 @@ import { Icon } from "../icon/Icon";
 
 interface AboutProps {
   position: [number, number, number];
-  closeAbout: (e: React.MouseEvent<HTMLDivElement>) => void;
+  closeAbout: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export default function About({ position, closeAbout }: AboutProps) {
@@ -63,8 +63,9 @@ export default function About({ position, closeAbout }: AboutProps) {
 
           <div className="philosophy">
             To me, a website is more than code or visuals. It should tell your
-            brand's story with clarity and turn visitors into believers in what
-            you do.
+            brand's story
+            <br />
+            with clarity and turn visitors into believers in what you do.
           </div>
 
           <div className="features">

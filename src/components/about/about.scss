@@ -44,6 +44,10 @@
 }
 
 .container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   margin: 2rem;
   padding: 3rem;
   z-index: 1;
@@ -86,7 +90,7 @@ header {
 
 .greeting {
   font-family: "Corinthia", cursive;
-  font-size: 3rem;
+  font-size: 4rem;
   font-weight: 400;
   animation: slideDown 0.8s ease-out;
 }
@@ -103,11 +107,11 @@ header {
 }
 
 .intro {
-  font-size: 1.5rem;
+  font-size: 2rem;
 }
 
 .subtitle {
-  font-size: 1.1rem;
+  font-size: 1.5rem;
   opacity: 0.9;
 }
 
@@ -146,6 +150,7 @@ header {
 .skill-icon {
   width: 2.5rem;
   height: 2.5rem;
+  fill: white;
 }
 
 .skill-label {
@@ -202,9 +207,12 @@ header {
 
 /* FEATURES */
 .features {
-  display: grid;
+  display: flex;
   gap: 2rem;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.feature-wrapper {
+  flex: 1;
 }
 
 .feature {
@@ -223,6 +231,7 @@ header {
 .feature-icon {
   font-size: 2.5rem;
   margin-bottom: 1rem;
+  fill: white;
 }
 
 .feature-text {
@@ -275,6 +284,7 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
+  fill: white;
 }
 
 .linkedin-btn .btn-icon {
@@ -306,6 +316,7 @@ header {
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    display: flex;
   }
 
   h1 {

@@ -6,7 +6,7 @@ import "./butterfly.scss";
 
 type PositionedButterflyProps = {
   position: [number, number, number];
-  openAbout: (e: React.MouseEvent<HTMLDivElement>) => void;
+  openAbout: (e: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => void;
 };
 
 export default function PositionedButterfly({
@@ -21,24 +21,26 @@ export default function PositionedButterfly({
       distanceFactor={2} // Determines the amount of size change when zooming in/out
       scale={[0.005, 0.005, 0.005]} // Adjust the size of the butterfly within the scene
     >
-      <div className="butterfly" onClick={openAbout}>
-        <div className="wing">
-          <div className="bit"></div>
-          <div className="bit"></div>
+      <button onClick={openAbout}>
+        <div className="butterfly" onClick={openAbout}>
+          <div className="wing">
+            <div className="bit"></div>
+            <div className="bit"></div>
+          </div>
+          <div className="wing">
+            <div className="bit"></div>
+            <div className="bit"></div>
+          </div>
         </div>
-        <div className="wing">
-          <div className="bit"></div>
-          <div className="bit"></div>
+        <div className="sparkles">
+          <i className="sparkle"></i>
+          <i className="sparkle"></i>
+          <i className="sparkle"></i>
+          <i className="sparkle"></i>
+          <i className="sparkle"></i>
+          <i className="sparkle"></i>
         </div>
-      </div>
-      <div className="sparkles">
-        <i className="sparkle"></i>
-        <i className="sparkle"></i>
-        <i className="sparkle"></i>
-        <i className="sparkle"></i>
-        <i className="sparkle"></i>
-        <i className="sparkle"></i>
-      </div>
+      </button>
     </Html>
   );
 }
