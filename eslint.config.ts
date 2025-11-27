@@ -13,7 +13,8 @@ export default defineConfig([
       sourceType: "module",
     },
     plugins: {
-      "react-hooks": pluginReactHooks,
+      "react-hooks":
+        pluginReactHooks.configs.recommended.plugins["react-hooks"],
       react: pluginReact,
     },
     rules: {
