@@ -84,6 +84,25 @@
   }
 }
 
+.close-button {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  transition: 0.3s ease;
+  border: none;
+  background: none;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  }
+}
+
 header {
   text-align: center;
 }

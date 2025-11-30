@@ -1,18 +1,24 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import "./butterfly.scss";
 
-type PositionedButterflyProps = {
+type ButterflyProps = {
   position: [number, number, number];
   openAbout: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  isAboutOpen: boolean;
 };
 
-export default function PositionedButterfly({
+export default function Butterfly({
   position,
   openAbout,
-}: PositionedButterflyProps) {
+  isAboutOpen,
+}: ButterflyProps) {
+  useEffect(() => {
+    console.log("Butterfly isAboutOpen", isAboutOpen);
+  }, [isAboutOpen]);
+
   return (
     <Html
       position={new THREE.Vector3(...position)}
@@ -22,23 +28,23 @@ export default function PositionedButterfly({
       scale={[0.005, 0.005, 0.005]} // Adjust the size of the butterfly within the scene
     >
       <button className="buttefly-button" onClick={openAbout}>
-        <div className="butterfly">
-          <div className="wing">
+        <div className={`butterfly${isAboutOpen ? " pause-animation" : ""}`}>
+          <div className={`wing${isAboutOpen ? " pause-animation" : ""}`}>
             <div className="bit"></div>
             <div className="bit"></div>
           </div>
-          <div className="wing">
+          <div className={`wing${isAboutOpen ? " pause-animation" : ""}`}>
             <div className="bit"></div>
             <div className="bit"></div>
           </div>
         </div>
         <div className="sparkles">
-          <i className="sparkle"></i>
-          <i className="sparkle"></i>
-          <i className="sparkle"></i>
-          <i className="sparkle"></i>
-          <i className="sparkle"></i>
-          <i className="sparkle"></i>
+          <i className={`sparkle${isAboutOpen ? " pause-animation" : ""}`}></i>
+          <i className={`sparkle${isAboutOpen ? " pause-animation" : ""}`}></i>
+          <i className={`sparkle${isAboutOpen ? " pause-animation" : ""}`}></i>
+          <i className={`sparkle${isAboutOpen ? " pause-animation" : ""}`}></i>
+          <i className={`sparkle${isAboutOpen ? " pause-animation" : ""}`}></i>
+          <i className={`sparkle${isAboutOpen ? " pause-animation" : ""}`}></i>
         </div>
       </button>
     </Html>

@@ -18,9 +18,9 @@ export default function About({ position, closeAbout }: AboutProps) {
       distanceFactor={2} // Determines the amount of change in size when zooming in/out
       scale={[0.005, 0.005, 0.005]} // Adjust the size of the butterfly within the scene
     >
-      <div className="landing-body">
+      <div className="landing-body" onClick={(e) => e.stopPropagation()}>
         <div className="container">
-          <button onClick={closeAbout}>
+          <button className="close-button" onClick={closeAbout}>
             <Icon name="close" className="feature-icon" />
           </button>
 

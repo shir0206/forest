@@ -47,9 +47,15 @@ export default function ForestScene() {
 
           <CameraControls runIntro={runIntro} />
 
-          <Butterfly position={butterflyPos} openAbout={openAbout} />
+          <Butterfly
+            position={butterflyPos}
+            openAbout={openAbout}
+            isAboutOpen={isAboutOpen}
+          />
 
-          {isAboutOpen && <About position={butterflyPos} />}
+          {isAboutOpen && (
+            <About position={butterflyPos} closeAbout={closeAbout} />
+          )}
         </Suspense>
       </Canvas>
     </div>
