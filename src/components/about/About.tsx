@@ -105,19 +105,19 @@ export default function About({ position, closeAbout }: AboutProps) {
             <div className="contact-buttons">
               <a
                 href="https://www.linkedin.com"
-                className="contact-btn linkedin-btn"
+                className="contact-button linkedin-button"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Icon name="linkedin" className="btn-icon" />
+                <Icon name="linkedin" className="button-icon" />
                 <span>LINKEDIN LINK</span>
               </a>
 
               <a
                 href="mailto:contact@example.com"
-                className="contact-btn email-btn"
+                className="contact-button email-button"
               >
-                <Icon name="mail" className="btn-icon" />
+                <Icon name="mail" className="button-icon" />
                 <span>MAIL LINK</span>
               </a>
             </div>
