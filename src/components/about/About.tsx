@@ -72,12 +72,14 @@ export default function About({ position, closeAbout }: AboutProps) {
             <div className="feature-wrapper">
               <div className="feature">
                 <Icon name="experience" className="feature-icon" />
-                <div className="feature-text">
-                  With hands-on experience at leading tech companies and MSc in
-                  Information Systems, I turn complex ideas into functional
-                  realities through clean code, thoughtful design, and true
-                  collaboration.
-                </div>
+
+                <p className="feature-text">
+                  With hands-on experience at leading tech companies and M.Sc.
+                  in Information Systems, I turn complex ideas into functional
+                  realities through <strong>clean code</strong>,
+                  <strong> thoughtful design</strong>, and
+                  <strong> true collaboration</strong>.
+                </p>
               </div>
               <div className="separator-line"></div>
             </div>
@@ -85,42 +87,44 @@ export default function About({ position, closeAbout }: AboutProps) {
             <div className="feature-wrapper">
               <div className="feature">
                 <Icon name="balance" className="feature-icon" />
-                <div className="feature-text">
-                  Each project is a dialogue: balancing what inspires you with
-                  what serves your audience, creativity with strategy, vision
-                  with impact.
-                </div>
+
+                <p className="feature-text">
+                  Each project is a dialogue: balancing
+                  <strong> what inspires you </strong> with
+                  <strong> what serves your audience</strong>,
+                  <strong> creativity</strong> with
+                  <strong> strategy</strong>, <strong> vision</strong> with
+                  <strong> impact</strong>.
+                </p>
               </div>
               <div className="separator-line"></div>
             </div>
           </div>
 
           <div className="cta">
-            <div className="cta-text">
-              Let's create together something that makes you unique
-              <br />
-              and helps your business grow
-            </div>
+            Let's create together something that makes you unique
+            <br />
+            and helps your business grow
+          </div>
 
-            <div className="contact-buttons">
-              <a
-                href="https://www.linkedin.com"
-                className="contact-button linkedin-button"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Icon name="linkedin" className="button-icon" />
-                <span>LINKEDIN LINK</span>
-              </a>
+          <div className="contact-buttons">
+            <a
+              href="https://www.linkedin.com"
+              className="contact-button linkedin-button"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Icon name="linkedin" className="button-icon" />
+              <span>LINKEDIN LINK</span>
+            </a>
 
-              <a
-                href="mailto:contact@example.com"
-                className="contact-button email-button"
-              >
-                <Icon name="mail" className="button-icon" />
-                <span>MAIL LINK</span>
-              </a>
-            </div>
+            <a
+              href="mailto:contact@example.com"
+              className="contact-button email-button"
+            >
+              <Icon name="mail" className="button-icon" />
+              <span>MAIL LINK</span>
+            </a>
           </div>
         </div>
       </div>
