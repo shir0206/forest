@@ -1,10 +1,9 @@
 .landing-body {
-  width: min(100vw, 100vh);
-  height: min(100vw, 100vh);
+  width: min(80vw, 80vh);
+  height: min(80vw, 80vh);
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow-x: hidden;
   position: relative;
   font-family: "Quicksand", sans-serif;
   color: #fff;
@@ -45,7 +44,7 @@
 
 .container {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -99,7 +98,7 @@ header {
 
 .greeting {
   font-family: "Corinthia", cursive;
-  font-size: 4rem;
+  font-size: 3rem;
   font-weight: 400;
   animation: slideDown 0.8s ease-out;
 }
@@ -195,12 +194,12 @@ header {
 /* TAGLINE, PHILOSOPHY */
 .tagline {
   text-align: center;
-  font-size: 1.25rem;
+  font-size: 1rem;
 }
 
 .philosophy {
   text-align: center;
-  font-size: 1.15rem;
+  font-size: 1.1rem;
 }
 
 .separator-line {
@@ -268,14 +267,13 @@ header {
 
 .feature-text {
   line-height: 1.7;
-  font-size: 1.15rem;
+  font-size: 1.1rem;
 }
 
 /* CTA */
 .cta {
   text-align: center;
-  font-size: 1.3rem;
-  line-height: 1.6;
+  font-size: 1.25rem;
 }
 
 .contact-buttons {
@@ -346,7 +344,7 @@ header {
     justify-content: center;
     flex-direction: column;
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
   }
 
   h1 {
