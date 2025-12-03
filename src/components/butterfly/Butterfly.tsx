@@ -15,10 +15,6 @@ export default function Butterfly({
   openAbout,
   isAboutOpen,
 }: ButterflyProps) {
-  useEffect(() => {
-    console.log("Butterfly isAboutOpen", isAboutOpen);
-  }, [isAboutOpen]);
-
   return (
     <Html
       position={new THREE.Vector3(...position)}

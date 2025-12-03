@@ -16,7 +16,7 @@ export default function About({ position, closeAbout }: AboutProps) {
       center // Center the butterfly at the 3D location point
       wrapperClass="info-container" // Wrapper class for setting the base size
       distanceFactor={2} // Determines the amount of change in size when zooming in/out
-      scale={[0.005, 0.005, 0.005]} // Adjust the size of the butterfly within the scene
+      scale={[0.005, 0.005, 0.005]} // Adjust the size of the about box within the scene
     >
       <div className="landing-body" onClick={(e) => e.stopPropagation()}>
         <div className="container">
