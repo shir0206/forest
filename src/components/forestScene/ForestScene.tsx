@@ -6,7 +6,7 @@ import Butterfly from "../butterfly/Butterfly";
 import CameraControls from "../cameraControls/CameraControls";
 import About from "../about/About";
 import Loader from "../loader/Loader";
-import { backgroundFile, butterflyPos, initCameraPos } from "@/types/const";
+import { backgroundFile, butterflyPos, initCameraPos } from "@/helper/const";
 
 export default function ForestScene() {
   const [runIntro, setRunIntro] = useState<boolean>(true);

@@ -123,7 +123,6 @@ header {
   opacity: 0.9;
 }
 
-/* SKILLS */
 .skills {
   display: flex;
   justify-content: center;
@@ -191,7 +190,6 @@ header {
   }
 }
 
-/* TAGLINE, PHILOSOPHY */
 .tagline {
   text-align: center;
   font-size: 1rem;
@@ -213,7 +211,6 @@ header {
   width: 80%;
 }
 
-/* FEATURES */
 .features {
   display: flex;
   gap: 2rem;
@@ -226,11 +223,20 @@ header {
   gap: 1rem;
   justify-content: center;
   align-items: center;
+
+  &:nth-child(1) .feature-icon {
+    align-self: start;
+  }
+
+  &:nth-child(2) .feature-icon {
+    align-self: end;
+  }
 }
 
 .feature {
   flex: 1;
   display: flex;
+  gap: 1.5rem;
   flex-direction: column;
   padding: 2rem;
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -247,22 +253,7 @@ header {
 .feature-icon {
   width: 40px;
   height: 40px;
-  margin-bottom: 1.5rem;
   fill: white;
-
-  // &:first-child {
-  &:first-of-type(1) {
-    align-self: start;
-  }
-
-  // &:last-child {
-  &:last-child {
-    align-self: end;
-  }
-
-  &:last-of-type {
-    align-self: end;
-  }
 }
 
 .feature-text {
@@ -270,7 +261,6 @@ header {
   font-size: 1.1rem;
 }
 
-/* CTA */
 .cta {
   text-align: center;
   font-size: 1.25rem;
@@ -334,8 +324,12 @@ header {
   }
 }
 
-/* RESPONSIVE */
 @media (max-width: 768px) {
+  .landing-body {
+    width: min(90vw, 90vh);
+    height: min(90vw, 90vh);
+  }
+
   .container {
     padding: 2rem 1.5rem;
     margin: 1rem;
@@ -347,28 +341,25 @@ header {
     gap: 1rem;
   }
 
-  h1 {
-    font-size: 2.2rem;
-  }
-
   .intro {
     font-size: 1.2rem;
   }
 
-  .skills {
-    gap: 0.5rem;
+  .subtitle {
+    font-size: 1.1rem;
   }
 
   .skill-circle {
-    width: 90px;
-    height: 90px;
+    width: 80px;
+    height: 80px;
   }
 
-  .connector {
-    width: 20px;
+  .feature {
+    padding: 1rem;
   }
 
-  .features {
-    grid-template-columns: 1fr;
+  .feature-icon {
+    width: 24px;
+    height: 24px;
   }
 }

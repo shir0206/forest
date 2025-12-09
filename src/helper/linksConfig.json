@@ -1,0 +1,22 @@
+{
+  "whatsapp": {
+    "phoneNumber": "+972501234567",
+    "text": "Hello! I'm reaching out to inquire about your services. Looking forward to your reply."
+  },
+  "googleCalendar": {
+    "action": "TEMPLATE",
+    "text": "Business Meeting",
+    "dates": {
+      "start": "20251212T130000Z",
+      "end": "20251212T140000Z"
+    },
+    "details": "Discuss project updates and next steps",
+    "location": "Tel Aviv, Israel",
+    "addGuests": ["client@example.com"]
+  },
+  "email": {
+    "to": "you@example.com",
+    "subject": "Booking a meeting",
+    "body": "Hi, I would like to schedule a meeting to discuss potential collaboration."
+  }
+}

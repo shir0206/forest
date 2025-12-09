@@ -62,10 +62,8 @@ export default function About({ position, closeAbout }: AboutProps) {
           <div className="separator-line"></div>
 
           <div className="philosophy">
-            To me, a website is more than code or visuals. It should tell your
-            brand's story
-            <br />
-            with clarity and turn visitors into believers in what you do.
+            To me, a website is more than code or visuals, it should tell your
+            brand's story and turn visitors into believers in what you do.
           </div>
 
           <div className="features">
