@@ -23,7 +23,13 @@ export default function Butterfly({
       distanceFactor={2} // Determines the amount of size change when zooming in/out
       scale={[0.005, 0.005, 0.005]} // Adjust the size of the butterfly within the scene
     >
-      <button className="buttefly-button" onClick={openAbout}>
+      <button
+        className="buttefly-button"
+        onClick={openAbout}
+        aria-label="Interactive butterfly - click to learn more about the developer"
+        role="button"
+        tabIndex={0}
+      >
         <div className={`butterfly${isAboutOpen ? " pause-animation" : ""}`}>
           <div className={`wing${isAboutOpen ? " pause-animation" : ""}`}>
             <div className="bit"></div>

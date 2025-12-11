@@ -20,7 +20,11 @@ export default function About({ position, closeAbout }: AboutProps) {
     >
       <div className="landing-body" onClick={(e) => e.stopPropagation()}>
         <div className="container">
-          <button className="close-button" onClick={closeAbout}>
+          <button
+            className="close-button"
+            onClick={closeAbout}
+            aria-label="Close about information"
+          >
             <Icon name="close" className="feature-icon" />
           </button>
 
