@@ -198,6 +198,7 @@ header {
 .philosophy {
   text-align: center;
   font-size: 1.1rem;
+  width: 90%;
 }
 
 .separator-line {
@@ -352,6 +353,9 @@ header {
   .skill-circle {
     width: 80px;
     height: 80px;
+  }
+  .philosophy {
+    width: 100%;
   }
 
   .feature {
