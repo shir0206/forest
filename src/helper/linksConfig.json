@@ -1,6 +1,6 @@
 {
   "whatsapp": {
-    "phoneNumber": "+972501234567",
+    "phoneNumber": "+972542098332",
     "text": "Hello! I'm reaching out to inquire about your services. Looking forward to your reply."
   },
   "googleCalendar": {
@@ -10,12 +10,12 @@
       "start": "20251212T130000Z",
       "end": "20251212T140000Z"
     },
-    "details": "Discuss project updates and next steps",
+    "details": "Discuss potential collaboration",
     "location": "Tel Aviv, Israel",
-    "addGuests": ["client@example.com"]
+    "addGuests": ["shirzabolotny@gmail.com"]
   },
   "email": {
-    "to": "you@example.com",
+    "to": "shirzabolotny@gmail.com",
     "subject": "Booking a meeting",
     "body": "Hi, I would like to schedule a meeting to discuss potential collaboration."
   }
