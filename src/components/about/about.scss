@@ -281,15 +281,16 @@ header {
   padding: 1rem 2rem;
   border-radius: 50px;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.1);
+  background: transparent;
   color: #fff;
   text-decoration: none;
   font-size: 1rem;
   transition: 0.3s ease;
+  cursor: pointer;
 
   &:hover {
     transform: translateY(-3px);
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
   }
 }
@@ -305,12 +306,12 @@ header {
   fill: white;
 }
 
-.linkedin-button .button-icon {
-  background: #0077b5;
-}
-
-.email-button .button-icon {
-  background: #d4a574;
+/* For icons that don't have specific background colors */
+.linkedin-button .button-icon,
+.mail-button .button-icon,
+.calendar-button .button-icon,
+.whatsapp-button .button-icon {
+  background: transparent;
 }
 
 @keyframes pulse {

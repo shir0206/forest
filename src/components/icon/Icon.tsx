@@ -8,6 +8,8 @@ import { ReactComponent as LinkedinIcon } from "@/assets/icons/linkedin.svg";
 import { ReactComponent as MailIcon } from "@/assets/icons/mail.svg";
 import { ReactComponent as UxIcon } from "@/assets/icons/ux.svg";
 import { ReactComponent as CloseIcon } from "@/assets/icons/close.svg";
+import { ReactComponent as CalendarIcon } from "@/assets/icons/calendar.svg";
+import { ReactComponent as WhatsappIcon } from "@/assets/icons/whatsapp.svg";
 
 const icons = {
   architecture: ArchitectureIcon,
@@ -18,6 +20,8 @@ const icons = {
   mail: MailIcon,
   ux: UxIcon,
   close: CloseIcon,
+  calendar: CalendarIcon,
+  whatsapp: WhatsappIcon,
 };
 
 export type IconName = keyof typeof icons;

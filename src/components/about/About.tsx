@@ -1,8 +1,9 @@
-"use client";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import "./about.scss";
 import { Icon } from "../icon/Icon";
+import { ContactButtons } from "./ContactButtons";
+import linksConfig from "@/helper/linksConfig.json";
 
 interface AboutProps {
   position: [number, number, number];
@@ -110,23 +111,7 @@ export default function About({ position, closeAbout }: AboutProps) {
           </div>
 
           <div className="contact-buttons">
-            <a
-              href="https://www.linkedin.com"
-              className="contact-button linkedin-button"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Icon name="linkedin" className="button-icon" />
-              <span>LINKEDIN LINK</span>
-            </a>
-
-            <a
-              href="mailto:contact@example.com"
-              className="contact-button email-button"
-            >
-              <Icon name="mail" className="button-icon" />
-              <span>MAIL LINK</span>
-            </a>
+            <ContactButtons links={linksConfig} />
           </div>
         </div>
       </div>
