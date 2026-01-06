@@ -49,7 +49,7 @@
   justify-content: center;
   align-items: center;
   margin: 2rem;
-  padding: 3rem;
+  padding: 2rem;
   z-index: 1;
   border: 2px solid rgba(255, 255, 255, 0.3);
   background: rgba(255, 255, 255, 0.05);
@@ -88,7 +88,8 @@
 
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
   }
 }
 
@@ -131,8 +132,8 @@ header {
 }
 
 .skill-circle {
-  width: 120px;
-  height: 120px;
+  width: 8rem;
+  height: 8rem;
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.5);
   background: rgba(255, 255, 255, 0.05);
@@ -265,53 +266,6 @@ header {
 .cta {
   text-align: center;
   font-size: 1.25rem;
-}
-
-.contact-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.contact-button {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 1rem 2rem;
-  border-radius: 50px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  background: transparent;
-  color: #fff;
-  text-decoration: none;
-  font-size: 1rem;
-  transition: 0.3s ease;
-  cursor: pointer;
-
-  &:hover {
-    transform: translateY(-3px);
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-  }
-}
-
-.button-icon {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  fill: white;
-}
-
-/* For icons that don't have specific background colors */
-.linkedin-button .button-icon,
-.mail-button .button-icon,
-.calendar-button .button-icon,
-.whatsapp-button .button-icon {
-  background: transparent;
 }
 
 @keyframes pulse {

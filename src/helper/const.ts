@@ -23,13 +23,21 @@ export const generateGoogleCalendarLink = (
   config: GoogleCalendarConfig
 ): string => {
   const guests = config.addGuests.join(",");
-  return `https://calendar.google.com/calendar/render?action=${
+  const conferenceDataVersion = config.conferenceDataVersion
+    ? `&conferenceDataVersion=${config.conferenceDataVersion}`
+    : "";
+  const conferenceSolution = config.conferenceSolution
+    ? `&conferenceSolution=${config.conferenceSolution}`
+    : "";
+  return `https://calendar.google.com/calendar/u/0/r/eventedit?action=${
     config.action
   }&text=${encodeURIComponent(config.text)}&dates=${config.dates.start}/${
     config.dates.end
   }&details=${encodeURIComponent(config.details)}&location=${encodeURIComponent(
     config.location
-  )}&add=${encodeURIComponent(guests)}`;
+  )}&add=${encodeURIComponent(
+    guests
+  )}${conferenceDataVersion}${conferenceSolution}`;
 };
 
 export const generateEmailLink = (config: EmailConfig): string =>

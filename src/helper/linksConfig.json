@@ -4,19 +4,20 @@
     "text": "Hello! I'm reaching out to inquire about your services. Looking forward to your reply."
   },
   "googleCalendar": {
-    "action": "TEMPLATE",
+    "action": "EVENTEDIT",
     "text": "Business Meeting",
-    "dates": {
-      "start": "20251212T130000Z",
-      "end": "20251212T140000Z"
-    },
     "details": "Discuss potential collaboration",
-    "location": "Tel Aviv, Israel",
-    "addGuests": ["shirzabolotny@gmail.com"]
+    "location": "Google Meet",
+    "addGuests": ["shirzabolotny@gmail.com"],
+    "conferenceDataVersion": 1,
+    "conferenceSolution": "hangoutsMeet"
   },
   "email": {
     "to": "shirzabolotny@gmail.com",
     "subject": "Booking a meeting",
     "body": "Hi, I would like to schedule a meeting to discuss potential collaboration."
+  },
+  "linkedin": {
+    "url": "https://www.linkedin.com/in/shir-zabolotny-a83b18109/"
   }
 }

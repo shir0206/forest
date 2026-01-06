@@ -2,8 +2,7 @@ import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import "./about.scss";
 import { Icon } from "../icon/Icon";
-import { ContactButtons } from "./ContactButtons";
-import linksConfig from "@/helper/linksConfig.json";
+import { Contact } from "../contact/Contact";
 
 interface AboutProps {
   position: [number, number, number];
@@ -110,9 +109,7 @@ export default function About({ position, closeAbout }: AboutProps) {
             and helps your business grow
           </div>
 
-          <div className="contact-buttons">
-            <ContactButtons links={linksConfig} />
-          </div>
+          <Contact />
         </div>
       </div>
     </Html>

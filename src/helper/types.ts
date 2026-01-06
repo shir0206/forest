@@ -15,6 +15,8 @@ export interface GoogleCalendarConfig {
   details: string;
   location: string;
   addGuests: string[];
+  conferenceDataVersion?: number;
+  conferenceSolution?: string;
 }
 
 export interface EmailConfig {
