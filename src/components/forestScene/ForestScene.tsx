@@ -4,9 +4,11 @@ import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import Butterfly from "../butterfly/Butterfly";
 import CameraControls from "../cameraControls/CameraControls";
+import CinematicEffects from "../cinematicEffects/CinematicEffects";
 import About from "../about/About";
 import Loader from "../loader/Loader";
 import { backgroundFile, butterflyPos, initCameraPos } from "@/helper/const";
+import PortfolioBrowser from "../portfolioBrowser/PortfolioBrowser";
 
 export default function ForestScene() {
   const [runIntro, setRunIntro] = useState<boolean>(true);
@@ -45,8 +47,8 @@ export default function ForestScene() {
         <Suspense fallback={<Loader />}>
           <Environment files={backgroundFile} background={true} />
 
-          <CameraControls runIntro={runIntro} />
-
+          <CameraControls runIntro={runIntro} isAboutOpen={isAboutOpen} />
+          <CinematicEffects isAboutOpen={isAboutOpen} />
           <Butterfly
             position={butterflyPos}
             openAbout={openAbout}
@@ -54,7 +56,11 @@ export default function ForestScene() {
           />
 
           {isAboutOpen && (
-            <About position={butterflyPos} closeAbout={closeAbout} />
+            <PortfolioBrowser
+              position={butterflyPos}
+              closeAbout={closeAbout}
+            ></PortfolioBrowser>
+            // <About position={butterflyPos} closeAbout={closeAbout} />
           )}
         </Suspense>
       </Canvas>

@@ -9,9 +9,13 @@ import { sceneAnimationPositions } from "../../helper/const";
 
 type CameraControlsProps = {
   runIntro: boolean;
+  isAboutOpen: boolean;
 };
 
-export default function CameraControls({ runIntro }: CameraControlsProps) {
+export default function CameraControls({
+  runIntro,
+  isAboutOpen,
+}: CameraControlsProps) {
   const controlsRef = useRef<THREE.EventDispatcher | any>(null);
   const { camera, gl } = useThree();
 
@@ -72,12 +76,16 @@ export default function CameraControls({ runIntro }: CameraControlsProps) {
   return (
     <OrbitControls
       ref={controlsRef}
-      enableZoom={true}
-      enablePan={true}
+      // enableZoom={true}
+      // enablePan={true}
       zoomSpeed={0.6}
       rotateSpeed={0.8}
       minDistance={1}
       maxDistance={20}
+      enabled={!isAboutOpen}
+      enableRotate={!isAboutOpen}
+      enableZoom={!isAboutOpen}
+      enablePan={!isAboutOpen}
     />
   );
 }
