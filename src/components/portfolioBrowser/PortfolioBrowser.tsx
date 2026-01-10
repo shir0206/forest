@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
-import "./portfolio-browser.scss";
+// import "./portfolio-browser.scss";
 
 // Types
 interface WindowState {

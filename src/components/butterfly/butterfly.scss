@@ -165,6 +165,7 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   width: $butterfly-width;
   cursor: pointer;
   animation: bounce 3s ease-in-out infinite;
+  animation: flightPath 10s ease-in-out infinite;
 
   &.pause-animation {
     animation-play-state: paused;
@@ -552,6 +553,7 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
     transform: scale(0) translateY(-24px);
   }
 }
+
 @keyframes bounce {
   0%,
   100% {
@@ -563,5 +565,63 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
     transform-style: preserve-3d;
     transform: rotateX(50deg) rotateY(20deg) rotateZ(-50deg) translateX(-10px)
       translateY(-20px) scaleX(-0.95);
+  }
+}
+
+@keyframes flightPath {
+  0%,
+  50%,
+  100% {
+    transform-style: preserve-3d;
+    transform: rotateX(50deg) rotateY(20deg) rotateZ(-50deg) translateX(0px)
+      translateY(0px) scaleX(-1);
+  }
+
+  10% {
+    transform-style: preserve-3d;
+    transform: rotateX(53deg) rotateY(30deg) rotateZ(-42deg) translateX(10px)
+      translateY(-15px) scaleX(-1.03);
+  }
+
+  20% {
+    transform-style: preserve-3d;
+    transform: rotateX(47deg) rotateY(35deg) rotateZ(-32deg) translateX(22px)
+      translateY(-30px) scaleX(-0.96);
+  }
+
+  30% {
+    transform-style: preserve-3d;
+    transform: rotateX(45deg) rotateY(15deg) rotateZ(-60deg) translateX(5px)
+      translateY(-40px) scaleX(-0.94);
+  }
+
+  40% {
+    transform-style: preserve-3d;
+    transform: rotateX(55deg) rotateY(20deg) rotateZ(-55deg) translateX(18px)
+      translateY(-55px) scaleX(-1.02);
+  }
+
+  60% {
+    transform-style: preserve-3d;
+    transform: rotateX(50deg) rotateY(15deg) rotateZ(-58deg) translateX(8px)
+      translateY(-70px) scaleX(-0.95);
+  }
+
+  70% {
+    transform-style: preserve-3d;
+    transform: rotateX(44deg) rotateY(10deg) rotateZ(-70deg) translateX(-10px)
+      translateY(-85px) scaleX(-0.9);
+  }
+
+  80% {
+    transform-style: preserve-3d;
+    transform: rotateX(50deg) rotateY(30deg) rotateZ(-45deg) translateX(5px)
+      translateY(-95px) scaleX(-1.05);
+  }
+
+  90% {
+    transform-style: preserve-3d;
+    transform: rotateX(52deg) rotateY(40deg) rotateZ(-32deg) translateX(12px)
+      translateY(-100px) scaleX(-1.1);
   }
 }
