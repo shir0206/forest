@@ -8,7 +8,7 @@ import CinematicEffects from "../cinematicEffects/CinematicEffects";
 import About from "../about/About";
 import Loader from "../loader/Loader";
 import { backgroundFile, butterflyPos, initCameraPos } from "@/helper/const";
-import PortfolioBrowser from "../portfolioBrowser/PortfolioBrowser";
+import Browser from "../browser/Browser";
 
 export default function ForestScene() {
   const [runIntro, setRunIntro] = useState<boolean>(true);
@@ -56,10 +56,7 @@ export default function ForestScene() {
           />
 
           {isAboutOpen && (
-            <PortfolioBrowser
-              position={butterflyPos}
-              closeAbout={closeAbout}
-            ></PortfolioBrowser>
+            <Browser position={butterflyPos} closeAbout={closeAbout}></Browser>
             // <About position={butterflyPos} closeAbout={closeAbout} />
           )}
         </Suspense>

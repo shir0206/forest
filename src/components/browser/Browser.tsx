@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
-// import "./portfolio-browser.scss";
+import "./browser.scss";
+import { Icon } from "@/components/icon/Icon";
 
 // Types
 interface WindowState {
@@ -10,7 +11,7 @@ interface WindowState {
   closed: boolean;
 }
 
-type PortfolioBrowserProps = {
+type BrowserProps = {
   position: [number, number, number];
   closeAbout: (e: React.MouseEvent) => void;
 };
@@ -115,10 +116,7 @@ const Screen6: React.FC = () => (
 );
 
 // Main Component
-export default function PortfolioBrowser({
-  position,
-  closeAbout,
-}: PortfolioBrowserProps) {
+export default function Browser({ position, closeAbout }: BrowserProps) {
   const [windowState, setWindowState] = useState<WindowState>({
     minimized: false,
     maximized: false,
@@ -157,9 +155,6 @@ export default function PortfolioBrowser({
 
   const handleClose = (e: React.MouseEvent) => {
     setWindowState((prev) => ({ ...prev, closed: true }));
-    // setTimeout(() => {
-    //   setWindowState((prev) => ({ ...prev, closed: false }));
-    // }, 2000);
     closeAbout(e);
   };
 
@@ -188,18 +183,21 @@ export default function PortfolioBrowser({
       <div className={containerClasses} onClick={(e) => e.stopPropagation()}>
         <div className="browser-header">
           <div className="window-controls">
-            <button
-              className="control-btn close-btn"
-              onClick={handleClose}
-            ></button>
+            <button className="control-btn close-btn" onClick={handleClose}>
+              <Icon name="close" size={8} />
+            </button>
             <button
               className="control-btn minimize-btn"
               onClick={handleMinimize}
-            ></button>
+            >
+              <Icon name="minimize" size={8} />
+            </button>
             <button
               className="control-btn maximize-btn"
               onClick={handleMaximize}
-            ></button>
+            >
+              <Icon name="maximize" size={8} />
+            </button>
           </div>
           <div className="browser-title">shir.z / workspace</div>
         </div>

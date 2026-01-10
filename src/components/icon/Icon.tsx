@@ -8,6 +8,8 @@ import { ReactComponent as LinkedinIcon } from "@/assets/icons/linkedin.svg";
 import { ReactComponent as MailIcon } from "@/assets/icons/mail.svg";
 import { ReactComponent as UxIcon } from "@/assets/icons/ux.svg";
 import { ReactComponent as CloseIcon } from "@/assets/icons/close.svg";
+import { ReactComponent as MaximizeIcon } from "@/assets/icons/maximize.svg";
+import { ReactComponent as MinimizeIcon } from "@/assets/icons/minimize.svg";
 import { ReactComponent as CalendarIcon } from "@/assets/icons/calendar.svg";
 import { ReactComponent as WhatsappIcon } from "@/assets/icons/whatsapp.svg";
 
@@ -20,6 +22,8 @@ const icons = {
   mail: MailIcon,
   ux: UxIcon,
   close: CloseIcon,
+  maximize: MaximizeIcon,
+  minimize: MinimizeIcon,
   calendar: CalendarIcon,
   whatsapp: WhatsappIcon,
 };

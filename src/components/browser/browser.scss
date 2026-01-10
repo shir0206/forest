@@ -15,7 +15,7 @@
 // Browser Container
 .browser-container {
   position: relative;
-  width: 900px;
+  width: min(900px, 90vw);
   background: rgba(236, 237, 238, 0.95);
   backdrop-filter: blur(20px);
   border-radius: 16px;
@@ -68,6 +68,11 @@
   border: none;
   cursor: pointer;
   transition: opacity 0.2s;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &:hover {
     opacity: 0.7;
@@ -83,6 +88,25 @@
 
   &.maximize-btn {
     background: var(--dusty-olive);
+  }
+
+  // Show icons on hover
+  &:hover .icon {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+
+  // Icon styling
+  .icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    width: 8px;
+    height: 8px;
   }
 }
 
@@ -203,7 +227,7 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
-  animation: bounce 2s infinite;
+  animation: swap 2s infinite;
   opacity: 0.6;
   transition: opacity 0.3s;
   pointer-events: none;
@@ -217,7 +241,7 @@
   transform: rotate(-45deg);
 }
 
-@keyframes bounce {
+@keyframes swap {
   0%,
   20%,
   50%,
