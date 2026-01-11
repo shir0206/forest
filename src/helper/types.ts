@@ -1,3 +1,12 @@
+export const WINDOW_STATE = {
+  DEFAULT: "default",
+  MINIMIZED: "minimized",
+  MAXIMIZED: "maximized",
+  CLOSED: "closed",
+} as const;
+
+export type WindowState = (typeof WINDOW_STATE)[keyof typeof WINDOW_STATE];
+
 export type PositionThreeD = [number, number, number];
 
 export interface WhatsAppConfig {

@@ -3,13 +3,7 @@ import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import "./browser.scss";
 import { Icon } from "@/components/icon/Icon";
-
-// Types
-interface WindowState {
-  minimized: boolean;
-  maximized: boolean;
-  closed: boolean;
-}
+import { WINDOW_STATE, WindowState } from "@/helper/types";
 
 type BrowserProps = {
   position: [number, number, number];
@@ -117,11 +111,9 @@ const Screen6: React.FC = () => (
 
 // Main Component
 export default function Browser({ position, closeAbout }: BrowserProps) {
-  const [windowState, setWindowState] = useState<WindowState>({
-    minimized: false,
-    maximized: false,
-    closed: false,
-  });
+  const [windowState, setWindowState] = useState<WindowState>(
+    WINDOW_STATE.DEFAULT
+  );
 
   const contentRef = useRef<HTMLDivElement>(null);
   const screenRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -154,23 +146,25 @@ export default function Browser({ position, closeAbout }: BrowserProps) {
   }, []);
 
   const handleClose = (e: React.MouseEvent) => {
-    setWindowState((prev) => ({ ...prev, closed: true }));
+    setWindowState(WINDOW_STATE.CLOSED);
     closeAbout(e);
   };
 
   const handleMinimize = () => {
-    setWindowState((prev) => ({ ...prev, minimized: !prev.minimized }));
+    setWindowState((prev) =>
+      prev === WINDOW_STATE.MINIMIZED
+        ? WINDOW_STATE.DEFAULT
+        : WINDOW_STATE.MINIMIZED
+    );
   };
 
   const handleMaximize = () => {
-    setWindowState((prev) => ({ ...prev, maximized: !prev.maximized }));
+    setWindowState((prev) =>
+      prev === WINDOW_STATE.MAXIMIZED
+        ? WINDOW_STATE.DEFAULT
+        : WINDOW_STATE.MAXIMIZED
+    );
   };
-
-  const containerClasses = `browser-container ${
-    windowState.minimized ? "minimized" : ""
-  } ${windowState.maximized ? "maximized" : ""} ${
-    windowState.closed ? "closed" : ""
-  }`;
 
   return (
     <Html
@@ -180,7 +174,10 @@ export default function Browser({ position, closeAbout }: BrowserProps) {
       distanceFactor={2}
       scale={[0.005, 0.005, 0.005]}
     >
-      <div className={containerClasses} onClick={(e) => e.stopPropagation()}>
+      <div
+        className={`browser-container ${windowState}`}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="browser-header">
           <div className="window-controls">
             <button className="control-btn close-btn" onClick={handleClose}>
@@ -196,7 +193,7 @@ export default function Browser({ position, closeAbout }: BrowserProps) {
               className="control-btn maximize-btn"
               onClick={handleMaximize}
             >
-              <Icon name="maximize" size={8} />
+              <Icon name="maximize" size={10} />
             </button>
           </div>
           <div className="browser-title">shir.z / workspace</div>
