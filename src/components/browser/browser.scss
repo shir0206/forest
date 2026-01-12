@@ -167,7 +167,7 @@
     transform: translateY(0);
   }
 
-  &:nth-child(1) {
+  &.screen-1 {
     background: linear-gradient(
       180deg,
       rgba(236, 237, 238, 0.95) 0%,
@@ -175,7 +175,7 @@
     );
   }
 
-  &:nth-child(2) {
+  &.screen-2 {
     background: linear-gradient(
       180deg,
       rgba(190, 173, 175, 0.15) 0%,
@@ -183,7 +183,7 @@
     );
   }
 
-  &:nth-child(3) {
+  &.screen-3 {
     background: linear-gradient(
       180deg,
       rgba(170, 180, 173, 0.15) 0%,
@@ -191,7 +191,7 @@
     );
   }
 
-  &:nth-child(4) {
+  &.screen-4 {
     background: linear-gradient(
       180deg,
       rgba(120, 128, 97, 0.12) 0%,
@@ -199,7 +199,7 @@
     );
   }
 
-  &:nth-child(5) {
+  &.screen-5 {
     background: linear-gradient(
       180deg,
       rgba(190, 173, 175, 0.18) 0%,
@@ -207,7 +207,7 @@
     );
   }
 
-  &:nth-child(6) {
+  &.screen-6 {
     background: linear-gradient(
       180deg,
       rgba(170, 180, 173, 0.2) 0%,
