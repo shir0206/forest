@@ -16,7 +16,7 @@
 .browser-container {
   position: relative;
   width: min(900px, 90vw);
-  background: rgba(236, 237, 238, 0.95);
+  background: rgba(236, 237, 238, 0.75);
   backdrop-filter: blur(20px);
   border-radius: 16px;
   box-shadow: 0 20px 60px rgba(5, 9, 4, 0.15);
@@ -33,9 +33,9 @@
   }
 
   &.maximized {
-    width: calc(100vw - 46px);
-    height: calc(100vh - 36px);
-    border-radius: 8px;
+    height: 95vh;
+    width: 95vw;
+    border-radius: 0;
   }
 
   &.closed {
@@ -47,7 +47,8 @@
 
 // Browser Header
 .browser-header {
-  padding: 16px 20px;
+  height: 42px;
+  padding: 1.5rem 2.5rem;
   border-bottom: 1px solid rgba(120, 128, 97, 0.15);
   background: rgba(236, 237, 238, 0.7);
   display: flex;
@@ -92,7 +93,7 @@
 
   // Show icons on hover
   &:hover .icon {
-    opacity: 1;
+    opacity: 0.8;
     transform: translate(-50%, -50%) scale(1.2);
   }
 
@@ -111,13 +112,13 @@
 }
 
 .browser-title {
-  font-size: 14px;
+  font-size: 1.4rem;
   font-weight: 400;
   color: var(--dusty-olive);
   letter-spacing: 0.3px;
   flex: 1;
   text-align: center;
-  margin-right: 60px;
+  width: 100%;
 }
 
 // Browser Content
@@ -147,7 +148,7 @@
 }
 
 .browser-container.maximized .browser-content {
-  height: calc(95vh - 52px);
+  height: 100%;
 }
 
 // Screens
@@ -441,24 +442,15 @@
 @media (max-width: 768px) {
   .browser-container {
     width: 95vw;
-
-    &.maximized {
-      width: 95vw;
-    }
-  }
-
-  .browser-header {
-    padding: 14px 16px;
   }
 
   .browser-title {
-    font-size: 13px;
-    margin-right: 40px;
+    font-size: 1.2rem;
   }
 
   .screen {
     padding: 60px 40px;
-    min-height: 500px;
+    height: max(500px, 90vh);
   }
 
   .screen-1 {

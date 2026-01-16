@@ -143,6 +143,10 @@ export default function Browser({ position, closeAbout }: BrowserProps) {
     });
   }, []);
 
+  const clearVisible = useCallback(() => {
+    setVisibleScreens(() => new Set());
+  }, []);
+
   React.useEffect(() => {
     if (!ready || !contentRef.current) return;
 
@@ -175,6 +179,7 @@ export default function Browser({ position, closeAbout }: BrowserProps) {
   }, [ready, markVisible]);
 
   const handleClose = (e: React.MouseEvent) => {
+    clearVisible();
     setWindowState(WINDOW_STATE.CLOSED);
     closeAbout(e);
   };
