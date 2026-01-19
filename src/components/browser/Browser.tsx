@@ -5,6 +5,9 @@ import "./browser.scss";
 import { Icon } from "@/components/icon/Icon";
 import { WINDOW_STATE, WindowState } from "@/helper/types";
 import { useHtmlReady } from "@/hooks/useHtmlReady";
+import HeroSection from "../heroSection/HeroSection";
+import ExpertiseCards from "../expertiseCards/ExpertiseCards";
+import AboutMe from "../AboutMe/AboutMe";
 
 type BrowserProps = {
   position: [number, number, number];
@@ -115,12 +118,9 @@ const Screen6 = ({ isVisible }: { isVisible: boolean }) => (
 );
 
 const SCREENS: ScreenConfig[] = [
-  { id: "screen-1", component: Screen1 },
-  { id: "screen-2", component: Screen2 },
-  { id: "screen-3", component: Screen3 },
-  { id: "screen-4", component: Screen4 },
-  { id: "screen-5", component: Screen5 },
-  { id: "screen-6", component: Screen6 },
+  { id: "screen-1", component: HeroSection },
+  { id: "screen-2", component: AboutMe },
+  { id: "screen-3", component: ExpertiseCards },
 ];
 
 export default function Browser({ position, closeAbout }: BrowserProps) {

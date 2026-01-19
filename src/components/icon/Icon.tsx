@@ -12,6 +12,12 @@ import { ReactComponent as MaximizeIcon } from "@/assets/icons/maximize.svg";
 import { ReactComponent as MinimizeIcon } from "@/assets/icons/minimize.svg";
 import { ReactComponent as CalendarIcon } from "@/assets/icons/calendar.svg";
 import { ReactComponent as WhatsappIcon } from "@/assets/icons/whatsapp.svg";
+import { ReactComponent as structureIcon } from "@/assets/icons/structure.svg";
+import { ReactComponent as codeIcon } from "@/assets/icons/code.svg";
+import { ReactComponent as dialogIcon } from "@/assets/icons/dialog.svg";
+import { ReactComponent as monitorsIcon } from "@/assets/icons/monitors.svg";
+import { ReactComponent as testIcon } from "@/assets/icons/test.svg";
+import { ReactComponent as checklistIcon } from "@/assets/icons/checklist.svg";
 
 const icons = {
   architecture: ArchitectureIcon,
@@ -26,6 +32,12 @@ const icons = {
   minimize: MinimizeIcon,
   calendar: CalendarIcon,
   whatsapp: WhatsappIcon,
+  structure: structureIcon,
+  code: codeIcon,
+  dialog: dialogIcon,
+  monitors: monitorsIcon,
+  test: testIcon,
+  checklist: checklistIcon,
 };
 
 export type IconName = keyof typeof icons;
