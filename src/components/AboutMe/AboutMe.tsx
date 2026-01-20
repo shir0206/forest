@@ -1,20 +1,16 @@
 import React from "react";
-import "./AboutMe.scss";
+import "./aboutMe.scss";
 import imagePath from "../../assets/images/shirzabolotny.png?url";
-import backgroundPath from "../../assets/images/circle.svg?url";
+import { ReactComponent as Circle } from "../../assets/images/circle.svg";
 
 const AboutMe: React.FC = () => {
   return (
     <div className="about-me-container">
-      <h1 className="about-me-title">About me</h1>
+      <h2 className="about-me-title">About me</h2>
 
       <div className="about-me-content">
         <div className="profile-image-wrapper">
-          <img
-            src={backgroundPath}
-            alt="background circle"
-            className="background-circle"
-          />
+          <Circle className="background-circle" aria-hidden />
           <img src={imagePath} alt="Profile" className="profile-image" />
         </div>
 

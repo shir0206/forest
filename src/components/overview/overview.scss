@@ -1,24 +1,20 @@
-.overview-section {
-  min-height: 100vh;
+.overview-content {
   background-color: #f6f7f3;
+  padding: 3rem 0;
+  flex-direction: column;
+  width: 100%;
+  text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
-}
-
-.overview-content {
-  max-width: 56rem;
-  width: 100%;
-  text-align: center;
 }
 
 .overview-name {
   font-size: 4.5rem;
   font-family: Georgia, "Times New Roman", serif;
-  margin-bottom: 1.5rem;
   color: #111827;
   font-weight: 400;
+  z-index: 1;
 
   @media (max-width: 768px) {
     font-size: 3.75rem;
@@ -27,8 +23,8 @@
 
 .overview-subtitle {
   font-size: 1.5rem;
-  color: #374151;
-  margin-bottom: 0.5rem;
+  color: #72757e;
+  z-index: 1;
 
   @media (max-width: 768px) {
     font-size: 1.25rem;
@@ -40,12 +36,20 @@
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  font-size: 1.25rem;
-  color: #4b5563;
-  margin-bottom: 3rem;
+  font-size: 1.5rem;
+  color: #72757e;
+  z-index: 1;
 
   .dot {
-    color: #fb7185;
+    font-size: 10px;
+    line-height: 1.5rem;
+
+    &.dot-left {
+      color: #a8b3a5;
+    }
+    &.dot-right {
+      color: #e2c4c1;
+    }
   }
 
   @media (max-width: 768px) {
@@ -53,15 +57,31 @@
   }
 }
 
+.background-branch-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: -12rem;
+  z-index: 0;
+}
+.background-branch {
+  width: 380px;
+  height: 300px;
+}
+.branch-left {
+  transform: scaleX(-1);
+  fill: #a8b3a5;
+}
+.branch-right {
+  fill: hsl(5, 36%, 82%);
+}
 .overview-quote {
   font-size: 1.875rem;
   line-height: 1.6;
   color: #1f2937;
-  margin-bottom: 0.75rem;
   font-family: Georgia, "Times New Roman", serif;
   max-width: 48rem;
-  margin-left: auto;
-  margin-right: auto;
+  margin-top: -4rem;
 
   strong {
     font-weight: 700;
@@ -76,6 +96,7 @@
   font-size: 1.25rem;
   color: #374151;
   margin-top: 3rem;
+  z-index: 1;
 
   @media (max-width: 768px) {
     font-size: 1.125rem;
