@@ -1,5 +1,9 @@
 import { PositionThreeD } from "./types";
 import { WhatsAppConfig, GoogleCalendarConfig, EmailConfig } from "./types";
+import ExpertiseCards from "../components/expertiseCards/ExpertiseCards";
+import AboutMe from "../components/AboutMe/AboutMe";
+import { ScreenConfig } from "./types";
+import Overview from "../components/overview/Overview";
 
 export const backgroundFile: string =
   "./hdri/" +
@@ -21,6 +25,12 @@ export const sceneAnimationPositions: PositionThreeD[] = [
   [0.59, 0.15, 0.7885],
   [0.6, 0.24, 0.6234],
 ];
+
+export const SCREENS: ReadonlyArray<ScreenConfig> = [
+  { id: "overview", Screen: Overview },
+  { id: "about", Screen: AboutMe },
+  { id: "expertise", Screen: ExpertiseCards },
+] as const;
 
 export const generateWhatsAppLink = (config: WhatsAppConfig): string =>
   `https://wa.me/${config.phoneNumber}?text=${encodeURIComponent(config.text)}`;

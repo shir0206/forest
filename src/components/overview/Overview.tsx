@@ -1,16 +1,15 @@
 import React from "react";
-import "./HeroSection.scss";
+import "./overview.scss";
 import branchPath from "../../assets/images/branch.svg?url";
-const HeroSection: React.FC = () => {
+const Overview: React.FC = () => {
   return (
-    <div className="hero-section">
-      <div className="hero-content">
-        {/* Name */}
-        <h1 className="hero-name">Shir Zabolotny</h1>
-        {/* Subtitle */}
-        <p className="hero-subtitle">Frontend developer who weaves together</p>
-        {/* Skills with dots */}
-        <div className="hero-skills">
+    <div className="overview-section">
+      <div className="overview-content">
+        <h1 className="overview-name">Shir Zabolotny</h1>
+        <p className="overview-subtitle">
+          Frontend developer who weaves together
+        </p>
+        <div className="overview-skills">
           <span>Architecture</span>
           <span className="dot">●</span>
           <span>Design</span>
@@ -27,17 +26,13 @@ const HeroSection: React.FC = () => {
           alt="background circle"
           className="background-branch branch-right"
         />
-        {/* Quote */}
-        <blockquote className="hero-quote">
-          "To me, a website is more than code or visuals - it should{" "}
-          <strong>
-            tell your brand's story and turn visitors into believers in what you
-            do
-          </strong>
+        <blockquote className="overview-quote">
+          "To me, a website is more than code or visuals - it should
+          <strong>tell your brand's story</strong> and turn visitors into
+          <strong>believers in what you do</strong>
           ".
         </blockquote>
-        {/* CTA */}
-        <p className="hero-cta">
+        <p className="overview-cta">
           Let's create something that makes you unique and helps your business
           grow
         </p>
@@ -46,4 +41,4 @@ const HeroSection: React.FC = () => {
   );
 };
 
-export default HeroSection;
+export default Overview;
