@@ -33,9 +33,21 @@
 
 .background-circle {
   stroke-width: 2px;
-  fill: #a8b3a5;
+  fill: white;
   stroke: #a8b3a5;
   z-index: 1;
+  stroke-dasharray: 9000;
+
+  animation: draw-circle 3s ease-in-out forwards infinite;
+}
+
+@keyframes draw-circle {
+  from {
+    stroke-dashoffset: 9000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 .profile-image {

@@ -1,8 +1,7 @@
 .expertise-container {
   width: 100%;
-  min-height: 100vh;
   padding: 2rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+  background: white;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -18,7 +17,6 @@
 
 .expertise-card {
   background: white;
-  border-radius: 16px;
   padding: 2rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.06);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -27,37 +25,42 @@
   gap: 1rem;
   position: relative;
   overflow: hidden;
-}
 
-.expertise-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #6366f1, #8b5cf6);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .expertise-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
-}
 
-.expertise-card:hover::before {
-  transform: scaleX(1);
+  & svg {
+    animation: draw 3s ease-in-out forwards;
+  }
 }
 
 .card-icon-wrapper {
   width: 64px;
   height: 64px;
-  color: #6366f1;
   margin-bottom: 0.5rem;
+
+  & svg {
+    fill: #ffffff;
+    stroke: #7fa573;
+    stroke-dasharray: 6000;
+  }
 }
 
+@keyframes draw {
+  from {
+    stroke-dashoffset: 6000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
 .card-icon {
   width: 100%;
   height: 100%;
@@ -69,21 +72,16 @@
 }
 
 .card-title {
-  font-size: 1.25rem;
-  font-weight: 600;
   color: #1f2937;
   margin: 0;
   line-height: 1.4;
   display: flex;
   align-items: baseline;
   gap: 0.5rem;
-}
 
-.card-number {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #6366f1;
-  min-width: 1.5rem;
+  font-family: serif;
+  font-size: 1.5rem;
+  font-weight: 500;
 }
 
 .card-description {

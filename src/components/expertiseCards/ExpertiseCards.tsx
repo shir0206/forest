@@ -56,9 +56,7 @@ const ExpertiseCards: React.FC = () => {
             <div className="card-icon-wrapper">
               <Icon name={item.icon} size={64} className="card-icon" />
             </div>
-            <h3 className="card-title">
-              <span className="card-number">{index}</span> {item.title}
-            </h3>
+            <h3 className="card-title">{item.title}</h3>
             <p className="card-description">{item.description}</p>
           </article>
         ))}

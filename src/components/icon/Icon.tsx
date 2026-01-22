@@ -2,7 +2,6 @@ import React from "react";
 
 import { ReactComponent as ArchitectureIcon } from "@/assets/icons/architecture.svg";
 import { ReactComponent as BalanceIcon } from "@/assets/icons/balance.svg";
-import { ReactComponent as ExperienceIcon } from "@/assets/icons/experience.svg";
 import { ReactComponent as DesignIcon } from "@/assets/icons/design.svg";
 import { ReactComponent as LinkedinIcon } from "@/assets/icons/linkedin.svg";
 import { ReactComponent as MailIcon } from "@/assets/icons/mail.svg";
@@ -22,7 +21,6 @@ import { ReactComponent as checklistIcon } from "@/assets/icons/checklist.svg";
 const icons = {
   architecture: ArchitectureIcon,
   balance: BalanceIcon,
-  experience: ExperienceIcon,
   design: DesignIcon,
   linkedin: LinkedinIcon,
   mail: MailIcon,
