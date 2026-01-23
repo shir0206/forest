@@ -50,6 +50,7 @@ const ExpertiseCards: React.FC = () => {
 
   return (
     <div className="expertise-container">
+      <h2 className="expertise-title">Services</h2>
       <div className="expertise-grid">
         {expertiseData.map((item, index) => (
           <article key={index} className="expertise-card">

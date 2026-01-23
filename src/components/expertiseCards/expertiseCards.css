@@ -3,11 +3,23 @@
   padding: 2rem;
   background: white;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 60px 40px;
+}
+
+.expertise-title {
+  font-size: 3.5rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+  color: #000;
+  font-family: serif;
+  align-self: start;
 }
 
 .expertise-grid {
+  margin: 1rem 0;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 1.5rem;
@@ -42,20 +54,20 @@
 }
 
 .card-icon-wrapper {
-  width: 64px;
-  height: 64px;
+  width: 80px;
+  height: 80px;
   margin-bottom: 0.5rem;
 
   & svg {
     fill: #ffffff;
     stroke: #7fa573;
-    stroke-dasharray: 6000;
+    stroke-dasharray: 2000;
   }
 }
 
 @keyframes draw {
   from {
-    stroke-dashoffset: 6000;
+    stroke-dashoffset: 2000;
   }
   to {
     stroke-dashoffset: 0;
