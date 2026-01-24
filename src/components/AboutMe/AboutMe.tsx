@@ -27,9 +27,8 @@ const AboutMe: React.FC = () => {
           </p>
 
           <p className="text-paragraph">
-            I bring <strong>an artist's eye</strong> to every project - turning
-            <strong>color, composition, and hierarchy</strong> into interfaces
-            that <strong>feel intuitive.</strong>
+            I bring an artist's eye to every project - turning color,
+            composition, and hierarchy into interfaces that feel intuitive.
           </p>
         </div>
       </div>

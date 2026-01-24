@@ -1,33 +1,24 @@
 import React from "react";
-
-import { ReactComponent as ArchitectureIcon } from "@/assets/icons/architecture.svg";
-import { ReactComponent as BalanceIcon } from "@/assets/icons/balance.svg";
-import { ReactComponent as DesignIcon } from "@/assets/icons/design.svg";
-import { ReactComponent as LinkedinIcon } from "@/assets/icons/linkedin.svg";
-import { ReactComponent as MailIcon } from "@/assets/icons/mail.svg";
-import { ReactComponent as UxIcon } from "@/assets/icons/ux.svg";
-import { ReactComponent as CloseIcon } from "@/assets/icons/close.svg";
-import { ReactComponent as MaximizeIcon } from "@/assets/icons/maximize.svg";
-import { ReactComponent as MinimizeIcon } from "@/assets/icons/minimize.svg";
-import { ReactComponent as CalendarIcon } from "@/assets/icons/calendar.svg";
-import { ReactComponent as WhatsappIcon } from "@/assets/icons/whatsapp.svg";
-import { ReactComponent as structureIcon } from "@/assets/icons/structure.svg";
-import { ReactComponent as codeIcon } from "@/assets/icons/code.svg";
-import { ReactComponent as dialogIcon } from "@/assets/icons/dialog.svg";
-import { ReactComponent as monitorsIcon } from "@/assets/icons/monitors.svg";
-import { ReactComponent as testIcon } from "@/assets/icons/test.svg";
-import { ReactComponent as checklistIcon } from "@/assets/icons/checklist.svg";
+import { ReactComponent as CloseIcon } from "@/assets/icons/browser/close.svg";
+import { ReactComponent as MaximizeIcon } from "@/assets/icons/browser/maximize.svg";
+import { ReactComponent as MinimizeIcon } from "@/assets/icons/browser/minimize.svg";
+import { ReactComponent as LinkedinIcon } from "@/assets/icons/contact/linkedin.svg";
+import { ReactComponent as MailIcon } from "@/assets/icons/contact/mail.svg";
+import { ReactComponent as CalendarIcon } from "@/assets/icons/contact/calendar.svg";
+import { ReactComponent as WhatsappIcon } from "@/assets/icons/contact/whatsapp.svg";
+import { ReactComponent as structureIcon } from "@/assets/icons/service/structure.svg";
+import { ReactComponent as codeIcon } from "@/assets/icons/service/code.svg";
+import { ReactComponent as dialogIcon } from "@/assets/icons/service/dialog.svg";
+import { ReactComponent as monitorsIcon } from "@/assets/icons/service/monitors.svg";
+import { ReactComponent as testIcon } from "@/assets/icons/service/test.svg";
+import { ReactComponent as checklistIcon } from "@/assets/icons/service/checklist.svg";
 
 const icons = {
-  architecture: ArchitectureIcon,
-  balance: BalanceIcon,
-  design: DesignIcon,
-  linkedin: LinkedinIcon,
-  mail: MailIcon,
-  ux: UxIcon,
   close: CloseIcon,
   maximize: MaximizeIcon,
   minimize: MinimizeIcon,
+  linkedin: LinkedinIcon,
+  mail: MailIcon,
   calendar: CalendarIcon,
   whatsapp: WhatsappIcon,
   structure: structureIcon,

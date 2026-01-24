@@ -23,8 +23,8 @@ const Overview: React.FC = () => {
 
       <blockquote className="overview-quote">
         "To me, a website is more than code or visuals - it should
-        <strong>tell your brand's story</strong> and turn visitors into
-        <strong>believers in what you do</strong>
+        <strong> tell your brand's story</strong> and turn visitors into
+        <strong> believers in what you do</strong>
         ".
       </blockquote>
       <p className="overview-cta">
