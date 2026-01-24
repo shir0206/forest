@@ -5,9 +5,7 @@
 <svg xmlns="http://www.w3.org/2000/svg"
      width="400" height="400"
      viewBox="0 0 1040 1024" fill="black" stroke="none" stroke-width="1">
-  <path id="Selection"
-       
-        d="M 379.00,123.00
+  <path d="M 379.00,123.00
            C 381.88,119.15 387.71,117.66 392.00,115.69
              392.00,115.69 422.00,103.58 422.00,103.58
              465.09,87.46 515.01,77.53 561.00,77.00

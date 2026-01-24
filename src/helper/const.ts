@@ -4,6 +4,7 @@ import ExpertiseCards from "../components/expertiseCards/ExpertiseCards";
 import AboutMe from "../components/AboutMe/AboutMe";
 import { ScreenConfig } from "./types";
 import Overview from "../components/overview/Overview";
+import Contact from "@/components/contact/Contact";
 
 export const backgroundFile: string =
   "./hdri/" +
@@ -30,6 +31,7 @@ export const SCREENS: ReadonlyArray<ScreenConfig> = [
   { id: "overview", Screen: Overview },
   { id: "about", Screen: AboutMe },
   { id: "expertise", Screen: ExpertiseCards },
+  { id: "contact", Screen: Contact },
 ] as const;
 
 export const generateWhatsAppLink = (config: WhatsAppConfig): string =>
