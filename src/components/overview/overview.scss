@@ -25,7 +25,6 @@
   font-size: 1.5rem;
   color: #72757e;
   z-index: 1;
-
   @media (max-width: 768px) {
     font-size: 1.25rem;
   }
@@ -51,9 +50,8 @@
       color: #e2c4c1;
     }
   }
-
   @media (max-width: 768px) {
-    font-size: 1.125rem;
+    font-size: 1.25rem;
   }
 }
 
@@ -63,10 +61,19 @@
   justify-content: space-between;
   margin-top: -12rem;
   z-index: 0;
+
+  @media (max-width: 768px) {
+    opacity: 0.5;
+    margin-top: -4rem;
+  }
 }
 .background-branch {
   width: 380px;
   height: 300px;
+  @media (max-width: 768px) {
+    width: 180px;
+    height: 100px;
+  }
 }
 .branch-left {
   transform: scaleX(-1);
@@ -76,7 +83,7 @@
   fill: hsl(5, 36%, 82%);
 }
 .overview-quote {
-  font-size: 1.875rem;
+  font-size: 1.75rem;
   line-height: 1.6;
   color: #1f2937;
   font-family: Georgia, "Times New Roman", serif;
@@ -88,7 +95,9 @@
   }
 
   @media (max-width: 768px) {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
+    margin-top: -2rem;
+    padding: 0 3rem;
   }
 }
 
@@ -99,6 +108,7 @@
   z-index: 1;
 
   @media (max-width: 768px) {
-    font-size: 1.125rem;
+    font-size: 0.85rem;
+    margin: 2rem 3rem;
   }
 }

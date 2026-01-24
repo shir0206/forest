@@ -16,6 +16,12 @@
   color: #000;
   font-family: serif;
   align-self: start;
+
+  @media (max-width: 768px) {
+    font-size: 3.5rem;
+    text-align: center;
+    width: 100%;
+  }
 }
 
 .expertise-grid {
@@ -25,6 +31,12 @@
   gap: 1.5rem;
   max-width: 1400px;
   width: 100%;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0 2rem;
+  }
 }
 
 .expertise-card {
@@ -107,11 +119,6 @@
 @media (max-width: 768px) {
   .expertise-container {
     padding: 1.5rem 1rem;
-  }
-
-  .expertise-grid {
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
   }
 
   .expertise-card {
