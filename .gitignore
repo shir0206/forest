@@ -24,3 +24,12 @@ dist-ssr
 *.sw?
 
 public/hdri
+build/
+.env
+.DS_Store
+*.log
+
+# assets / exports (adjust!)
+exports/
+renders/
+videos/
