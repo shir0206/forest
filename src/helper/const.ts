@@ -6,15 +6,8 @@ import { ScreenConfig } from "./types";
 import Overview from "../components/overview/Overview";
 import Contact from "@/components/contact/Contact";
 
-export const backgroundFile: string =
-  "./hdri/" +
-  //"g.exr";
-  // "Gemini_Generated_Image_vfevytvfevytvfev.exr";
-  // "./hdri/Gemini_Generated_Image_oo7v4roo7v4roo7v_upscayl_2x_digital-art-4x.done2(4).exr";
-  // "Gemini_Generated_Image_i1g73ri1g73ri1g7.exr";
-  // "Gemini_Generated_Image_86w9pz86w9pz86w9.exr";
-  "Gemini_Generated_Image_uxx26zuxx26zuxx2 (1).exr";
-//  "1767976770106-topaz-enhance-6x-3.exr";
+export const backgroundFile: string = "./hdri/" + "unpolishedroom.exr";
+//  "Gemini_Generated_Image_uxx26zuxx26zuxx2 (1).exr";
 export const initCameraPos: PositionThreeD = [-0.0069, -0.9996, -0.0255];
 export const butterflyPos: PositionThreeD = [-0.42, -0.1635, -0.4365];
 
