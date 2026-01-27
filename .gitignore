@@ -33,3 +33,5 @@ build/
 exports/
 renders/
 videos/
+
+public/hdri/
