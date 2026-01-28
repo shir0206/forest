@@ -1,17 +1,17 @@
 import React from "react";
-import { ReactComponent as CloseIcon } from "@/assets/icons/browser/close.svg";
-import { ReactComponent as MaximizeIcon } from "@/assets/icons/browser/maximize.svg";
-import { ReactComponent as MinimizeIcon } from "@/assets/icons/browser/minimize.svg";
-import { ReactComponent as LinkedinIcon } from "@/assets/icons/contact/linkedin.svg";
-import { ReactComponent as MailIcon } from "@/assets/icons/contact/mail.svg";
-import { ReactComponent as CalendarIcon } from "@/assets/icons/contact/calendar.svg";
-import { ReactComponent as WhatsappIcon } from "@/assets/icons/contact/whatsapp.svg";
-import { ReactComponent as structureIcon } from "@/assets/icons/service/structure.svg";
-import { ReactComponent as codeIcon } from "@/assets/icons/service/code.svg";
-import { ReactComponent as dialogIcon } from "@/assets/icons/service/dialog.svg";
-import { ReactComponent as monitorsIcon } from "@/assets/icons/service/monitors.svg";
-import { ReactComponent as testIcon } from "@/assets/icons/service/test.svg";
-import { ReactComponent as checklistIcon } from "@/assets/icons/service/checklist.svg";
+import CloseIcon from "../../assets/icons/browser/close.svg?react";
+import MaximizeIcon from "../../assets/icons/browser/maximize.svg?react";
+import MinimizeIcon from "../../assets/icons/browser/minimize.svg?react";
+import LinkedinIcon from "../../assets/icons/contact/linkedin.svg?react";
+import MailIcon from "../../assets/icons/contact/mail.svg?react";
+import CalendarIcon from "../../assets/icons/contact/calendar.svg?react";
+import WhatsappIcon from "../../assets/icons/contact/whatsapp.svg?react";
+import StructureIcon from "../../assets/icons/service/structure.svg?react";
+import CodeIcon from "../../assets/icons/service/code.svg?react";
+import DialogIcon from "../../assets/icons/service/dialog.svg?react";
+import MonitorsIcon from "../../assets/icons/service/monitors.svg?react";
+import TestIcon from "../../assets/icons/service/test.svg?react";
+import ChecklistIcon from "../../assets/icons/service/checklist.svg?react";
 
 const icons = {
   close: CloseIcon,
@@ -21,12 +21,12 @@ const icons = {
   mail: MailIcon,
   calendar: CalendarIcon,
   whatsapp: WhatsappIcon,
-  structure: structureIcon,
-  code: codeIcon,
-  dialog: dialogIcon,
-  monitors: monitorsIcon,
-  test: testIcon,
-  checklist: checklistIcon,
+  structure: StructureIcon,
+  code: CodeIcon,
+  dialog: DialogIcon,
+  monitors: MonitorsIcon,
+  test: TestIcon,
+  checklist: ChecklistIcon,
 };
 
 export type IconName = keyof typeof icons;

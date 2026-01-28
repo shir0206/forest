@@ -4,7 +4,7 @@ import ExpertiseCards from "../components/expertiseCards/ExpertiseCards";
 import AboutMe from "../components/AboutMe/AboutMe";
 import { ScreenConfig } from "./types";
 import Overview from "../components/overview/Overview";
-import Contact from "@/components/contact/Contact";
+import Contact from "../components/contact/Contact";
 
 export const backgroundFile: string = "./hdri/" + "forest.exr";
 export const initCameraPos: PositionThreeD = [-0.0069, -0.9996, -0.0255];

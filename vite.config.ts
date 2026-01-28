@@ -6,6 +6,7 @@ export default defineConfig({
   base: "/forest/",
   plugins: [
     react(),
+
     svgr({
       // Rolldown Vite specific configuration
       svgrOptions: {
@@ -16,11 +17,6 @@ export default defineConfig({
       exclude: "",
     }),
   ],
-  resolve: {
-    alias: {
-      "@": "/src",
-    },
-  },
   // Ensure SVG imports work correctly
   assetsInclude: ["**/*.svg"],
 });

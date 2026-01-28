@@ -1,0 +1,5 @@
+import "./react-Dzmm40ca.js";
+import "./three.module-Ch3b5UQi.js";
+import { Canvas, _roots, act, addAfterEffect, addEffect, addTail, advance, applyProps, buildGraph, context, createEvents, createPointerEvents, createPortal, createRoot, dispose, extend, flushGlobalEffects, flushSync, getRootState, invalidate, reconciler, threeTypes, unmountComponentAtNode, useFrame, useGraph, useInstanceHandle, useLoader, useStore, useThree } from "./react-three-fiber.esm-OeLl-8Vd.js";
+
+export { Canvas, threeTypes as ReactThreeFiber, _roots, act, addAfterEffect, addEffect, addTail, advance, applyProps, buildGraph, context, createEvents, createPortal, createRoot, dispose, createPointerEvents as events, extend, flushGlobalEffects, flushSync, getRootState, invalidate, reconciler, unmountComponentAtNode, useFrame, useGraph, useInstanceHandle, useLoader, useStore, useThree };

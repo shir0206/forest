@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { SCREENS } from "@/helper/const";
+import { SCREENS } from "../helper/const";
 
 export function useScreenVisibility(
   contentRef: React.RefObject<HTMLDivElement | null>,

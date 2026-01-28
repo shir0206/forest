@@ -5,9 +5,12 @@ import { Environment } from "@react-three/drei";
 import Butterfly from "../butterfly/Butterfly";
 import CameraControls from "../cameraControls/CameraControls";
 import CinematicEffects from "../cinematicEffects/CinematicEffects";
-import About from "../about/About";
 import Loader from "../loader/Loader";
-import { backgroundFile, butterflyPos, initCameraPos } from "@/helper/const";
+import {
+  backgroundFile,
+  butterflyPos,
+  initCameraPos,
+} from "../../helper/const";
 import Browser from "../browser/Browser";
 
 export default function ForestScene() {
