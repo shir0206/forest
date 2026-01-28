@@ -6,8 +6,7 @@ import { ScreenConfig } from "./types";
 import Overview from "../components/overview/Overview";
 import Contact from "@/components/contact/Contact";
 
-export const backgroundFile: string =
-  "./hdri/" + "1000345385-topaz-enhance-6x.exr";
+export const backgroundFile: string = "./hdri/" + "forest.exr";
 export const initCameraPos: PositionThreeD = [-0.0069, -0.9996, -0.0255];
 export const butterflyPos: PositionThreeD = [-0.42, -0.1635, -0.4365];
 
