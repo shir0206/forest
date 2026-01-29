@@ -7,14 +7,12 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "deploy": "gh-pages -d dist"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.6",
     "@react-three/fiber": "^9.4.0",
     "@react-three/postprocessing": "^3.0.4",
-    "gh-pages": "^6.3.0",
     "gsap": "^3.13.0",
     "postprocessing": "^6.37.8",
     "react": "^19.1.1",
