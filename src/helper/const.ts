@@ -6,15 +6,11 @@ import { ScreenConfig } from "./types";
 import Overview from "../components/overview/Overview";
 import Contact from "../components/contact/Contact";
 
+// Get the base path from Vite's environment
+const basePath = import.meta.env.BASE_URL || "/";
+
 export const backgroundFile: string =
-  "./hdri/" + //"Gemini_Generated_Image_7zdzdm7zdzdm7zdz.exr";
-  //  "Gemini_Generated_Image_86tbkw86tbkw86tb.exr";
-  // "Gemini_Generated_Image_86w9pz86w9pz86w9.exr";
-  // "Gemini_Generated_Image_966epa966epa966e.exr";
-  //  "Gemini_Generated_Image_98ojit98ojit98oj.exr";
-  //  "Gemini_Generated_Image_9h105z9h105z9h10.exr";
-  //  "Gemini_Generated_Image_aioq7raioq7raioq.exr";
-  "Gemini_Generated_Image_c4rtmic4rtmic4rt.exr";
+  basePath + "hdri/Gemini_Generated_Image_c4rtmic4rtmic4rt.exr";
 // "Gemini_Generated_Image_eykgkpeykgkpeykg.exr";
 // "Gemini_Generated_Image_fohgzmfohgzmfohg.exr";
 //  "Gemini_Generated_Image_h6the9h6the9h6th.exr";
