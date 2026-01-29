@@ -5,7 +5,7 @@ import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import gsap from "gsap";
 import useDynamicFov from "../../hooks/useDynamicFov";
-import { sceneAnimationPositions } from "../../helper/const";
+import { SCENE_ANIMATION_POSITIONS } from "../../config/3d";
 
 type CameraControlsProps = {
   runIntro: boolean;
@@ -52,8 +52,8 @@ export default function CameraControls({
       },
     });
 
-    const sceneAnimationPoints = sceneAnimationPositions.map(
-      ([x, y, z]) => new THREE.Vector3(x, y, z)
+    const sceneAnimationPoints = SCENE_ANIMATION_POSITIONS.map(
+      ([x, y, z]: [number, number, number]) => new THREE.Vector3(x, y, z)
     );
 
     sceneAnimationPoints.forEach((targetPoint) => {

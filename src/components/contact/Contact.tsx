@@ -1,133 +1,21 @@
 import React from "react";
 import "./contact.scss";
 import { Icon } from "../icon/Icon";
+import {
+  generateWhatsAppLink,
+  generateGoogleCalendarLink,
+  generateEmailLink,
+} from "../../utils/links";
+import { EXTERNAL_LINKS } from "../../config/links";
+
 // Types
 type IconName = "linkedin" | "mail" | "calendar" | "whatsapp";
-
-interface WhatsAppConfig {
-  phoneNumber: string;
-  text: string;
-}
-
-interface GoogleCalendarConfig {
-  action: string;
-  text: string;
-  details: string;
-  location: string;
-  addGuests: string[];
-  conferenceDataVersion: number;
-  conferenceSolution: string;
-}
-
-interface EmailConfig {
-  to: string;
-  subject: string;
-  body: string;
-}
-
-interface LinkedInConfig {
-  url: string;
-}
-
-interface LinksConfig {
-  whatsapp: WhatsAppConfig;
-  googleCalendar: GoogleCalendarConfig;
-  email: EmailConfig;
-  linkedin: LinkedInConfig;
-}
 
 interface ContactLinkProps {
   name: string;
   icon: IconName;
   url: string;
 }
-
-// Configuration
-const linksConfig: LinksConfig = {
-  whatsapp: {
-    phoneNumber: "+972542098332",
-    text: "Hello! I'm reaching out to inquire about your services. Looking forward to your reply.",
-  },
-  googleCalendar: {
-    action: "EVENTEDIT",
-    text: "Business Meeting",
-    details: "Discuss potential collaboration",
-    location: "Google Meet",
-    addGuests: ["shirzabolotny@gmail.com"],
-    conferenceDataVersion: 1,
-    conferenceSolution: "hangoutsMeet",
-  },
-  email: {
-    to: "shirzabolotny@gmail.com",
-    subject: "Booking a meeting",
-    body: "Hi, I would like to schedule a meeting to discuss potential collaboration.",
-  },
-  linkedin: {
-    url: "https://www.linkedin.com/in/shir-zabolotny-a83b18109/",
-  },
-};
-
-// Utility Functions
-const getNextWeekdayAt11AM = (): { start: string; end: string } => {
-  const now = new Date();
-  const next = new Date(now);
-
-  next.setDate(next.getDate() + 1);
-  next.setHours(11, 0, 0, 0);
-
-  while (next.getDay() === 0 || next.getDay() === 6) {
-    next.setDate(next.getDate() + 1);
-  }
-
-  const start = next.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-
-  const end = new Date(next);
-  end.setHours(12, 0, 0, 0);
-  const endStr = end.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-
-  return { start, end: endStr };
-};
-
-const generateWhatsAppUrl = (config: WhatsAppConfig): string => {
-  return `https://wa.me/${config.phoneNumber}?text=${encodeURIComponent(
-    config.text
-  )}`;
-};
-
-const generateCalendarUrl = (config: GoogleCalendarConfig): string => {
-  const { start, end } = getNextWeekdayAt11AM();
-
-  const params = new URLSearchParams({
-    action: config.action,
-    text: config.text,
-    dates: `${start}/${end}`,
-    details: config.details,
-    location: config.location,
-  });
-
-  if (config.addGuests?.length > 0) {
-    params.append("add", config.addGuests.join(","));
-  }
-
-  if (config.conferenceDataVersion) {
-    params.append(
-      "conferenceDataVersion",
-      config.conferenceDataVersion.toString()
-    );
-  }
-
-  if (config.conferenceSolution) {
-    params.append("conferenceSolution", config.conferenceSolution);
-  }
-
-  return `https://calendar.google.com/calendar/u/0/r/eventedit?${params.toString()}`;
-};
-
-const generateEmailUrl = (config: EmailConfig): string => {
-  return `mailto:${config.to}?subject=${encodeURIComponent(
-    config.subject
-  )}&body=${encodeURIComponent(config.body)}`;
-};
 
 // Icon Component (simplified inline SVG icons)
 // const Icon: React.FC<{ name: IconName }> = ({ name }) => {
@@ -180,24 +68,47 @@ const ContactLink: React.FC<ContactLinkProps> = ({ name, icon, url }) => {
   );
 };
 
-// URL Generator Map
-const urlGenerators = {
-  whatsapp: generateWhatsAppUrl,
-  googleCalendar: generateCalendarUrl,
-  email: generateEmailUrl,
-  linkedin: (config: LinkedInConfig) => config.url,
-};
-
-// Contact Configuration Map
-const contactConfig: Array<{
-  key: keyof LinksConfig;
-  name: string;
-  icon: IconName;
-}> = [
-  { key: "linkedin", name: "LinkedIn", icon: "linkedin" },
-  { key: "whatsapp", name: "WhatsApp", icon: "whatsapp" },
-  { key: "email", name: "Email", icon: "mail" },
-  { key: "googleCalendar", name: "Schedule Meeting", icon: "calendar" },
+// Contact Configuration
+const contactLinks = [
+  {
+    name: "LinkedIn",
+    icon: "linkedin" as IconName,
+    url: EXTERNAL_LINKS.linkedin,
+  },
+  {
+    name: "WhatsApp",
+    icon: "whatsapp" as IconName,
+    url: generateWhatsAppLink({
+      phoneNumber: "+972542098332",
+      text: "Hello! I'm reaching out to inquire about your services. Looking forward to your reply.",
+    }),
+  },
+  {
+    name: "Email",
+    icon: "mail" as IconName,
+    url: generateEmailLink({
+      to: "shirzabolotny@gmail.com",
+      subject: "Booking a meeting",
+      body: "Hi, I would like to schedule a meeting to discuss potential collaboration.",
+    }),
+  },
+  {
+    name: "Schedule Meeting",
+    icon: "calendar" as IconName,
+    url: generateGoogleCalendarLink({
+      action: "EVENTEDIT",
+      text: "Business Meeting",
+      dates: {
+        start: "20240101T110000Z",
+        end: "20240101T120000Z",
+      },
+      details: "Discuss potential collaboration",
+      location: "Google Meet",
+      addGuests: ["shirzabolotny@gmail.com"],
+      conferenceDataVersion: 1,
+      conferenceSolution: "hangoutsMeet",
+    }),
+  },
 ];
 
 // Main Contact Component
@@ -209,16 +120,12 @@ export const Contact: React.FC = () => {
         <p className="contact-subtitle">
           Exploring ideas, questions, or a collaboration?
           <br />
-          I’d be glad to hear from you.
+          I'd be glad to hear from you.
         </p>
         <div className="contact-list">
-          {contactConfig.map(({ key, name, icon }) => {
-            const config = linksConfig[key];
-            const generator = urlGenerators[key] as (config: any) => string;
-            const url = generator(config);
-
-            return <ContactLink key={key} name={name} icon={icon} url={url} />;
-          })}
+          {contactLinks.map(({ name, icon, url }) => (
+            <ContactLink key={name} name={name} icon={icon} url={url} />
+          ))}
         </div>
       </div>
     </div>

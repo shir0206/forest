@@ -6,11 +6,7 @@ import Butterfly from "../butterfly/Butterfly";
 import CameraControls from "../cameraControls/CameraControls";
 import CinematicEffects from "../cinematicEffects/CinematicEffects";
 import Loader from "../loader/Loader";
-import {
-  backgroundFile,
-  butterflyPos,
-  initCameraPos,
-} from "../../helper/const";
+import { SCENE_CONFIG } from "../../config/3d";
 import Browser from "../browser/Browser";
 
 export default function ForestScene() {
@@ -38,7 +34,7 @@ export default function ForestScene() {
       <Canvas
         style={{ width: "100vw", height: "100vh" }}
         camera={{
-          position: initCameraPos,
+          position: SCENE_CONFIG.initCameraPos,
           fov: 60,
           aspect:
             typeof window !== "undefined"
@@ -48,19 +44,22 @@ export default function ForestScene() {
         onClick={closeAbout}
       >
         <Suspense fallback={<Loader />}>
-          <Environment files={backgroundFile} background={true} />
+          <Environment files={SCENE_CONFIG.backgroundFile} background={true} />
 
           <CameraControls runIntro={runIntro} isAboutOpen={isAboutOpen} />
           <CinematicEffects isAboutOpen={isAboutOpen} />
           <Butterfly
-            position={butterflyPos}
+            position={SCENE_CONFIG.butterflyPos}
             openAbout={openAbout}
             isAboutOpen={isAboutOpen}
           />
 
           {isAboutOpen && (
-            <Browser position={butterflyPos} closeAbout={closeAbout}></Browser>
-            // <About position={butterflyPos} closeAbout={closeAbout} />
+            <Browser
+              position={SCENE_CONFIG.butterflyPos}
+              closeAbout={closeAbout}
+            ></Browser>
+            // <About position={SCENE_CONFIG.butterflyPos} closeAbout={closeAbout} />
           )}
         </Suspense>
       </Canvas>
