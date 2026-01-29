@@ -22,7 +22,17 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-public/hdri
+# Ignore all files in public/hdri directory
+public/hdri/*
+
+# But allow specific Gemini_Generated_Image files
+!public/hdri/Gemini_Generated_Image_fohgzmfohgzmfohg.exr
+!public/hdri/Gemini_Generated_Image_me8b31me8b31me8b.exr
+!public/hdri/Gemini_Generated_Image_mrpfnvmrpfnvmrpf.exr
+!public/hdri/Gemini_Generated_Image_86tbkw86tbkw86tb.exr
+!public/hdri/Gemini_Generated_Image_h6the9h6the9h6th.exr
+!public/hdri/Gemini_Generated_Image_x3ggayx3ggayx3gg.exr
+!public/hdri/Gemini_Generated_Image_c4rtmic4rtmic4rt.exr
 build/
 .env
 .DS_Store
@@ -32,4 +42,5 @@ build/
 exports/
 renders/
 videos/
+
 
