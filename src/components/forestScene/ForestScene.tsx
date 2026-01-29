@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense, useState, useCallback } from "react";
+import React, { Suspense, useCallback } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import Butterfly from "../butterfly/Butterfly";
@@ -8,16 +8,20 @@ import CinematicEffects from "../cinematicEffects/CinematicEffects";
 import Loader from "../loader/Loader";
 import { SCENE_CONFIG } from "../../config/3d";
 import Browser from "../browser/Browser";
+import { useAppContext } from "../../contexts/AppContext";
 
 export default function ForestScene() {
-  const [runIntro, setRunIntro] = useState<boolean>(true);
-  const [isAboutOpen, setIsAboutOpen] = useState<boolean>(false);
+  const { runIntro, isAboutOpen, setIsAboutOpen, setRunIntro } =
+    useAppContext();
 
-  const openAbout = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsAboutOpen(true);
-    console.log("setIsAboutOpen(true)");
-  }, []);
+  const openAbout = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setIsAboutOpen(true);
+      console.log("setIsAboutOpen(true)");
+    },
+    [setIsAboutOpen]
+  );
 
   const closeAbout = useCallback(
     (e: React.MouseEvent) => {
@@ -26,7 +30,7 @@ export default function ForestScene() {
         console.log("setIsAboutOpen(false)");
       }
     },
-    [isAboutOpen]
+    [isAboutOpen, setIsAboutOpen]
   );
 
   return (

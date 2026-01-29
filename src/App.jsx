@@ -1,14 +1,11 @@
-import { useState } from "react";
+import { AppProvider } from "./contexts/AppContext";
 import ForestScene from "./components/forestScene/ForestScene";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <>
-      <h1>Shir</h1>
+    <AppProvider>
       <ForestScene />
-    </>
+    </AppProvider>
   );
 }
 

@@ -1,13 +1,14 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import "./browser.scss";
 import { Icon } from "../icon/Icon";
-import { WINDOW_STATE, WindowState } from "../../helper/types";
+import { WINDOW_STATE } from "../../helper/types";
 import { useHtmlReady } from "../../hooks/useHtmlReady";
 import { useScreenVisibility } from "../../hooks/useScreenVisibility";
 import { SCREENS } from "../../helper/const";
 import WebsiteSection from "../websiteScreen/WebsiteScreen";
+import { useAppContext } from "../../contexts/AppContext";
 
 type BrowserProps = {
   position: [number, number, number];
@@ -23,15 +24,11 @@ const ScrollIndicator = () => (
 
 export default function Browser({ position, closeAbout }: BrowserProps) {
   console.log("Rendering Browser component");
-  const [windowState, setWindowState] = useState<WindowState>(
-    WINDOW_STATE.DEFAULT
-  );
+  const { windowState, setWindowState, visibleScreens, clearVisible } =
+    useAppContext();
 
   const { ref: contentRef, ready } = useHtmlReady<HTMLDivElement>();
-  const { visibleScreens, clearVisible, setScreenRef } = useScreenVisibility(
-    contentRef,
-    ready
-  );
+  const { setScreenRef } = useScreenVisibility(contentRef, ready);
 
   const handleClose = useCallback(
     (e: React.MouseEvent) => {
@@ -39,24 +36,24 @@ export default function Browser({ position, closeAbout }: BrowserProps) {
       setWindowState(WINDOW_STATE.CLOSED);
       closeAbout(e);
     },
-    [clearVisible, closeAbout]
+    [clearVisible, setWindowState, closeAbout]
   );
 
   const handleMinimize = useCallback(() => {
-    setWindowState((prev) =>
-      prev === WINDOW_STATE.MINIMIZED
+    setWindowState(
+      windowState === WINDOW_STATE.MINIMIZED
         ? WINDOW_STATE.DEFAULT
         : WINDOW_STATE.MINIMIZED
     );
-  }, []);
+  }, [setWindowState, windowState]);
 
   const handleMaximize = useCallback(() => {
-    setWindowState((prev) =>
-      prev === WINDOW_STATE.MAXIMIZED
+    setWindowState(
+      windowState === WINDOW_STATE.MAXIMIZED
         ? WINDOW_STATE.DEFAULT
         : WINDOW_STATE.MAXIMIZED
     );
-  }, []);
+  }, [setWindowState, windowState]);
 
   const vector3Position = useMemo(
     () => new THREE.Vector3(...position),

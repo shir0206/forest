@@ -38,6 +38,7 @@ export interface AppContextType extends AppState {
   setRunIntro: (run: boolean) => void;
   setWindowState: (state: WindowState) => void;
   setVisibleScreens: (screens: Set<ScreenId>) => void;
+  clearVisible: () => void;
 }
 
 // Animation Types
