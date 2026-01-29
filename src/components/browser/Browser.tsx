@@ -22,6 +22,7 @@ const ScrollIndicator = () => (
 );
 
 export default function Browser({ position, closeAbout }: BrowserProps) {
+  console.log("Rendering Browser component");
   const [windowState, setWindowState] = useState<WindowState>(
     WINDOW_STATE.DEFAULT
   );
