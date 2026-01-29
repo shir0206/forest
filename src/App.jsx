@@ -6,6 +6,7 @@ function App() {
 
   return (
     <>
+      <h1>Shir</h1>
       <ForestScene />
     </>
   );
