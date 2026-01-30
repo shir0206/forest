@@ -2,14 +2,14 @@
 import React, { Suspense, useCallback } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
-import Butterfly from "../butterfly/Butterfly";
-import CameraControls from "../cameraControls/CameraControls";
-import CinematicEffects from "../cinematicEffects/CinematicEffects";
-import Loader from "../loader/Loader";
-import { SCENE_CONFIG } from "../../config/3d";
-import Browser from "../browser/Browser";
-import { useAppContext } from "../../contexts/AppContext";
-import { WINDOW_STATE } from "../../types/app";
+import Butterfly from "../Butterfly/Butterfly.tsx";
+import CameraControls from "../CameraControls/CameraControls.tsx";
+import CinematicEffects from "../CinematicEffects/CinematicEffects.tsx";
+import Loader from "../../ui/Loader/Loader.tsx";
+import { SCENE_CONFIG } from "../../../config/3d";
+import Browser from "../../ui/Browser/Browser.tsx";
+import { useAppContext } from "../../../contexts/AppContext";
+import { WINDOW_STATE } from "../../../types/app";
 
 export default function ForestScene() {
   const { runIntro, windowState, setWindowState } = useAppContext();

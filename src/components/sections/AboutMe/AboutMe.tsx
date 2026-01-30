@@ -1,7 +1,7 @@
 import React from "react";
 import "./aboutMe.scss";
-import imagePath from "../../assets/images/shirzabolotny.png?url";
-import { ReactComponent as Circle } from "../../assets/images/circle.svg";
+import imagePath from "../../../assets/images/shirzabolotny.png?url";
+import { ReactComponent as Circle } from "../../../assets/images/circle.svg";
 
 const AboutMe: React.FC = () => {
   return (

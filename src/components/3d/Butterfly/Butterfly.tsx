@@ -3,8 +3,8 @@ import React, { MouseEventHandler, useEffect } from "react";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import "./butterfly.scss";
-import { useAppContext } from "../../contexts/AppContext";
-import { WINDOW_STATE } from "../../types/app";
+import { useAppContext } from "../../../contexts/AppContext";
+import { WINDOW_STATE } from "../../../types/app";
 
 type ButterflyProps = {
   position: [number, number, number];

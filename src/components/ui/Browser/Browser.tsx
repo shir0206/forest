@@ -2,13 +2,13 @@ import React, { useCallback, useMemo } from "react";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import "./browser.scss";
-import { Icon } from "../icon/Icon";
-import { WINDOW_STATE } from "../../helper/types";
-import { useHtmlReady } from "../../hooks/useHtmlReady";
-import { useScreenVisibility } from "../../hooks/useScreenVisibility";
-import { SCREENS } from "../../helper/const";
-import WebsiteSection from "../websiteScreen/WebsiteScreen";
-import { useAppContext } from "../../contexts/AppContext";
+import { Icon } from "../Icon/Icon";
+import { WINDOW_STATE } from "../../../helper/types";
+import { useHtmlReady } from "../../../hooks/useHtmlReady";
+import { useScreenVisibility } from "../../../hooks/useScreenVisibility";
+import { SCREENS } from "../../../helper/const";
+import WebsiteSection from "../WebsiteScreen/WebsiteScreen.tsx";
+import { useAppContext } from "../../../contexts/AppContext";
 
 type BrowserProps = {
   position: [number, number, number];

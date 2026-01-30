@@ -4,10 +4,10 @@ import { useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import gsap from "gsap";
-import useDynamicFov from "../../hooks/useDynamicFov";
-import { SCENE_ANIMATION_POSITIONS } from "../../config/3d";
-import { useAppContext } from "../../contexts/AppContext";
-import { WINDOW_STATE } from "../../types/app";
+import useDynamicFov from "../../../hooks/useDynamicFov";
+import { SCENE_ANIMATION_POSITIONS } from "../../../config/3d";
+import { useAppContext } from "../../../contexts/AppContext";
+import { WINDOW_STATE } from "../../../types/app";
 
 type CameraControlsProps = {
   runIntro: boolean;

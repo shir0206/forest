@@ -1,6 +1,6 @@
 import React from "react";
 import "./overview.scss";
-import { ReactComponent as Branch } from "../../assets/images/branch.svg";
+import { ReactComponent as Branch } from "../../../assets/images/branch.svg";
 
 const Overview: React.FC = () => {
   return (

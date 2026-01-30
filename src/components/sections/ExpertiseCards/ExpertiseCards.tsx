@@ -1,5 +1,5 @@
 import React from "react";
-import { Icon, IconName } from "./../icon/Icon";
+import { Icon, IconName } from "../../ui/Icon/Icon";
 import "./expertiseCards.css";
 
 interface ExpertiseItem {

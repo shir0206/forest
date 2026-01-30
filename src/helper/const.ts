@@ -4,10 +4,10 @@ import {
   generateGoogleCalendarLink,
   generateEmailLink,
 } from "../utils/links";
-import ExpertiseCards from "../components/expertiseCards/ExpertiseCards";
-import AboutMe from "../components/AboutMe/AboutMe";
-import Overview from "../components/overview/Overview";
-import Contact from "../components/contact/Contact";
+import ExpertiseCards from "../components/sections/ExpertiseCards/ExpertiseCards";
+import AboutMe from "../components/sections/AboutMe/AboutMe";
+import Overview from "../components/sections/Overview/Overview";
+import Contact from "../components/ui/Contact/Contact";
 
 // Re-export the functions for backward compatibility
 export { generateWhatsAppLink, generateGoogleCalendarLink, generateEmailLink };
