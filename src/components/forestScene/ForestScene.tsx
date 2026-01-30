@@ -9,28 +9,19 @@ import Loader from "../loader/Loader";
 import { SCENE_CONFIG } from "../../config/3d";
 import Browser from "../browser/Browser";
 import { useAppContext } from "../../contexts/AppContext";
+import { WINDOW_STATE } from "../../types/app";
 
 export default function ForestScene() {
-  const { runIntro, isAboutOpen, setIsAboutOpen, setRunIntro } =
-    useAppContext();
+  const { runIntro, windowState, setWindowState } = useAppContext();
 
-  const openAbout = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      setIsAboutOpen(true);
-      console.log("setIsAboutOpen(true)");
-    },
-    [setIsAboutOpen]
-  );
-
-  const closeAbout = useCallback(
-    (e: React.MouseEvent) => {
-      if (isAboutOpen) {
-        setIsAboutOpen(false);
-        console.log("setIsAboutOpen(false)");
+  const handleClose = useCallback(
+    (event: React.MouseEvent) => {
+      event.stopPropagation();
+      if (windowState !== WINDOW_STATE.CLOSED) {
+        setWindowState(WINDOW_STATE.CLOSED);
       }
     },
-    [isAboutOpen, setIsAboutOpen]
+    [setWindowState]
   );
 
   return (
@@ -45,25 +36,17 @@ export default function ForestScene() {
               ? window.innerWidth / window.innerHeight
               : 1,
         }}
-        onClick={closeAbout}
+        onClick={handleClose}
       >
         <Suspense fallback={<Loader />}>
           <Environment files={SCENE_CONFIG.backgroundFile} background={true} />
 
-          <CameraControls runIntro={runIntro} isAboutOpen={isAboutOpen} />
-          <CinematicEffects isAboutOpen={isAboutOpen} />
-          <Butterfly
-            position={SCENE_CONFIG.butterflyPos}
-            openAbout={openAbout}
-            isAboutOpen={isAboutOpen}
-          />
+          <CameraControls runIntro={runIntro} />
+          <CinematicEffects isAboutOpen={windowState !== "closed"} />
+          <Butterfly position={SCENE_CONFIG.butterflyPos} />
 
-          {isAboutOpen && (
-            <Browser
-              position={SCENE_CONFIG.butterflyPos}
-              closeAbout={closeAbout}
-            ></Browser>
-            // <About position={SCENE_CONFIG.butterflyPos} closeAbout={closeAbout} />
+          {windowState !== WINDOW_STATE.CLOSED && (
+            <Browser position={SCENE_CONFIG.butterflyPos}></Browser>
           )}
         </Suspense>
       </Canvas>

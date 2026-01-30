@@ -6,18 +6,17 @@ import * as THREE from "three";
 import gsap from "gsap";
 import useDynamicFov from "../../hooks/useDynamicFov";
 import { SCENE_ANIMATION_POSITIONS } from "../../config/3d";
+import { useAppContext } from "../../contexts/AppContext";
+import { WINDOW_STATE } from "../../types/app";
 
 type CameraControlsProps = {
   runIntro: boolean;
-  isAboutOpen: boolean;
 };
 
-export default function CameraControls({
-  runIntro,
-  isAboutOpen,
-}: CameraControlsProps) {
+export default function CameraControls({ runIntro }: CameraControlsProps) {
   const controlsRef = useRef<THREE.EventDispatcher | any>(null);
   const { camera, gl } = useThree();
+  const { windowState } = useAppContext();
 
   // Hook responsible for dynamic FOV changes
   useDynamicFov(controlsRef);
@@ -76,16 +75,14 @@ export default function CameraControls({
   return (
     <OrbitControls
       ref={controlsRef}
-      // enableZoom={true}
-      // enablePan={true}
       zoomSpeed={0.6}
       rotateSpeed={0.8}
       minDistance={1}
       maxDistance={20}
-      enabled={!isAboutOpen}
-      enableRotate={!isAboutOpen}
-      enableZoom={!isAboutOpen}
-      enablePan={!isAboutOpen}
+      enabled={windowState === WINDOW_STATE.CLOSED}
+      enableRotate={windowState === WINDOW_STATE.CLOSED}
+      enableZoom={windowState === WINDOW_STATE.CLOSED}
+      enablePan={windowState === WINDOW_STATE.CLOSED}
     />
   );
 }

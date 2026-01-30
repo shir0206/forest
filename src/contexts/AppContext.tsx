@@ -5,7 +5,12 @@ import React, {
   useCallback,
   useMemo,
 } from "react";
-import { AppContextType, WindowState, ScreenId } from "../types/app";
+import {
+  AppContextType,
+  WindowState,
+  ScreenId,
+  WINDOW_STATE,
+} from "../types/app";
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
@@ -20,16 +25,13 @@ export const useAppContext = () => {
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [isAboutOpen, setIsAboutOpenState] = useState<boolean>(false);
   const [runIntro, setRunIntroState] = useState<boolean>(true);
-  const [windowState, setWindowStateState] = useState<WindowState>("default");
+  const [windowState, setWindowStateState] = useState<WindowState>(
+    WINDOW_STATE.CLOSED
+  );
   const [visibleScreens, setVisibleScreensState] = useState<Set<ScreenId>>(
     new Set()
   );
-
-  const setIsAboutOpen = useCallback((open: boolean) => {
-    setIsAboutOpenState(open);
-  }, []);
 
   const setRunIntro = useCallback((run: boolean) => {
     setRunIntroState(run);
@@ -54,22 +56,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const contextValue = useMemo(
     () => ({
-      isAboutOpen,
       runIntro,
       windowState,
       visibleScreens,
-      setIsAboutOpen,
       setRunIntro,
       setWindowState,
       setVisibleScreens,
       clearVisible,
     }),
     [
-      isAboutOpen,
       runIntro,
       windowState,
       visibleScreens,
-      setIsAboutOpen,
       setRunIntro,
       setWindowState,
       setVisibleScreens,

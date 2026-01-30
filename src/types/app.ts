@@ -1,12 +1,12 @@
 // Window State Types
-export const WINDOW_STATE = {
-  DEFAULT: "default",
-  MINIMIZED: "minimized",
-  MAXIMIZED: "maximized",
-  CLOSED: "closed",
-} as const;
+export type WindowState = "open" | "minimized" | "maximized" | "closed";
 
-export type WindowState = (typeof WINDOW_STATE)[keyof typeof WINDOW_STATE];
+export const WINDOW_STATE = {
+  OPEN: "open" as WindowState,
+  MINIMIZED: "minimized" as WindowState,
+  MAXIMIZED: "maximized" as WindowState,
+  CLOSED: "closed" as WindowState,
+} as const;
 
 // Screen IDs
 export const SCREEN_IDS = {
@@ -26,7 +26,6 @@ export interface ScreenConfig {
 
 // Application State Types
 export interface AppState {
-  isAboutOpen: boolean;
   runIntro: boolean;
   windowState: WindowState;
   visibleScreens: Set<ScreenId>;
@@ -34,7 +33,6 @@ export interface AppState {
 
 // Context Types
 export interface AppContextType extends AppState {
-  setIsAboutOpen: (open: boolean) => void;
   setRunIntro: (run: boolean) => void;
   setWindowState: (state: WindowState) => void;
   setVisibleScreens: (screens: Set<ScreenId>) => void;

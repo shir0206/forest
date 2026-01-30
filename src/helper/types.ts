@@ -1,5 +1,5 @@
 export const WINDOW_STATE = {
-  DEFAULT: "default",
+  OPEN: "open",
   MINIMIZED: "minimized",
   MAXIMIZED: "maximized",
   CLOSED: "closed",

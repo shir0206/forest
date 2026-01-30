@@ -12,7 +12,6 @@ import { useAppContext } from "../../contexts/AppContext";
 
 type BrowserProps = {
   position: [number, number, number];
-  closeAbout: (e: React.MouseEvent) => void;
 };
 
 // Scroll indicator component
@@ -22,7 +21,7 @@ const ScrollIndicator = () => (
   </div>
 );
 
-export default function Browser({ position, closeAbout }: BrowserProps) {
+export default function Browser({ position }: BrowserProps) {
   console.log("Rendering Browser component");
   const { windowState, setWindowState, visibleScreens, clearVisible } =
     useAppContext();
@@ -31,18 +30,17 @@ export default function Browser({ position, closeAbout }: BrowserProps) {
   const { setScreenRef } = useScreenVisibility(contentRef, ready);
 
   const handleClose = useCallback(
-    (e: React.MouseEvent) => {
+    (event: React.MouseEvent) => {
       clearVisible();
       setWindowState(WINDOW_STATE.CLOSED);
-      closeAbout(e);
     },
-    [clearVisible, setWindowState, closeAbout]
+    [clearVisible, setWindowState]
   );
 
   const handleMinimize = useCallback(() => {
     setWindowState(
       windowState === WINDOW_STATE.MINIMIZED
-        ? WINDOW_STATE.DEFAULT
+        ? WINDOW_STATE.OPEN
         : WINDOW_STATE.MINIMIZED
     );
   }, [setWindowState, windowState]);
@@ -50,7 +48,7 @@ export default function Browser({ position, closeAbout }: BrowserProps) {
   const handleMaximize = useCallback(() => {
     setWindowState(
       windowState === WINDOW_STATE.MAXIMIZED
-        ? WINDOW_STATE.DEFAULT
+        ? WINDOW_STATE.OPEN
         : WINDOW_STATE.MAXIMIZED
     );
   }, [setWindowState, windowState]);

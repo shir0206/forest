@@ -1,20 +1,24 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { MouseEventHandler, useEffect } from "react";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import "./butterfly.scss";
+import { useAppContext } from "../../contexts/AppContext";
+import { WINDOW_STATE } from "../../types/app";
 
 type ButterflyProps = {
   position: [number, number, number];
-  openAbout: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  isAboutOpen: boolean;
 };
 
-export default function Butterfly({
-  position,
-  openAbout,
-  isAboutOpen,
-}: ButterflyProps) {
+export default function Butterfly({ position }: ButterflyProps) {
+  const { windowState, setWindowState } = useAppContext();
+
+  function openAbout(event: React.MouseEvent): void {
+    event.stopPropagation();
+
+    setWindowState(WINDOW_STATE.OPEN);
+  }
+
   return (
     <Html
       position={new THREE.Vector3(...position)}
@@ -30,23 +34,59 @@ export default function Butterfly({
         role="button"
         tabIndex={0}
       >
-        <div className={`butterfly${isAboutOpen ? " pause-animation" : ""}`}>
-          <div className={`wing${isAboutOpen ? " pause-animation" : ""}`}>
+        <div
+          className={`butterfly${
+            windowState !== WINDOW_STATE.CLOSED ? " pause-animation" : ""
+          }`}
+        >
+          <div
+            className={`wing${
+              windowState !== WINDOW_STATE.CLOSED ? " pause-animation" : ""
+            }`}
+          >
             <div className="bit"></div>
             <div className="bit"></div>
           </div>
-          <div className={`wing${isAboutOpen ? " pause-animation" : ""}`}>
+          <div
+            className={`wing${
+              windowState !== WINDOW_STATE.CLOSED ? " pause-animation" : ""
+            }`}
+          >
             <div className="bit"></div>
             <div className="bit"></div>
           </div>
         </div>
         <div className="sparkles">
-          <i className={`sparkle${isAboutOpen ? " pause-animation" : ""}`}></i>
-          <i className={`sparkle${isAboutOpen ? " pause-animation" : ""}`}></i>
-          <i className={`sparkle${isAboutOpen ? " pause-animation" : ""}`}></i>
-          <i className={`sparkle${isAboutOpen ? " pause-animation" : ""}`}></i>
-          <i className={`sparkle${isAboutOpen ? " pause-animation" : ""}`}></i>
-          <i className={`sparkle${isAboutOpen ? " pause-animation" : ""}`}></i>
+          <i
+            className={`sparkle${
+              windowState !== WINDOW_STATE.CLOSED ? " pause-animation" : ""
+            }`}
+          ></i>
+          <i
+            className={`sparkle${
+              windowState !== WINDOW_STATE.CLOSED ? " pause-animation" : ""
+            }`}
+          ></i>
+          <i
+            className={`sparkle${
+              windowState !== WINDOW_STATE.CLOSED ? " pause-animation" : ""
+            }`}
+          ></i>
+          <i
+            className={`sparkle${
+              windowState !== WINDOW_STATE.CLOSED ? " pause-animation" : ""
+            }`}
+          ></i>
+          <i
+            className={`sparkle${
+              windowState !== WINDOW_STATE.CLOSED ? " pause-animation" : ""
+            }`}
+          ></i>
+          <i
+            className={`sparkle${
+              windowState !== WINDOW_STATE.CLOSED ? " pause-animation" : ""
+            }`}
+          ></i>
         </div>
       </button>
     </Html>
