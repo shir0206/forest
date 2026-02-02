@@ -80,7 +80,7 @@ export const Contact: React.FC = () => {
   return (
     <div className="contact-container">
       <div className="contact-content">
-        <h1 className="contact-title">Say Hi</h1>
+        <h3 className="contact-title">Say Hi</h3>
         <p className="contact-subtitle">
           Exploring ideas, questions, or a collaboration?
           <br />

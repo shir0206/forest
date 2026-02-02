@@ -77,21 +77,21 @@ export default function Browser({ position }: BrowserProps) {
               onClick={handleClose}
               aria-label="Close window"
             >
-              <Icon name="close" size={8} />
+              <Icon name="close" className="control-icon" size={8} />
             </button>
             <button
               className="control-btn minimize-btn"
               onClick={handleMinimize}
               aria-label="Minimize window"
             >
-              <Icon name="minimize" size={8} />
+              <Icon name="minimize" className="control-icon" size={8} />
             </button>
             <button
               className="control-btn maximize-btn"
               onClick={handleMaximize}
               aria-label="Maximize window"
             >
-              <Icon name="maximize" size={10} />
+              <Icon name="maximize" className="control-icon" size={10} />
             </button>
           </div>
 
