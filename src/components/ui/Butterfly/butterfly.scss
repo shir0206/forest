@@ -1,43 +1,43 @@
-// Parameters - Colors
-$color-primary: #ff5544;
-$color-gradient-start: #d6d5ce;
-$color-gradient-end: #b4afa6;
-$color-wing-start: #a58a83;
-$color-wing-end: #917773;
-$color-border: #d3d3d3b5;
-$color-shadow: #cfcfce;
-$color-inset: rgba(214, 213, 207, 0.59);
-$color-inset-light: rgba(214, 213, 207, 0.2);
-$color-inset-shadow: rgba(214, 213, 207, 0.1);
+// ============================================
+// Design Tokens
+// ============================================
 
-// Glow colors - for hover effects and sparkles
-$glow-color: rgba(255, 200, 150, 0.6);
-$glow-color-bright: rgba(255, 220, 180, 1);
+// Color tokens
+$surface-primary: #d6d5ce;
+$surface-secondary: #b4afa6;
+$surface-accent-start: #a58a83;
+$surface-accent-end: #917773;
+$border-subtle: #d3d3d3b5;
+$shadow-base: #cfcfce;
+$highlight-soft: rgba(214, 213, 207, 0.59);
+$highlight-subtle: rgba(214, 213, 207, 0.2);
+$highlight-faint: rgba(214, 213, 207, 0.1);
+
+// Effect colors
+$glow-base: rgba(255, 200, 150, 0.6);
+$glow-bright: rgba(255, 220, 180, 1);
 $glow-particles: rgba(255, 235, 200, 0.9);
-$sparkle-white: rgba(255, 255, 255, 0.9);
+$effect-bright: rgba(255, 255, 255, 0.9);
 
-// Shadow color
-$shadow-color: #000000;
+// Gradient colors - Body
+$gradient-1: rgba(255, 255, 255, 0.95);
+$gradient-2: rgba(230, 240, 255, 0.9);
+$gradient-3: rgba(200, 220, 255, 0.85);
+$gradient-4: rgba(180, 200, 240, 0.85);
+$gradient-5: rgba(220, 200, 255, 0.85);
+$gradient-6: rgba(255, 220, 240, 0.9);
 
-// Body gradient colors
-$body-gradient-white: rgba(255, 255, 255, 0.95);
-$body-gradient-light-blue: rgba(230, 240, 255, 0.9);
-$body-gradient-blue: rgba(200, 220, 255, 0.85);
-$body-gradient-purple-blue: rgba(180, 200, 240, 0.85);
-$body-gradient-purple: rgba(220, 200, 255, 0.85);
-$body-gradient-pink: rgba(255, 220, 240, 0.9);
+// Gradient colors - Wing
+$wing-1: rgba(255, 255, 255, 0.9);
+$wing-2: rgba(240, 250, 255, 0.85);
+$wing-3: rgba(220, 235, 255, 0.8);
+$wing-4: rgba(235, 220, 255, 0.8);
+$wing-5: rgba(255, 235, 250, 0.85);
 
-// Wing gradient colors
-$wing-gradient-light: rgba(255, 255, 255, 0.9);
-$wing-gradient-blue: rgba(240, 250, 255, 0.85);
-$wing-gradient-light-blue: rgba(220, 235, 255, 0.8);
-$wing-gradient-light-purple: rgba(235, 220, 255, 0.8);
-$wing-gradient-pink: rgba(255, 235, 250, 0.85);
+// Interactive effect color
+$hover-glow: rgba(255, 220, 180, 0.7);
 
-// Wing hover effect color
-$wing-hover-glow: rgba(255, 220, 180, 0.7);
-
-// Sizes
+// Size tokens
 $container-size: 150px;
 $butterfly-width: 30px;
 $body-height: 110px;
@@ -47,9 +47,19 @@ $wing-large-width: 130px;
 $wing-small-height: 55px;
 $wing-small-width: 100px;
 
-// Timing
-$animation-duration: 750ms;
-$animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
+// Spacing tokens
+$button-width: 300px;
+$button-height: 230px;
+$sparkle-container-width: 150px;
+$sparkle-container-height: 100px;
+
+// Animation tokens
+$duration-base: 750ms;
+$timing-smooth: cubic-bezier(0.48, 0.01, 0.54, 1);
+
+// ============================================
+// Component Styles
+// ============================================
 
 .butterfly-container {
   display: flex;
@@ -63,8 +73,8 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
 }
 
 .butterfly-button {
-  width: 300px;
-  height: 230px;
+  width: $button-width;
+  height: $button-height;
   background: none;
   border: none;
   cursor: pointer;
@@ -75,8 +85,8 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
 }
 
 .sparkles {
-  width: 150px;
-  height: 100px;
+  width: $sparkle-container-width;
+  height: $sparkle-container-height;
   position: relative;
   justify-self: end;
   align-self: end;
@@ -86,13 +96,12 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   position: absolute;
   width: 3px;
   height: 3px;
-  background: $sparkle-white;
+  background: $effect-bright;
   border-radius: 50%;
   pointer-events: none;
   opacity: 0;
-  box-shadow: 0 0 8px $glow-color-bright, 0 0 15px $glow-color;
+  box-shadow: 0 0 8px $glow-bright, 0 0 15px $glow-base;
 
-  // Each sparkle gets a different animation
   &:nth-child(1) {
     width: 4px;
     height: 4px;
@@ -155,16 +164,10 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
 }
 
 .butterfly {
-  animation: fly $animation-duration $animation-timing infinite;
-  animation-direction: alternate;
-  animation-fill-mode: reverse;
   position: relative;
   transform-style: preserve-3d;
-  transform: rotateX(50deg) rotateY(20deg) rotateZ(-50deg) translateY(0px)
-    scaleX(-1);
   width: $butterfly-width;
   cursor: pointer;
-  animation: bounce 3s ease-in-out infinite;
   animation: flightPath 10s ease-in-out infinite;
 
   &.pause-animation {
@@ -172,34 +175,19 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   }
 
   &:hover {
-    // Butterfly body glows
     &::before {
       box-shadow: inset 0 0 0 3px $glow-particles,
         inset 2px -1px 0 0px $glow-particles,
         inset -2px 1px 0 0px $glow-particles,
         inset 1px 2px 0 0px $glow-particles,
-        inset -1px -2px 0 3px $glow-particles, 0 0 30px $glow-color,
-        0 0 50px $glow-color-bright, 0 0 80px $glow-color;
+        inset -1px -2px 0 3px $glow-particles, 0 0 30px $glow-base,
+        0 0 50px $glow-bright, 0 0 80px $glow-base;
     }
   }
 
-  // Butterfly body (the middle cylinder)
+  // Butterfly body
   &::before {
-    background: linear-gradient(
-      135deg,
-      $body-gradient-white 0%,
-      $body-gradient-light-blue 15%,
-      $body-gradient-blue 30%,
-      $body-gradient-purple-blue 45%,
-      $body-gradient-purple 60%,
-      $body-gradient-pink 80%,
-      $body-gradient-white 100%
-    );
-    background: linear-gradient(
-      249deg,
-      $color-gradient-start,
-      $color-gradient-end
-    );
+    background: linear-gradient(249deg, $surface-primary, $surface-secondary);
     border-radius: 50%;
     content: "";
     display: block;
@@ -212,10 +200,9 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
     transform: rotatey(100deg);
     width: $body-width;
     z-index: 2;
-    border: none;
-    box-shadow: inset 0 0 0 3px $color-shadow,
-      inset 2px -1px 0 0px $color-shadow, inset -2px 1px 0 0px $color-shadow,
-      inset 1px 2px 0 0px $color-shadow, inset -1px -2px 0 3px $color-shadow;
+    box-shadow: inset 0 0 0 3px $shadow-base, inset 2px -1px 0 0px $shadow-base,
+      inset -2px 1px 0 0px $shadow-base, inset 1px 2px 0 0px $shadow-base,
+      inset -1px -2px 0 3px $shadow-base;
   }
 }
 
@@ -228,7 +215,7 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
 
   // Left wing
   &:first-child {
-    animation: leftflap $animation-duration $animation-timing infinite;
+    animation: leftflap $duration-base $timing-smooth infinite;
     animation-direction: alternate;
     animation-fill-mode: reverse;
     height: 1px;
@@ -245,7 +232,7 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
 
   // Right wing
   &:last-child {
-    animation: rightflap $animation-duration $animation-timing infinite;
+    animation: rightflap $duration-base $timing-smooth infinite;
     animation-direction: alternate;
     animation-fill-mode: reverse;
     right: 0;
@@ -260,40 +247,17 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   .bit {
     background: linear-gradient(
       135deg,
-      $body-gradient-white 0%,
-      $body-gradient-light-blue 15%,
-      $body-gradient-blue 30%,
-      $body-gradient-purple-blue 45%,
-      $body-gradient-purple 60%,
-      $body-gradient-pink 80%,
-      $body-gradient-white 100%
+      $wing-1 0%,
+      $wing-2 20%,
+      $wing-3 40%,
+      $wing-4 60%,
+      $wing-5 80%,
+      $wing-1 100%
     );
-    background: linear-gradient(
-      135deg,
-      $color-wing-start 0%,
-      $color-wing-end 100%
-    );
-    border: 1px solid $color-border;
-    box-shadow: inset 0px 7px 20px 4px $color-inset,
-      inset 0 0 40px $color-inset-light, 0 2px 10px $color-inset-shadow;
+    border: 1px solid $border-subtle;
+    box-shadow: inset 0px 7px 20px 4px $highlight-soft,
+      inset 0 0 40px $highlight-subtle, 0 2px 10px $highlight-faint;
     transition: box-shadow 0.3s ease;
-
-    &::after {
-      content: "";
-      display: inline-block;
-
-      background: inset 0 0 20px $color-inset, inset 0 0 40px $color-inset-light,
-        0 2px 10px $color-inset-shadow;
-    }
-    background: linear-gradient(
-      135deg,
-      $wing-gradient-light 0%,
-      $wing-gradient-blue 20%,
-      $wing-gradient-light-blue 40%,
-      $wing-gradient-light-purple 60%,
-      $wing-gradient-pink 80%,
-      $wing-gradient-light 100%
-    );
 
     &,
     &::after {
@@ -303,16 +267,20 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
       right: 0;
       top: 0;
       transform-origin: 100% 50%;
-      box-shadow: inset 0 0 0 3px $color-shadow,
-        inset 2px -1px 0 0px $color-shadow, inset -2px 1px 0 0px $color-shadow,
-        inset 1px 2px 0 0px $color-shadow, inset -1px -2px 0 3px $color-shadow;
+      box-shadow: inset 0 0 0 3px $shadow-base,
+        inset 2px -1px 0 0px $shadow-base, inset -2px 1px 0 0px $shadow-base,
+        inset 1px 2px 0 0px $shadow-base, inset -1px -2px 0 3px $shadow-base;
     }
 
-    // 🌟 Wing glow on hover - warm and golden colors
+    &::after {
+      content: "";
+      display: inline-block;
+    }
+
     .butterfly:hover & {
-      box-shadow: inset 0px 7px 20px 4px $wing-hover-glow,
-        inset 0 0 40px $glow-color, 0 2px 10px $glow-color-bright,
-        0 0 40px $glow-color, 0 0 70px $glow-color-bright, 0 0 100px $glow-color;
+      box-shadow: inset 0px 7px 20px 4px $hover-glow, inset 0 0 40px $glow-base,
+        0 2px 10px $glow-bright, 0 0 40px $glow-base, 0 0 70px $glow-bright,
+        0 0 100px $glow-base;
 
       &,
       &::after {
@@ -320,15 +288,14 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
           inset 2px -1px 0 0px $glow-particles,
           inset -2px 1px 0 0px $glow-particles,
           inset 1px 2px 0 0px $glow-particles,
-          inset -1px -2px 0 3px $glow-particles, 0 0 25px $glow-color,
-          0 0 40px $glow-color-bright;
+          inset -1px -2px 0 3px $glow-particles, 0 0 25px $glow-base,
+          0 0 40px $glow-bright;
       }
     }
 
     // Large upper part of the wing
     &:first-child {
       height: $wing-large-height;
-      text-align: center;
       top: 15px;
       transform: rotateZ(40deg);
       width: $wing-large-width;
@@ -362,29 +329,6 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
 // Animations
 // ============================================
 
-// Butterfly hovering movement
-@keyframes fly {
-  0% {
-    transform: rotateX(50deg) rotateY(20deg) rotateZ(-50deg) translateZ(0px)
-      scaleX(-1);
-  }
-  100% {
-    transform: rotateX(50deg) rotateY(20deg) rotateZ(-50deg) translateZ(-3px)
-      scaleX(-1);
-  }
-}
-
-// Shadow animation
-@keyframes shadow {
-  0% {
-    transform: translateX(-40px) translateY(100px) scale(1, 1);
-  }
-  100% {
-    transform: translateX(-40px) translateY(100px) scale(1.1, 1.1);
-  }
-}
-
-// Left wing flapping
 @keyframes leftflap {
   0% {
     transform: rotateY(-20deg);
@@ -394,7 +338,6 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
   }
 }
 
-// Right wing flapping
 @keyframes rightflap {
   0% {
     transform: rotateY(200deg);
@@ -551,20 +494,6 @@ $animation-timing: cubic-bezier(0.48, 0.01, 0.54, 1);
     left: 60%;
     top: 90%;
     transform: scale(0) translateY(-24px);
-  }
-}
-
-@keyframes bounce {
-  0%,
-  100% {
-    transform-style: preserve-3d;
-    transform: rotateX(50deg) rotateY(20deg) rotateZ(-50deg) translateX(0px)
-      translateY(0px) scaleX(-1);
-  }
-  50% {
-    transform-style: preserve-3d;
-    transform: rotateX(50deg) rotateY(20deg) rotateZ(-50deg) translateX(-10px)
-      translateY(-20px) scaleX(-0.95);
   }
 }
 

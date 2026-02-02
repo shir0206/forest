@@ -2,7 +2,7 @@
 import React, { Suspense, useCallback } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
-import Butterfly from "../Butterfly/Butterfly.tsx";
+import Butterfly from "../../ui/Butterfly/Butterfly.tsx";
 import CameraControls from "../CameraControls/CameraControls.tsx";
 import CinematicEffects from "../CinematicEffects/CinematicEffects.tsx";
 import Loader from "../../ui/Loader/Loader.tsx";
