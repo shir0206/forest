@@ -1,5 +1,5 @@
 import React from "react";
-import { SectionComponent } from "../../helper/types";
+import { SectionComponent } from "../../../helper/types";
 
 const WebsiteSection = ({
   id,
