@@ -5,11 +5,11 @@ import { ReactComponent as Circle } from "../../../assets/images/circle.svg";
 import { useTranslation } from "../../../hooks/useTranslation";
 
 const AboutMe: React.FC = () => {
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <div className="about-me-container">
-      {/* <h2 className="about-me-title">{t.aboutMe.title}</h2>
+      <h2 className="about-me-title">{t.aboutMe.title}</h2>
 
       <div className="about-me-content">
         <div className="profile-image-wrapper">
@@ -24,7 +24,7 @@ const AboutMe: React.FC = () => {
 
           <p className="text-paragraph">{t.aboutMe.paragraph3}</p>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };

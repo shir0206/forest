@@ -57,7 +57,8 @@ export interface TextStructure {
   };
   contact: {
     title: string;
-    subtitle: string;
+    subtitlePrimary: string;
+    subtitleSecondary: string;
     links: {
       linkedin: string;
       whatsapp: string;

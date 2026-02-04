@@ -78,18 +78,21 @@ const contactLinks = [
 
 // Main Contact Component
 export const Contact: React.FC = () => {
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <div className="contact-container">
       <div className="contact-content">
-        {/* <h3 className="contact-title">{t.contact.title}</h3>
-        <p className="contact-subtitle">{t.contact.subtitle}</p>
+        <h3 className="contact-title">{t.contact.title}</h3>
+        <div className="contact-subtitle-container">
+          <p className="contact-subtitle">{t.contact.subtitlePrimary}</p>
+          <p className="contact-subtitle">{t.contact.subtitleSecondary}</p>
+        </div>
         <div className="contact-list">
           {contactLinks.map(({ name, icon, url }) => (
             <ContactLink key={name} name={name} icon={icon} url={url} />
           ))}
-        </div> */}
+        </div>
       </div>
     </div>
   );

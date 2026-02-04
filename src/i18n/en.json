@@ -15,7 +15,7 @@
       "design": "Design",
       "userExperience": "User Experience"
     },
-    "quote": "To me, a website is more than code or visuals - it should <strong> tell your brand's story</strong> and turn visitors into <strong> believers in what you do</strong>.",
+    "quote": "To me, a website is more than code or visuals - it should tell **your brand's story** and **turn visitors into believers** in what you do.",
     "cta": "Let's create something that makes you unique and helps your business grow"
   },
   "aboutMe": {
@@ -55,7 +55,8 @@
   },
   "contact": {
     "title": "Say Hi",
-    "subtitle": "Exploring ideas, questions, or a collaboration?\\nI'd be glad to hear from you.",
+    "subtitlePrimary": "Reach out for ideas, questions, or a collaboration.",
+    "subtitleSecondary": "I'd be glad to hear from you.",
     "links": {
       "linkedin": "LinkedIn",
       "whatsapp": "WhatsApp",

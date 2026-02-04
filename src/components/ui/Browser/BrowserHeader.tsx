@@ -3,15 +3,16 @@ import { Icon } from "../Icon/Icon";
 import { useTranslation } from "../../../hooks/useTranslation";
 import "./browser.scss";
 import { WINDOW_STATE } from "../../../types/app";
-import { useAppContext } from "../../../contexts/AppContext";
+import { useEnhancedAppContext } from "../../../contexts/AppContext";
 
 export const BrowserHeader: React.FC = ({}) => {
-  const appContext = useAppContext();
+  const appContext = useEnhancedAppContext();
 
   if (!appContext) {
     console.error("BrowserHeader: AppContext not found");
-    return null;
+    //  return null;
   }
+  //@ts-ignore
 
   const { windowState, setWindowState, clearVisible } = appContext;
   const { t } = useTranslation();

@@ -26,6 +26,20 @@ export const useAppContext = () => {
   return context;
 };
 
+/**
+ * Enhanced hook with better error handling and debugging
+ */
+export const useEnhancedAppContext = () => {
+  const context = useContext(AppContext);
+
+  if (!context) {
+    console.error("useEnhancedAppContext: context not found");
+    return null;
+  }
+
+  return context;
+};
+
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {

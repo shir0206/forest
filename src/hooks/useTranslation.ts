@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { useAppContext } from "../contexts/AppContext";
+import { useEnhancedAppContext } from "../contexts/AppContext";
 import { getText } from "../i18n";
 import type { TextStructure } from "../i18n/types";
 import { LANGUAGE } from "../types/app";
@@ -10,7 +10,7 @@ const translations: Record<string, TextStructure> = {
 };
 
 export function useTranslation() {
-  const context = useAppContext();
+  const context = useEnhancedAppContext();
 
   if (!context) {
     console.error("useTranslation: context not found");

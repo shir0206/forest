@@ -20,10 +20,22 @@ export default function Browser({ position }: BrowserProps) {
 
   if (!appContext) {
     console.error("Browser: AppContext not found");
-    return null;
+    // return null;
   }
-
+  //@ts-ignore
   const { windowState, visibleScreens } = appContext;
+  // Extract the full context value to pass to the bridge
+  console.log("Browser: Extracting context value for bridge", {
+    //@ts-ignore
+
+    runIntro: appContext.runIntro, //@ts-ignore
+
+    windowState: appContext.windowState, //@ts-ignore
+
+    visibleScreens: Array.from(appContext.visibleScreens), //@ts-ignore
+
+    language: appContext.language,
+  });
 
   const { ref: contentRef, ready } = useHtmlReady<HTMLDivElement>();
   const { setScreenRef } = useScreenVisibility(contentRef, ready);
@@ -35,14 +47,13 @@ export default function Browser({ position }: BrowserProps) {
 
   return (
     <Html
-      transform
       position={vector3Position}
       center
       wrapperClass="portfolio-wrapper"
       distanceFactor={2}
       scale={[0.005, 0.005, 0.005]}
     >
-      <ContextBridge>
+      <ContextBridge contextValue={appContext}>
         <div
           className={`browser-container ${windowState}`}
           onClick={(e) => e.stopPropagation()}

@@ -12,6 +12,7 @@ import { useAppContext } from "../../../contexts/AppContext";
 import { WINDOW_STATE } from "../../../types/app";
 
 export default function ForestScene() {
+  //@ts-ignore
   const { runIntro, windowState, setWindowState } = useAppContext();
 
   const handleClose = useCallback(
