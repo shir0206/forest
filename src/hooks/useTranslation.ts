@@ -14,17 +14,12 @@ export function useTranslation() {
 
   if (!context) {
     console.error("useTranslation: context not found");
-    // const defaultLanguage = "en";
-    // const t = translations[defaultLanguage] as TextStructure;
-    // return { t, language: defaultLanguage };
   } else {
     console.warn("ALL GOOD WITH CONTEXT");
   }
 
   const defaultLanguage = LANGUAGE.EN;
   const language = context?.language ?? defaultLanguage;
-
-  // const { language } = context;
 
   const t = translations[language] as TextStructure;
 
