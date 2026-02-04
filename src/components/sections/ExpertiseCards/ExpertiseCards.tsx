@@ -1,6 +1,7 @@
 import React from "react";
 import { Icon, IconName } from "../../ui/Icon/Icon";
 import "./expertiseCards.css";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 interface ExpertiseItem {
   title: string;
@@ -9,48 +10,44 @@ interface ExpertiseItem {
 }
 
 const ExpertiseCards: React.FC = () => {
+  const { t } = useTranslation();
+
   const expertiseData: ExpertiseItem[] = [
     {
-      title: "Architecture & Direction",
-      description:
-        "Designing frontend structure, defining coding standards, and ensuring scalable, maintainable code.",
+      title: t.expertise.cards.architecture.title,
+      description: t.expertise.cards.architecture.description,
       icon: "structure",
     },
     {
-      title: "Implementation",
-      description:
-        "Developing and maintaining modular apps and reusable components for production systems.",
+      title: t.expertise.cards.implementation.title,
+      description: t.expertise.cards.implementation.description,
       icon: "code",
     },
     {
-      title: "Clear Communication",
-      description:
-        "Explaining ideas and sharing decisions, collaborating through the process with flexibility, and refining work through feedback.",
+      title: t.expertise.cards.communication.title,
+      description: t.expertise.cards.communication.description,
       icon: "dialog",
     },
     {
-      title: "UI Design Leadership",
-      description:
-        "Owning visual and functional decisions end-to-end, building layouts, visual language, and responsive structures to match consistency and the product's goals.",
+      title: t.expertise.cards.design.title,
+      description: t.expertise.cards.design.description,
       icon: "monitors",
     },
     {
-      title: "A/B Testing Implementation",
-      description:
-        "Planning, implementing, and analyzing tests to validate UI and UX choices with real user data.",
+      title: t.expertise.cards.testing.title,
+      description: t.expertise.cards.testing.description,
       icon: "test",
     },
     {
-      title: "Mentorship & Guidance",
-      description:
-        "Sharing knowledge and guidance, that help the team grow and carry ideas forward.",
+      title: t.expertise.cards.mentorship.title,
+      description: t.expertise.cards.mentorship.description,
       icon: "checklist",
     },
   ];
 
   return (
     <div className="expertise-container">
-      <h2 className="expertise-title">Services</h2>
+      <h2 className="expertise-title">{t.expertise.title}</h2>
       <div className="expertise-grid">
         {expertiseData.map((item, index) => (
           <article key={index} className="expertise-card">

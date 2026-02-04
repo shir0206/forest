@@ -10,14 +10,18 @@ import {
   WindowState,
   ScreenId,
   WINDOW_STATE,
+  Language,
+  LANGUAGE,
 } from "../types/app";
 
-const AppContext = createContext<AppContextType | undefined>(undefined);
+export const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const useAppContext = () => {
   const context = useContext(AppContext);
   if (!context) {
-    throw new Error("useAppContext must be used within an AppProvider");
+    console.error("useAppContext: context not found");
+
+    return undefined;
   }
   return context;
 };
@@ -32,6 +36,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   const [visibleScreens, setVisibleScreensState] = useState<Set<ScreenId>>(
     new Set()
   );
+  const [language, setLanguageState] = useState<Language>(LANGUAGE.EN);
 
   const setRunIntro = useCallback((run: boolean) => {
     setRunIntroState(run);
@@ -54,24 +59,32 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     setVisibleScreensState(new Set());
   }, []);
 
+  const setLanguage = useCallback((lang: Language) => {
+    setLanguageState(lang);
+  }, []);
+
   const contextValue = useMemo(
     () => ({
       runIntro,
       windowState,
       visibleScreens,
+      language,
       setRunIntro,
       setWindowState,
       setVisibleScreens,
       clearVisible,
+      setLanguage,
     }),
     [
       runIntro,
       windowState,
       visibleScreens,
+      language,
       setRunIntro,
       setWindowState,
       setVisibleScreens,
       clearVisible,
+      setLanguage,
     ]
   );
 
