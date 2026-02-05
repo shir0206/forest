@@ -1,6 +1,6 @@
 .overview-content {
   background-color: #f6f7f3;
-  padding: 3rem 0;
+  padding: 5rem 0;
   flex-direction: column;
   width: 100%;
   text-align: center;
@@ -8,7 +8,7 @@
   align-items: center;
   justify-content: center;
   @media (max-width: 768px) {
-    height: 65vh;
+    height: 75vh;
     gap: 1rem;
   }
 }
@@ -83,10 +83,18 @@
 .branch-left {
   transform: scaleX(-1);
   fill: #a8b3a5;
+  .rtl & {
+    transform: scaleX(1);
+  }
 }
+
 .branch-right {
   fill: hsl(5, 36%, 82%);
+  .rtl & {
+    transform: scaleX(-1);
+  }
 }
+
 .overview-quote {
   font-size: 1.75rem;
   line-height: 1.6;

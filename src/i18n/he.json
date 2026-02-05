@@ -7,6 +7,12 @@
     },
     "title": "שיר ז. / סביבת עבודה"
   },
+  "navigation": {
+    "overview": "סקירה",
+    "about": "אודות",
+    "expertise": "מומחיות",
+    "contact": "יצירת קשר"
+  },
   "overview": {
     "name": "שיר זבולוני",
     "subtitle": "מפתחת Frontend ששוזרת יחד",

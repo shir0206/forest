@@ -63,7 +63,7 @@ export const BrowserHeader: React.FC = ({}) => {
         </button>
       </div>
 
-      <div className="browser-title">{t.browser.title}</div>
+      {/* <div className="browser-title">{t.browser.title}</div> */}
     </div>
   );
 };

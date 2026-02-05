@@ -9,6 +9,12 @@ export interface TextStructure {
     };
     title: string;
   };
+  navigation: {
+    overview: string;
+    about: string;
+    expertise: string;
+    contact: string;
+  };
   overview: {
     name: string;
     subtitle: string;

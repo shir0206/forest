@@ -7,6 +7,12 @@
     },
     "title": "shir.z / workspace"
   },
+  "navigation": {
+    "overview": "Overview",
+    "about": "About",
+    "expertise": "Expertise",
+    "contact": "Contact"
+  },
   "overview": {
     "name": "Shir Zabolotny",
     "subtitle": "Frontend developer who weaves together",

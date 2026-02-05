@@ -1,0 +1,171 @@
+// Navigation Component Styles
+.navigation {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  background: rgb(246 247 244);
+  border-bottom: 1px solid rgba(120, 128, 97, 0.15);
+  z-index: 1000;
+  transition: all 0.3s ease;
+
+  &.scrolled {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.navigation-container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.navigation-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--dusty-olive);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.navigation-links {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.nav-link {
+  position: relative;
+  background: none;
+  border: none;
+  color: #a8b3a5;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  &:hover {
+    color: var(--dusty-olive);
+    background: rgba(120, 128, 97, 0.05);
+  }
+
+  &.active {
+    color: var(--dusty-olive);
+    font-weight: 600;
+    background: blue;
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 2px;
+      background: red;
+      border-radius: 1px;
+      animation: slideIn 0.3s ease-out;
+    }
+  }
+}
+
+@keyframes slideIn {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 20px;
+    opacity: 1;
+  }
+}
+
+.navigation-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .navigation {
+    height: 36px;
+    width: 100%;
+  }
+
+  .navigation-container {
+    padding: 0 20px;
+  }
+
+  .brand-text {
+    font-size: 1rem;
+  }
+
+  .navigation-links {
+    gap: 20px;
+  }
+
+  .nav-link {
+    font-size: 0.85rem;
+    padding: 6px 8px;
+  }
+
+  .nav-link.active::after {
+    bottom: -6px;
+    width: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navigation-links {
+    gap: 12px;
+  }
+
+  .nav-link {
+    font-size: 0.8rem;
+    padding: 4px 6px;
+  }
+
+  .brand-text {
+    font-size: 0.9rem;
+  }
+}
+
+// Accessibility improvements
+.nav-link:focus {
+  outline: 2px solid var(--dusty-olive);
+  outline-offset: 2px;
+}
+
+// Smooth transitions for active state
+.nav-link:not(.active)::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: var(--dusty-olive);
+  border-radius: 1px;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 20px;
+}

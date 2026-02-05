@@ -9,6 +9,8 @@ import WebsiteSection from "../WebsiteScreen/WebsiteScreen.tsx";
 import { useAppContext } from "../../../contexts/AppContext";
 import { ContextBridge } from "../../ContextBridge";
 import { BrowserHeader } from "./BrowserHeader";
+import Navigation from "../Navigation/Navigation";
+import { LANGUAGE } from "../../../types/app.ts";
 
 type BrowserProps = {
   position: [number, number, number];
@@ -23,7 +25,7 @@ export default function Browser({ position }: BrowserProps) {
     // return null;
   }
   //@ts-ignore
-  const { windowState, visibleScreens } = appContext;
+  const { windowState, visibleScreens, language } = appContext;
   // Extract the full context value to pass to the bridge
   console.log("Browser: Extracting context value for bridge", {
     //@ts-ignore
@@ -59,7 +61,14 @@ export default function Browser({ position }: BrowserProps) {
           onClick={(e) => e.stopPropagation()}
         >
           <BrowserHeader />
-          <div className="browser-content" ref={contentRef}>
+
+          <div
+            className={`browser-content${
+              language == LANGUAGE.HE ? " rtl" : ""
+            }`}
+            ref={contentRef}
+          >
+            <Navigation />
             {SCREENS.map(({ id, Screen }) => (
               <WebsiteSection
                 key={id}
