@@ -60,8 +60,10 @@
   letter-spacing: 0.5px;
 
   &:hover {
-    color: var(--dusty-olive);
-    background: rgba(120, 128, 97, 0.05);
+    color: black;
+    @media screen and (max-width: 480px) {
+      color: #a8b3a5;
+    }
   }
 
   &.active {
@@ -126,8 +128,10 @@
   }
 
   .nav-link.active::after {
-    bottom: -6px;
-    width: 16px;
+    width: 36px;
+    background: #a8b3a5;
+    bottom: 0px;
+    height: 1px;
   }
 }
 
@@ -157,16 +161,24 @@
 .nav-link:not(.active)::after {
   content: "";
   position: absolute;
-  bottom: -8px;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 0;
   height: 2px;
-  background: var(--dusty-olive);
+  background: #a8b3a5;
   border-radius: 1px;
   transition: width 0.3s ease;
 }
 
 .nav-link:hover::after {
-  width: 20px;
+  width: 36px;
+  color: black;
+  bottom: 0px;
+  height: 1px;
+  @media screen and (max-width: 480px) {
+    width: 36px;
+    bottom: 0px;
+    height: 1px;
+  }
 }
