@@ -47,6 +47,9 @@
   letter-spacing: 0.2px;
   color: #a8b3a5;
   font-size: 0.95rem;
+  @media screen and (max-width: 480px) {
+    font-size: 0.8rem;
+  }
 }
 
 .chevron-icon {

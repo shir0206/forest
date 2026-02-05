@@ -133,12 +133,13 @@
 
 @media (max-width: 480px) {
   .navigation-links {
-    gap: 12px;
+    gap: 0;
   }
 
   .nav-link {
     font-size: 0.8rem;
     padding: 4px 6px;
+    text-transform: capitalize;
   }
 
   .brand-text {
