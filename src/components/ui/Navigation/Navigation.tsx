@@ -9,7 +9,11 @@ interface NavigationItem {
   label: string;
 }
 
-const Navigation: React.FC = () => {
+interface NavigationProps {
+  containerRef: React.RefObject<HTMLDivElement | null>;
+}
+
+const Navigation: React.FC<NavigationProps> = ({ containerRef }) => {
   const { t } = useTranslation();
   const appContext = useAppContext();
 
@@ -19,30 +23,35 @@ const Navigation: React.FC = () => {
     return null;
   }
 
-  const { setLanguage } = appContext;
-
   // Navigation items based on screens
   const navigationItems: NavigationItem[] = [
     { id: "overview", label: t.navigation.overview },
     { id: "about", label: t.navigation.about },
-    { id: "expertise", label: t.navigation.expertise },
+    { id: "service", label: t.navigation.service },
     { id: "contact", label: t.navigation.contact },
   ];
 
   const [activeSection, setActiveSection] = useState<string>("");
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // Handle smooth scrolling to section
+  // Handle smooth scrolling to section within the container
   const scrollToSection = (sectionId: string) => {
+    const container = containerRef.current;
     const element = document.getElementById(sectionId);
-    if (element) {
-      // Calculate offset for fixed navigation
-      const navbarHeight = 80; // Adjust based on your navigation height
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition =
-        elementPosition + window.pageYOffset - navbarHeight;
 
-      window.scrollTo({
+    if (element && container) {
+      const navbarHeight = 40;
+      const containerRect = container.getBoundingClientRect();
+      const elementRect = element.getBoundingClientRect();
+
+      // Calculate position relative to container
+      const offsetPosition =
+        elementRect.top -
+        containerRect.top +
+        container.scrollTop -
+        navbarHeight;
+
+      container.scrollTo({
         top: offsetPosition,
         behavior: "smooth",
       });
@@ -53,25 +62,31 @@ const Navigation: React.FC = () => {
     scrollToSection(sectionId);
   };
 
-  // Set up intersection observers for active section detection
+  // Detect scroll within the container
   useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(container.scrollTop > 50);
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    container.addEventListener("scroll", handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, [containerRef]);
 
   // Set up intersection observers for active section detection
   useEffect(() => {
-    const observerOptions = {
-      root: null,
+    const container = containerRef.current;
+    if (!container) return;
+
+    const observerOptions: IntersectionObserverInit = {
+      root: container, // Use the container as the root
       rootMargin: "-20% 0px -60% 0px",
       threshold: 0,
     };
 
-    const sectionIds = ["overview", "about", "expertise", "contact"];
+    const sectionIds = ["overview", "about", "service", "contact"];
     const observers: IntersectionObserver[] = [];
 
     sectionIds.forEach((sectionId) => {
@@ -93,7 +108,7 @@ const Navigation: React.FC = () => {
     return () => {
       observers.forEach((observer) => observer.disconnect());
     };
-  }, []); // Empty dependency array - runs once
+  }, [containerRef]);
 
   return (
     <nav className={`navigation ${isScrolled ? "scrolled" : ""}`}>

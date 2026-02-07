@@ -68,7 +68,7 @@ export default function Browser({ position }: BrowserProps) {
             }`}
             ref={contentRef}
           >
-            <Navigation />
+            <Navigation containerRef={contentRef} />
             {SCREENS.map(({ id, Screen }) => (
               <WebsiteSection
                 key={id}

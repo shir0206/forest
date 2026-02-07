@@ -12,7 +12,7 @@ export interface TextStructure {
   navigation: {
     overview: string;
     about: string;
-    expertise: string;
+    service: string;
     contact: string;
   };
   overview: {
@@ -32,7 +32,7 @@ export interface TextStructure {
     paragraph2: string;
     paragraph3: string;
   };
-  expertise: {
+  service: {
     title: string;
     cards: {
       architecture: {

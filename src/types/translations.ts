@@ -26,7 +26,7 @@ export interface TextStructure {
     paragraph2: string;
     paragraph3: string;
   };
-  expertise: {
+  service: {
     title: string;
     cards: {
       architecture: {

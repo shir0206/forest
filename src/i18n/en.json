@@ -10,7 +10,7 @@
   "navigation": {
     "overview": "Overview",
     "about": "About",
-    "expertise": "Expertise",
+    "service": "service",
     "contact": "Contact"
   },
   "overview": {
@@ -30,7 +30,7 @@
     "paragraph2": "I blend technical precision with design intuition, creating reliable and functional solutions, while prioritizing work done correctly and thoroughly",
     "paragraph3": "I bring an artist's eye to every project - turning color, composition, and hierarchy into interfaces that feel intuitive."
   },
-  "expertise": {
+  "service": {
     "title": "Services",
     "cards": {
       "architecture": {

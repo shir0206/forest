@@ -17,7 +17,7 @@ export const LANGUAGE = {
 export const SCREEN_IDS = {
   OVERVIEW: "overview",
   ABOUT: "about",
-  EXPERTISE: "expertise",
+  SEVICE: "service",
   CONTACT: "contact",
 } as const;
 
