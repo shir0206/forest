@@ -3,6 +3,7 @@ import { useAppContext } from "../../../contexts/AppContext";
 import { useTranslation } from "../../../hooks/useTranslation";
 import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
 import "./navigation.scss";
+import { SCREEN_IDS } from "../../../helper/const";
 
 interface NavigationItem {
   id: string;
@@ -25,10 +26,10 @@ const Navigation: React.FC<NavigationProps> = ({ containerRef }) => {
 
   // Navigation items based on screens
   const navigationItems: NavigationItem[] = [
-    { id: "overview", label: t.navigation.overview },
-    { id: "about", label: t.navigation.about },
-    { id: "service", label: t.navigation.service },
-    { id: "contact", label: t.navigation.contact },
+    { id: SCREEN_IDS.OVERVIEW, label: t.navigation.overview },
+    { id: SCREEN_IDS.ABOUT, label: t.navigation.about },
+    { id: SCREEN_IDS.SEVICE, label: t.navigation.service },
+    { id: SCREEN_IDS.CONTACT, label: t.navigation.contact },
   ];
 
   const [activeSection, setActiveSection] = useState<string>("");
@@ -86,7 +87,13 @@ const Navigation: React.FC<NavigationProps> = ({ containerRef }) => {
       threshold: 0,
     };
 
-    const sectionIds = ["overview", "about", "service", "contact"];
+    const sectionIds = [
+      SCREEN_IDS.OVERVIEW,
+      SCREEN_IDS.ABOUT,
+      SCREEN_IDS.SEVICE,
+      SCREEN_IDS.CONTACT,
+    ];
+
     const observers: IntersectionObserver[] = [];
 
     sectionIds.forEach((sectionId) => {
