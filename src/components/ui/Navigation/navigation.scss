@@ -53,47 +53,57 @@
   font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
-  padding: 8px;
+  padding: 8px 12px;
   border-radius: 6px;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, transform 0.2s ease;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 
+  // Base underline that's always present
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 1px;
+    background: #a8b3a5;
+    transition: width 0.3s ease, background 0.3s ease;
+  }
+
   &:hover {
-    color: black;
+    color: #a8b3a5;
+    transform: translateY(-1px);
+
+    &::after {
+      width: 60%;
+      background: #a8b3a5;
+    }
+
     @media screen and (max-width: 480px) {
       color: #a8b3a5;
+      transform: none;
+
+      &::after {
+        width: 50%;
+      }
     }
   }
 
   &.active {
-    color: black;
-    font-weight: 600;
-    background: none;
+    color: #2d3319;
 
     &::after {
-      content: "";
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80px;
-      height: 1px;
+      width: 80%;
       background: #a8b3a5;
-      border-radius: 1px;
-      animation: slideIn 0.3s ease-out;
+      height: 1.5px;
     }
-  }
-}
 
-@keyframes slideIn {
-  from {
-    width: 0;
-    opacity: 0;
-  }
-  to {
-    width: 80px;
-    opacity: 1;
+    &:hover::after {
+      width: 80%;
+      background: #a8b3a5;
+    }
   }
 }
 
@@ -125,14 +135,15 @@
   .nav-link {
     font-size: 0.85rem;
     padding: 6px 8px;
-  }
 
-  .nav-link.active::after {
-    width: 80px;
-    background: #a8b3a5;
-    bottom: 0px;
-    height: 1px;
-    animation: slideIn 0.3s ease-out;
+    &::after {
+      bottom: 1px;
+    }
+
+    &.active::after {
+      width: 70%;
+      height: 1.5px;
+    }
   }
 }
 
@@ -145,37 +156,22 @@
     font-size: 0.8rem;
     padding: 4px 6px;
     text-transform: capitalize;
+
+    &::after {
+      bottom: 0;
+    }
+
+    &.active::after {
+      width: 60%;
+      height: 1.5px;
+    }
+
+    &:hover::after {
+      width: 40%;
+    }
   }
 
   .brand-text {
     font-size: 0.9rem;
-  }
-}
-
-// Smooth transitions for active state
-.nav-link:not(.active)::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 1px;
-  background: #a8b3a5;
-  border-radius: 1px;
-  animation: slideIn 0.3s ease-out;
-}
-
-.nav-link:hover::after {
-  width: 80px;
-  color: black;
-  bottom: 0px;
-  height: 1px;
-  transition: width 0.3s ease;
-
-  @media screen and (max-width: 480px) {
-    width: 36px;
-    bottom: 0px;
-    height: 1px;
   }
 }
