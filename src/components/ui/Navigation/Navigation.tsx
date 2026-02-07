@@ -35,17 +35,16 @@ const Navigation: React.FC<NavigationProps> = ({ containerRef }) => {
   const [activeSection, setActiveSection] = useState<string>("");
   const [isScrolled, setIsScrolled] = useState(false);
   const navbarRef = useRef<HTMLElement | null>(null);
+  const isScrollingRef = useRef(false);
 
   // Handle smooth scrolling to section within the container
   const scrollToSection = (sectionId: string) => {
     const container = containerRef.current;
     const element = document.getElementById(sectionId);
+    const navbar = navbarRef.current;
 
-    if (element && container) {
-      // Calculate actual navbar height using ref
-      const navbar = navbarRef.current;
-      const navbarHeight = navbar ? navbar.getBoundingClientRect().height : 0;
-
+    if (element && container && navbar) {
+      const navbarHeight = navbar.getBoundingClientRect().height;
       const containerRect = container.getBoundingClientRect();
       const elementRect = element.getBoundingClientRect();
 
@@ -56,10 +55,19 @@ const Navigation: React.FC<NavigationProps> = ({ containerRef }) => {
         container.scrollTop -
         navbarHeight;
 
+      // Set flag to prevent observer from updating active section during programmatic scroll
+      isScrollingRef.current = true;
+      setActiveSection(sectionId);
+
       container.scrollTo({
         top: offsetPosition,
         behavior: "smooth",
       });
+
+      // Reset flag after scroll animation completes
+      setTimeout(() => {
+        isScrollingRef.current = false;
+      }, 1000);
     }
   };
 
@@ -110,13 +118,31 @@ const Navigation: React.FC<NavigationProps> = ({ containerRef }) => {
       ];
       const observers: IntersectionObserver[] = [];
 
+      // Track which sections are currently intersecting
+      const intersectingSections = new Set<string>();
+
       sectionIds.forEach((sectionId) => {
         const element = document.getElementById(sectionId);
         if (element) {
           const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
+              // Don't update active section during programmatic scrolling
+              if (isScrollingRef.current) return;
+
               if (entry.isIntersecting) {
-                setActiveSection(sectionId);
+                intersectingSections.add(sectionId);
+              } else {
+                intersectingSections.delete(sectionId);
+              }
+
+              // Set the first intersecting section as active (top-most)
+              if (intersectingSections.size > 0) {
+                const firstIntersecting = sectionIds.find((id) =>
+                  intersectingSections.has(id)
+                );
+                if (firstIntersecting) {
+                  setActiveSection(firstIntersecting);
+                }
               }
             });
           }, observerOptions);
