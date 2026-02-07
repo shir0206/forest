@@ -76,44 +76,68 @@ const Navigation: React.FC<NavigationProps> = ({ containerRef }) => {
     return () => container.removeEventListener("scroll", handleScroll);
   }, [containerRef]);
 
-  // Set up intersection observers for active section detection
+  // Set up intersection observers for active section detection with responsive margins
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const observerOptions: IntersectionObserverInit = {
-      root: container, // Use the container as the root
-      rootMargin: "-20% 0px -60% 0px",
-      threshold: 0,
+    const updateObservers = () => {
+      const containerHeight = container.clientHeight;
+
+      // Calculate actual navbar height
+      const navbar = document.querySelector(".navigation");
+      const navbarHeight = navbar ? navbar.getBoundingClientRect().height : 0;
+
+      // Calculate responsive margins based on container height
+      const topMargin = navbarHeight;
+      const bottomMargin = Math.floor(containerHeight * 0.6); // 60% of container height
+
+      const observerOptions: IntersectionObserverInit = {
+        root: container,
+        rootMargin: `-${topMargin}px 0px -${bottomMargin}px 0px`,
+        threshold: 0,
+      };
+
+      const sectionIds = [
+        SCREEN_IDS.OVERVIEW,
+        SCREEN_IDS.ABOUT,
+        SCREEN_IDS.SEVICE,
+        SCREEN_IDS.CONTACT,
+      ];
+      const observers: IntersectionObserver[] = [];
+
+      sectionIds.forEach((sectionId) => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                setActiveSection(sectionId);
+              }
+            });
+          }, observerOptions);
+
+          observer.observe(element);
+          observers.push(observer);
+        }
+      });
+
+      return observers;
     };
 
-    const sectionIds = [
-      SCREEN_IDS.OVERVIEW,
-      SCREEN_IDS.ABOUT,
-      SCREEN_IDS.SEVICE,
-      SCREEN_IDS.CONTACT,
-    ];
+    let observers = updateObservers();
 
-    const observers: IntersectionObserver[] = [];
+    // Recreate observers on resize
+    const handleResize = () => {
+      observers.forEach((observer) => observer.disconnect());
+      observers = updateObservers();
+    };
 
-    sectionIds.forEach((sectionId) => {
-      const element = document.getElementById(sectionId);
-      if (element) {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              setActiveSection(sectionId);
-            }
-          });
-        }, observerOptions);
-
-        observer.observe(element);
-        observers.push(observer);
-      }
-    });
+    window.addEventListener("resize", handleResize);
 
     return () => {
       observers.forEach((observer) => observer.disconnect());
+      window.removeEventListener("resize", handleResize);
     };
   }, [containerRef]);
 
