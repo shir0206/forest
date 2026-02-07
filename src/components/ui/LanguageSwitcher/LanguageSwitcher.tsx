@@ -63,7 +63,6 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
   };
 
   const selectLanguage = (lang: Language) => {
-    debugger;
     setLanguage(lang);
     setIsOpen(false);
     if (onLanguageChange) {
