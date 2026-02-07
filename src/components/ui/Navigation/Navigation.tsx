@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useAppContext } from "../../../contexts/AppContext";
 import { useTranslation } from "../../../hooks/useTranslation";
 import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
@@ -34,6 +34,7 @@ const Navigation: React.FC<NavigationProps> = ({ containerRef }) => {
 
   const [activeSection, setActiveSection] = useState<string>("");
   const [isScrolled, setIsScrolled] = useState(false);
+  const navbarRef = useRef<HTMLElement | null>(null);
 
   // Handle smooth scrolling to section within the container
   const scrollToSection = (sectionId: string) => {
@@ -41,7 +42,10 @@ const Navigation: React.FC<NavigationProps> = ({ containerRef }) => {
     const element = document.getElementById(sectionId);
 
     if (element && container) {
-      const navbarHeight = 40;
+      // Calculate actual navbar height using ref
+      const navbar = navbarRef.current;
+      const navbarHeight = navbar ? navbar.getBoundingClientRect().height : 0;
+
       const containerRect = container.getBoundingClientRect();
       const elementRect = element.getBoundingClientRect();
 
@@ -84,8 +88,8 @@ const Navigation: React.FC<NavigationProps> = ({ containerRef }) => {
     const updateObservers = () => {
       const containerHeight = container.clientHeight;
 
-      // Calculate actual navbar height
-      const navbar = document.querySelector(".navigation");
+      // Calculate actual navbar height using ref
+      const navbar = navbarRef.current;
       const navbarHeight = navbar ? navbar.getBoundingClientRect().height : 0;
 
       // Calculate responsive margins based on container height
@@ -142,7 +146,10 @@ const Navigation: React.FC<NavigationProps> = ({ containerRef }) => {
   }, [containerRef]);
 
   return (
-    <nav className={`navigation ${isScrolled ? "scrolled" : ""}`}>
+    <nav
+      ref={navbarRef}
+      className={`navigation ${isScrolled ? "scrolled" : ""}`}
+    >
       <div className="navigation-container">
         <div className="navigation-links">
           {navigationItems.map((item) => (
