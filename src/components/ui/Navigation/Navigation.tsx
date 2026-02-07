@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppContext } from "../../../contexts/AppContext";
-import { SCREENS } from "../../../helper/const";
 import { useTranslation } from "../../../hooks/useTranslation";
 import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
 import "./navigation.scss";
@@ -20,7 +19,7 @@ const Navigation: React.FC = () => {
     return null;
   }
 
-  const { setLanguage, language } = appContext;
+  const { setLanguage } = appContext;
 
   // Navigation items based on screens
   const navigationItems: NavigationItem[] = [
@@ -32,8 +31,6 @@ const Navigation: React.FC = () => {
 
   const [activeSection, setActiveSection] = useState<string>("");
   const [isScrolled, setIsScrolled] = useState(false);
-  const observerRefs = useRef<Map<string, IntersectionObserver>>(new Map());
-  const sectionRefs = useRef<Map<string, HTMLElement>>(new Map());
 
   // Handle smooth scrolling to section
   const scrollToSection = (sectionId: string) => {
@@ -52,11 +49,8 @@ const Navigation: React.FC = () => {
     }
   };
 
-  // Handle language change
-  const handleLanguageChange = (newLanguage: string) => {
-    if (newLanguage === "en" || newLanguage === "he") {
-      setLanguage(newLanguage as "en" | "he");
-    }
+  const handleSectionClick = (sectionId: string) => {
+    scrollToSection(sectionId);
   };
 
   // Set up intersection observers for active section detection
@@ -71,44 +65,35 @@ const Navigation: React.FC = () => {
 
   // Set up intersection observers for active section detection
   useEffect(() => {
-    const options = {
+    const observerOptions = {
       root: null,
-      rootMargin: "-20% 0px -80% 0px",
-      threshold: 0.1,
+      rootMargin: "-20% 0px -60% 0px",
+      threshold: 0,
     };
 
-    navigationItems.forEach((item) => {
-      const element = document.getElementById(item.id);
-      if (element) {
-        sectionRefs.current.set(item.id, element);
+    const sectionIds = ["overview", "about", "expertise", "contact"];
+    const observers: IntersectionObserver[] = [];
 
+    sectionIds.forEach((sectionId) => {
+      const element = document.getElementById(sectionId);
+      if (element) {
         const observer = new IntersectionObserver((entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              setActiveSection(item.id);
+              setActiveSection(sectionId);
             }
           });
-        }, options);
+        }, observerOptions);
 
         observer.observe(element);
-        observerRefs.current.set(item.id, observer);
+        observers.push(observer);
       }
     });
 
-    // Set initial active section
-    const firstVisible = document.getElementById(navigationItems[0].id);
-    if (firstVisible) {
-      setActiveSection(navigationItems[0].id);
-    }
-
     return () => {
-      // Clean up observers
-      observerRefs.current.forEach((observer) => {
-        observer.disconnect();
-      });
-      observerRefs.current.clear();
+      observers.forEach((observer) => observer.disconnect());
     };
-  }, [navigationItems]);
+  }, []); // Empty dependency array - runs once
 
   return (
     <nav className={`navigation ${isScrolled ? "scrolled" : ""}`}>
@@ -120,7 +105,7 @@ const Navigation: React.FC = () => {
               className={`nav-link ${
                 activeSection === item.id ? "active" : ""
               }`}
-              onClick={() => scrollToSection(item.id)}
+              onClick={() => handleSectionClick(item.id)}
               aria-label={`Navigate to ${item.label}`}
             >
               {item.label}
@@ -128,7 +113,6 @@ const Navigation: React.FC = () => {
           ))}
         </div>
 
-        {/* Language Switcher */}
         <div className="navigation-actions">
           <LanguageSwitcher />
         </div>

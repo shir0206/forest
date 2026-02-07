@@ -67,19 +67,19 @@
   }
 
   &.active {
-    color: var(--dusty-olive);
+    color: black;
     font-weight: 600;
-    background: blue;
+    background: none;
 
     &::after {
       content: "";
       position: absolute;
-      bottom: -8px;
+      bottom: 0;
       left: 50%;
       transform: translateX(-50%);
       width: 80px;
-      height: 2px;
-      background: red;
+      height: 1px;
+      background: #a8b3a5;
       border-radius: 1px;
       animation: slideIn 0.3s ease-out;
     }
@@ -92,7 +92,7 @@
     opacity: 0;
   }
   to {
-    width: 20px;
+    width: 80px;
     opacity: 1;
   }
 }
@@ -128,10 +128,11 @@
   }
 
   .nav-link.active::after {
-    width: 36px;
+    width: 80px;
     background: #a8b3a5;
     bottom: 0px;
     height: 1px;
+    animation: slideIn 0.3s ease-out;
   }
 }
 
@@ -151,12 +152,6 @@
   }
 }
 
-// Accessibility improvements
-.nav-link:focus {
-  outline: 2px solid var(--dusty-olive);
-  outline-offset: 2px;
-}
-
 // Smooth transitions for active state
 .nav-link:not(.active)::after {
   content: "";
@@ -165,17 +160,19 @@
   left: 50%;
   transform: translateX(-50%);
   width: 0;
-  height: 2px;
+  height: 1px;
   background: #a8b3a5;
   border-radius: 1px;
-  transition: width 0.3s ease;
+  animation: slideIn 0.3s ease-out;
 }
 
 .nav-link:hover::after {
-  width: 36px;
+  width: 80px;
   color: black;
   bottom: 0px;
   height: 1px;
+  transition: width 0.3s ease;
+
   @media screen and (max-width: 480px) {
     width: 36px;
     bottom: 0px;

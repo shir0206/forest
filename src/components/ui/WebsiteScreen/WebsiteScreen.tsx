@@ -12,7 +12,7 @@ const WebsiteSection = ({
   Screen: SectionComponent;
   setRef: (el: HTMLDivElement | null) => void;
 }) => (
-  <div ref={setRef} data-screen-id={id}>
+  <div ref={setRef} id={id}>
     <Screen isVisible={isVisible} />
   </div>
 );
