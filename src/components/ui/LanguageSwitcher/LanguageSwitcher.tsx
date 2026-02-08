@@ -127,7 +127,10 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
               onKeyDown={(e) => handleOptionKeyDown(e, LANGUAGE.EN)}
               tabIndex={0}
             >
-              English
+              <span>English</span>
+              {language === LANGUAGE.EN && (
+                <Icon name="check" size={16} className="check-icon" />
+              )}
             </li>
             <li
               role="option"
@@ -139,7 +142,10 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
               onKeyDown={(e) => handleOptionKeyDown(e, LANGUAGE.HE)}
               tabIndex={0}
             >
-              עברית
+              <span>עברית</span>
+              {language === LANGUAGE.HE && (
+                <Icon name="check" size={16} className="check-icon" />
+              )}
             </li>
           </ul>
         </div>
