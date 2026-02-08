@@ -57,12 +57,26 @@ export interface TextStructure {
   };
   contact: {
     title: string;
-    subtitle: string;
+    subtitlePrimary: string;
+    subtitleSecondary: string;
     links: {
-      linkedin: string;
-      whatsapp: string;
-      email: string;
-      scheduleMeeting: string;
+      linkedin: {
+        name: string;
+      };
+      whatsapp: {
+        name: string;
+        text: string;
+      };
+      email: {
+        name: string;
+        subject: string;
+        body: string;
+      };
+      scheduleMeeting: {
+        name: string;
+        text: string;
+        details: string;
+      };
     };
   };
 }

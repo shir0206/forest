@@ -64,10 +64,23 @@
     "subtitlePrimary": "Reach out for ideas, questions, or a collaboration.",
     "subtitleSecondary": "I'd be glad to hear from you.",
     "links": {
-      "linkedin": "LinkedIn",
-      "whatsapp": "WhatsApp",
-      "email": "Email",
-      "scheduleMeeting": "Schedule Meeting"
+      "linkedin": {
+        "name": "LinkedIn"
+      },
+      "whatsapp": {
+        "name": "WhatsApp",
+        "text": "Hello! I'm reaching out to inquire about your services. Looking forward to your reply."
+      },
+      "email": {
+        "name": "Email",
+        "subject": "Booking a meeting",
+        "body": "Hi, I would like to schedule a meeting to discuss potential collaboration."
+      },
+      "scheduleMeeting": {
+        "name": "Schedule Meeting",
+        "text": "Business Meeting",
+        "details": "Discuss potential collaboration"
+      }
     }
   }
 }

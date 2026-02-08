@@ -64,10 +64,23 @@
     "subtitlePrimary": "מוזמנים ליצור קשר לרעיונות, שאלות או שיתופי פעולה.",
     "subtitleSecondary": "אשמח לשמוע מכם.",
     "links": {
-      "linkedin": "LinkedIn",
-      "whatsapp": "WhatsApp",
-      "email": "אימייל",
-      "scheduleMeeting": "קביעת פגישה"
+      "linkedin": {
+        "name": "LinkedIn"
+      },
+      "whatsapp": {
+        "name": "WhatsApp",
+        "text": "שלום! אני פונה אליכם כדי לברר אודות השירותים שלכם. נשמח לתשובה."
+      },
+      "email": {
+        "name": "אימייל",
+        "subject": "קביעת פגישה",
+        "body": "היי, אני רוצה לקבוע פגישה כדי לדון בשיתוף פעולה פוטנציאלי."
+      },
+      "scheduleMeeting": {
+        "name": "קביעת פגישה",
+        "text": "פגישה עסקית",
+        "details": "דיון בשיתוף פעולה פוטנציאלי"
+      }
     }
   }
 }
