@@ -80,13 +80,16 @@
       width: 60%;
       background: #a8b3a5;
     }
+  }
 
-    @media screen and (max-width: 480px) {
+  // Disable hover effects on mobile
+  @media screen and (max-width: 768px) {
+    &:hover {
       color: #a8b3a5;
       transform: none;
 
       &::after {
-        width: 50%;
+        width: 0;
       }
     }
   }
@@ -103,6 +106,13 @@
     &:hover::after {
       width: 80%;
       background: #a8b3a5;
+    }
+
+    // Keep active state on mobile
+    @media screen and (max-width: 768px) {
+      &:hover::after {
+        width: 80%;
+      }
     }
   }
 }
@@ -164,10 +174,6 @@
     &.active::after {
       width: 60%;
       height: 1.5px;
-    }
-
-    &:hover::after {
-      width: 40%;
     }
   }
 
