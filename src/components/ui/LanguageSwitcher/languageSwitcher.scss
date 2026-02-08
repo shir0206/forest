@@ -18,9 +18,12 @@
   font-size: 14px;
 
   &:hover {
-    transform: translateY(-1px);
     .chevron-icon {
       animation: MoveUpDown 0.5s ease-in-out infinite;
+
+      &.rotated {
+        animation: Flip 0.3s ease-in-out;
+      }
     }
   }
 
@@ -29,7 +32,6 @@
     padding: 0;
 
     &:hover {
-      transform: none;
       .chevron-icon {
         animation: none;
       }
@@ -41,16 +43,6 @@
     .chevron-icon {
       display: none;
     }
-  }
-}
-
-@keyframes MoveUpDown {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-1px);
   }
 }
 
@@ -146,4 +138,23 @@
 .language-switcher[data-open="true"] .language-dropdown {
   opacity: 1;
   visibility: visible;
+}
+
+@keyframes MoveUpDown {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1px);
+  }
+}
+
+@keyframes Flip {
+  0% {
+    transform: rotate(0) translateY(0);
+  }
+  100% {
+    transform: rotate(180) translateY(0);
+  }
 }
