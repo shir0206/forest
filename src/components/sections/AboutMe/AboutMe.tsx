@@ -4,7 +4,12 @@ import imagePath from "../../../assets/images/shirzabolotny.png?url";
 import { ReactComponent as Circle } from "../../../assets/images/circle.svg";
 import { useTranslation } from "../../../hooks/useTranslation";
 
-const AboutMe: React.FC = () => {
+interface AboutMeProps {
+  isVisible: boolean;
+  containerRef?: React.RefObject<HTMLDivElement | null>;
+}
+
+const AboutMe: React.FC<AboutMeProps> = ({ containerRef }) => {
   const { t } = useTranslation();
 
   return (

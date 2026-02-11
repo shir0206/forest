@@ -29,7 +29,12 @@ const ContactLink: React.FC<ContactLinkProps> = ({ name, icon, url }) => {
 };
 
 // Main Contact Component
-export const Contact: React.FC = () => {
+interface ContactProps {
+  isVisible: boolean;
+  containerRef?: React.RefObject<HTMLDivElement | null>;
+}
+
+export const Contact: React.FC<ContactProps> = ({ containerRef }) => {
   const { t } = useTranslation();
 
   // Generate contact links by combining configuration with translations

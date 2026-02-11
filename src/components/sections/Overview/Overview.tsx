@@ -2,9 +2,21 @@ import React from "react";
 import "./overview.scss";
 import { ReactComponent as Branch } from "../../../assets/images/branch.svg";
 import { useTranslation } from "../../../hooks/useTranslation";
+import { useScrollNavigation } from "../../../hooks/useScrollNavigation";
+import { SCREEN_IDS } from "../../../helper/const";
 
-const Overview: React.FC = () => {
+interface OverviewProps {
+  isVisible: boolean;
+  containerRef?: React.RefObject<HTMLDivElement | null>;
+}
+
+const Overview: React.FC<OverviewProps> = ({ containerRef }) => {
   const { t } = useTranslation();
+
+  // Use the scroll navigation hook
+  const { scrollToSection } = useScrollNavigation({
+    containerRef: containerRef || { current: null },
+  });
 
   function parseBoldText(text: string): React.ReactNode[] {
     return text.split("**").map((part, index) => {
@@ -36,7 +48,10 @@ const Overview: React.FC = () => {
       </div>
       <p className="overview-quote">{parseBoldText(t.overview.quote)}</p>
       <p className="overview-cta">{t.overview.cta}</p>
-      <button className="overview-link" onClick={scrollToSection()}>
+      <button
+        className="overview-link"
+        onClick={() => scrollToSection(SCREEN_IDS.CONTACT)}
+      >
         {t.overview.link}
       </button>
     </div>

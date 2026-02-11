@@ -9,7 +9,12 @@ interface ServiceCard {
   icon: IconName;
 }
 
-const Service: React.FC = () => {
+interface ServiceProps {
+  isVisible: boolean;
+  containerRef?: React.RefObject<HTMLDivElement | null>;
+}
+
+const Service: React.FC<ServiceProps> = ({ containerRef }) => {
   const { t } = useTranslation();
 
   const serviceData: ServiceCard[] = [

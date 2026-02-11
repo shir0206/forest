@@ -76,6 +76,7 @@ export default function Browser({ position }: BrowserProps) {
                 isVisible={visibleScreens.has(id)}
                 Screen={Screen}
                 setRef={setScreenRef(id)}
+                containerRef={contentRef}
               />
             ))}
           </div>
