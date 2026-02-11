@@ -25,20 +25,6 @@
   margin: 0 auto;
 }
 
-.navigation-brand {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.brand-text {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--dusty-olive);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-
 .navigation-links {
   display: flex;
   gap: 20px;
@@ -134,10 +120,6 @@
     padding: 0 20px;
   }
 
-  .brand-text {
-    font-size: 1rem;
-  }
-
   .navigation-links {
     gap: 20px;
   }
@@ -175,9 +157,5 @@
       width: 60%;
       height: 1.5px;
     }
-  }
-
-  .brand-text {
-    font-size: 0.9rem;
   }
 }
