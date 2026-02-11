@@ -1,0 +1,90 @@
+{
+  "hash": "28f88b96",
+  "configHash": "f86d02f2",
+  "lockfileHash": "0b0d9331",
+  "browserHash": "9f4e810a",
+  "optimized": {
+    "@react-three/drei": {
+      "src": "../../node_modules/@react-three/drei/index.js",
+      "file": "@react-three_drei.js",
+      "fileHash": "41780008",
+      "needsInterop": false
+    },
+    "@react-three/fiber": {
+      "src": "../../node_modules/@react-three/fiber/dist/react-three-fiber.esm.js",
+      "file": "@react-three_fiber.js",
+      "fileHash": "cf582b5e",
+      "needsInterop": false
+    },
+    "@react-three/postprocessing": {
+      "src": "../../node_modules/@react-three/postprocessing/dist/index.js",
+      "file": "@react-three_postprocessing.js",
+      "fileHash": "d1403343",
+      "needsInterop": false
+    },
+    "gsap": {
+      "src": "../../node_modules/gsap/index.js",
+      "file": "gsap.js",
+      "fileHash": "f44cd5ae",
+      "needsInterop": false
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "b4cb0c8a",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "ccaef1a6",
+      "needsInterop": true
+    },
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "0aa652b8",
+      "needsInterop": true
+    },
+    "three": {
+      "src": "../../node_modules/three/build/three.module.js",
+      "file": "three.js",
+      "fileHash": "cd1cae86",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-DbKvDyjX": {
+      "file": "chunk-DbKvDyjX.js",
+      "isDynamicEntry": false
+    },
+    "client-BB8OFv9S": {
+      "file": "client-BB8OFv9S.js",
+      "isDynamicEntry": false
+    },
+    "hls-BlcOfvmL": {
+      "file": "hls-BlcOfvmL.js",
+      "isDynamicEntry": false
+    },
+    "hls-k8l178Z_": {
+      "file": "hls-k8l178Z_.js",
+      "isDynamicEntry": true
+    },
+    "react-Dzmm40ca": {
+      "file": "react-Dzmm40ca.js",
+      "isDynamicEntry": false
+    },
+    "react-three-fiber.esm-OeLl-8Vd": {
+      "file": "react-three-fiber.esm-OeLl-8Vd.js",
+      "isDynamicEntry": false
+    },
+    "three.module-Ch3b5UQi": {
+      "file": "three.module-Ch3b5UQi.js",
+      "isDynamicEntry": false
+    },
+    "vision_bundle-aH0lJdGX": {
+      "file": "vision_bundle-aH0lJdGX.js",
+      "isDynamicEntry": true
+    }
+  }
+}

@@ -1,0 +1,162 @@
+// Navigation Component Styles
+.navigation {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  background: rgb(246 247 244);
+  border-bottom: 1px solid rgba(120, 128, 97, 0.15);
+  z-index: 1000;
+  transition: all 0.3s ease;
+  margin-top: -1px;
+
+  &.scrolled {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 5px 12px rgb(0 0 0 / 5%);
+  }
+}
+
+.navigation-container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.navigation-links {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.nav-link {
+  position: relative;
+  background: none;
+  border: none;
+  color: #a8b3a5;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: color 0.3s ease, transform 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  // Base underline that's always present
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 1px;
+    background: #a8b3a5;
+    transition: width 0.3s ease, background 0.3s ease;
+  }
+
+  &:hover {
+    color: #a8b3a5;
+    transform: translateY(-1px);
+
+    &::after {
+      width: 60%;
+      background: #a8b3a5;
+    }
+  }
+
+  // Disable hover effects on mobile
+  @media screen and (max-width: 768px) {
+    &:hover {
+      color: #a8b3a5;
+      transform: none;
+
+      &::after {
+        width: 0;
+      }
+    }
+  }
+
+  &.active {
+    color: #2d3319;
+
+    &::after {
+      width: 80%;
+      background: #a8b3a5;
+      height: 1.5px;
+    }
+
+    &:hover::after {
+      width: 80%;
+      background: #a8b3a5;
+    }
+
+    // Keep active state on mobile
+    @media screen and (max-width: 768px) {
+      &:hover::after {
+        width: 80%;
+      }
+    }
+  }
+}
+
+.navigation-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .navigation {
+    height: 36px;
+    width: 100%;
+  }
+
+  .navigation-container {
+    padding: 0 20px;
+  }
+
+  .navigation-links {
+    gap: 20px;
+  }
+
+  .nav-link {
+    font-size: 0.85rem;
+    padding: 6px 8px;
+
+    &::after {
+      bottom: 1px;
+    }
+
+    &.active::after {
+      width: 70%;
+      height: 1.5px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .navigation-links {
+    gap: 0;
+  }
+
+  .nav-link {
+    font-size: 0.8rem;
+    padding: 4px 6px;
+    text-transform: capitalize;
+
+    &::after {
+      bottom: 0;
+    }
+
+    &.active::after {
+      width: 60%;
+      height: 1.5px;
+    }
+  }
+}
