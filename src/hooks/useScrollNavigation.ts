@@ -25,7 +25,6 @@ export const useScrollNavigation = ({
   const [isScrolled, setIsScrolled] = useState(false);
   const isScrollingRef = useRef(false);
 
-  // Handle smooth scrolling to section within the container
   const scrollToSection = (sectionId: string) => {
     const container = containerRef.current;
     const element = document.getElementById(sectionId);
@@ -34,11 +33,9 @@ export const useScrollNavigation = ({
       const containerRect = container.getBoundingClientRect();
       const elementRect = element.getBoundingClientRect();
 
-      // Calculate position relative to container
       const offsetPosition =
         elementRect.top - containerRect.top + container.scrollTop;
 
-      // Set flag to prevent observer from updating active section during programmatic scroll
       isScrollingRef.current = true;
       setActiveSection(sectionId);
 
@@ -47,14 +44,12 @@ export const useScrollNavigation = ({
         behavior: "smooth",
       });
 
-      // Reset flag after scroll animation completes
       setTimeout(() => {
         isScrollingRef.current = false;
       }, 1000);
     }
   };
 
-  // Detect scroll within the container
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -67,79 +62,58 @@ export const useScrollNavigation = ({
     return () => container.removeEventListener("scroll", handleScroll);
   }, [containerRef]);
 
-  // Set up intersection observers for active section detection with responsive margins
+  // New approach: Check which section has 50%+ visible
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const updateObservers = () => {
-      const containerHeight = container.clientHeight;
+    const handleScroll = () => {
+      if (isScrollingRef.current) return;
 
-      // Calculate responsive margins based on container height
-      // Note: We removed navbar height dependency since it's not always available
-      const topMargin = 0; // Will be calculated dynamically if needed
-      const bottomMargin = Math.floor(containerHeight * 0.6); // 60% of container height
+      const containerRect = container.getBoundingClientRect();
+      const containerTop = containerRect.top;
+      const containerBottom = containerRect.bottom;
 
-      const observerOptions: IntersectionObserverInit = {
-        root: container,
-        rootMargin: `-${topMargin}px 0px -${bottomMargin}px 0px`,
-        threshold: 0,
-      };
-
-      const observers: IntersectionObserver[] = [];
-
-      // Track which sections are currently intersecting
-      const intersectingSections = new Set<string>();
+      let maxVisibleSection = "";
+      let maxVisiblePercentage = 0;
 
       sectionIds.forEach((sectionId) => {
         const element = document.getElementById(sectionId);
-        if (element) {
-          const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-              // Don't update active section during programmatic scrolling
-              if (isScrollingRef.current) return;
+        if (!element) return;
 
-              if (entry.isIntersecting) {
-                intersectingSections.add(sectionId);
-              } else {
-                intersectingSections.delete(sectionId);
-              }
+        const elementRect = element.getBoundingClientRect();
+        const elementTop = elementRect.top;
+        const elementBottom = elementRect.bottom;
+        const elementHeight = elementRect.height;
 
-              // Set the first intersecting section as active (top-most)
-              if (intersectingSections.size > 0) {
-                const firstIntersecting = sectionIds.find((id) =>
-                  intersectingSections.has(id)
-                );
-                if (firstIntersecting) {
-                  setActiveSection(firstIntersecting);
-                }
-              }
-            });
-          }, observerOptions);
+        // Calculate visible portion
+        const visibleTop = Math.max(elementTop, containerTop);
+        const visibleBottom = Math.min(elementBottom, containerBottom);
+        const visibleHeight = Math.max(0, visibleBottom - visibleTop);
 
-          observer.observe(element);
-          observers.push(observer);
+        const visiblePercentage = (visibleHeight / elementHeight) * 100;
+
+        // Section becomes active when 50%+ is visible
+        if (
+          visiblePercentage >= 50 &&
+          visiblePercentage > maxVisiblePercentage
+        ) {
+          maxVisibleSection = sectionId;
+          maxVisiblePercentage = visiblePercentage;
         }
       });
 
-      return observers;
+      if (maxVisibleSection && maxVisibleSection !== activeSection) {
+        setActiveSection(maxVisibleSection);
+      }
     };
 
-    let observers = updateObservers();
+    container.addEventListener("scroll", handleScroll);
+    // Run once on mount to set initial active section
+    handleScroll();
 
-    // Recreate observers on resize
-    const handleResize = () => {
-      observers.forEach((observer) => observer.disconnect());
-      observers = updateObservers();
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      observers.forEach((observer) => observer.disconnect());
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [containerRef, sectionIds]);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, [containerRef, sectionIds, activeSection]);
 
   return {
     activeSection,
