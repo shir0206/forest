@@ -1,19 +1,23 @@
 import React from "react";
-import { SectionComponent } from "../../helper/types";
+import { SectionComponent } from "../../../helper/types";
+
+interface WebsiteSectionProps {
+  id: string;
+  isVisible: boolean;
+  Screen: SectionComponent;
+  setRef: (el: HTMLDivElement | null) => void;
+  containerRef: React.RefObject<HTMLDivElement | null>;
+}
 
 const WebsiteSection = ({
   id,
   isVisible,
   Screen,
   setRef,
-}: {
-  id: string;
-  isVisible: boolean;
-  Screen: SectionComponent;
-  setRef: (el: HTMLDivElement | null) => void;
-}) => (
-  <div ref={setRef} data-screen-id={id}>
-    <Screen isVisible={isVisible} />
+  containerRef,
+}: WebsiteSectionProps) => (
+  <div ref={setRef} id={id}>
+    <Screen isVisible={isVisible} containerRef={containerRef} />
   </div>
 );
 

@@ -12,6 +12,9 @@ import { ReactComponent as DialogIcon } from "../../../assets/icons/service/dial
 import { ReactComponent as MonitorsIcon } from "../../../assets/icons/service/monitors.svg";
 import { ReactComponent as TestIcon } from "../../../assets/icons/service/test.svg";
 import { ReactComponent as ChecklistIcon } from "../../../assets/icons/service/checklist.svg";
+import { ReactComponent as ChevronDownIcon } from "../../../assets/icons/language/chevron.svg";
+import { ReactComponent as GlobeIcon } from "../../../assets/icons/language/globe.svg";
+import { ReactComponent as CheckIcon } from "../../../assets/icons/language/check.svg";
 
 const icons = {
   close: CloseIcon,
@@ -27,6 +30,9 @@ const icons = {
   monitors: MonitorsIcon,
   test: TestIcon,
   checklist: ChecklistIcon,
+  chevron: ChevronDownIcon,
+  globe: GlobeIcon,
+  check: CheckIcon,
 };
 
 export type IconName = keyof typeof icons;

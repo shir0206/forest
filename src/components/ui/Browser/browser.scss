@@ -113,16 +113,6 @@
   }
 }
 
-.browser-title {
-  font-size: 1.4rem;
-  font-weight: 400;
-  color: var(--dusty-olive);
-  letter-spacing: 0.3px;
-  flex: 1;
-  text-align: center;
-  width: 100%;
-}
-
 // Browser Content
 .browser-content {
   background: white;
@@ -131,6 +121,10 @@
   overflow-x: hidden;
   scroll-behavior: smooth;
   transition: height 0.3s ease;
+
+  &.rtl {
+    direction: rtl;
+  }
 
   &::-webkit-scrollbar {
     width: 8px;
@@ -445,10 +439,6 @@
 @media (max-width: 768px) {
   .browser-container {
     width: 95vw;
-  }
-
-  .browser-title {
-    font-size: 1.2rem;
   }
 
   .screen {

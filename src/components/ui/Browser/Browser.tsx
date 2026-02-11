@@ -1,57 +1,46 @@
-import React, { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import "./browser.scss";
-import { Icon } from "../Icon/Icon";
-import { WINDOW_STATE } from "../../../helper/types";
 import { useHtmlReady } from "../../../hooks/useHtmlReady";
 import { useScreenVisibility } from "../../../hooks/useScreenVisibility";
 import { SCREENS } from "../../../helper/const";
 import WebsiteSection from "../WebsiteScreen/WebsiteScreen.tsx";
 import { useAppContext } from "../../../contexts/AppContext";
+import { ContextBridge } from "../../ContextBridge";
+import { BrowserHeader } from "./BrowserHeader";
+import Navigation from "../Navigation/Navigation";
+import { LANGUAGE } from "../../../types/app.ts";
 
 type BrowserProps = {
   position: [number, number, number];
 };
 
-// Scroll indicator component
-const ScrollIndicator = () => (
-  <div className="scroll-indicator">
-    <div className="scroll-arrow" />
-  </div>
-);
-
 export default function Browser({ position }: BrowserProps) {
   console.log("Rendering Browser component");
-  const { windowState, setWindowState, visibleScreens, clearVisible } =
-    useAppContext();
+  const appContext = useAppContext();
+
+  if (!appContext) {
+    console.error("Browser: AppContext not found");
+    // return null;
+  }
+  //@ts-ignore
+  const { windowState, visibleScreens, language } = appContext;
+  // Extract the full context value to pass to the bridge
+  console.log("Browser: Extracting context value for bridge", {
+    //@ts-ignore
+
+    runIntro: appContext.runIntro, //@ts-ignore
+
+    windowState: appContext.windowState, //@ts-ignore
+
+    visibleScreens: Array.from(appContext.visibleScreens), //@ts-ignore
+
+    language: appContext.language,
+  });
 
   const { ref: contentRef, ready } = useHtmlReady<HTMLDivElement>();
   const { setScreenRef } = useScreenVisibility(contentRef, ready);
-
-  const handleClose = useCallback(
-    (event: React.MouseEvent) => {
-      clearVisible();
-      setWindowState(WINDOW_STATE.CLOSED);
-    },
-    [clearVisible, setWindowState]
-  );
-
-  const handleMinimize = useCallback(() => {
-    setWindowState(
-      windowState === WINDOW_STATE.MINIMIZED
-        ? WINDOW_STATE.OPEN
-        : WINDOW_STATE.MINIMIZED
-    );
-  }, [setWindowState, windowState]);
-
-  const handleMaximize = useCallback(() => {
-    setWindowState(
-      windowState === WINDOW_STATE.MAXIMIZED
-        ? WINDOW_STATE.OPEN
-        : WINDOW_STATE.MAXIMIZED
-    );
-  }, [setWindowState, windowState]);
 
   const vector3Position = useMemo(
     () => new THREE.Vector3(...position),
@@ -66,50 +55,33 @@ export default function Browser({ position }: BrowserProps) {
       distanceFactor={2}
       scale={[0.005, 0.005, 0.005]}
     >
-      <div
-        className={`browser-container ${windowState}`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="browser-header">
-          <div className="window-controls">
-            <button
-              className="control-btn close-btn"
-              onClick={handleClose}
-              aria-label="Close window"
-            >
-              <Icon name="close" className="control-icon" size={8} />
-            </button>
-            <button
-              className="control-btn minimize-btn"
-              onClick={handleMinimize}
-              aria-label="Minimize window"
-            >
-              <Icon name="minimize" className="control-icon" size={8} />
-            </button>
-            <button
-              className="control-btn maximize-btn"
-              onClick={handleMaximize}
-              aria-label="Maximize window"
-            >
-              <Icon name="maximize" className="control-icon" size={10} />
-            </button>
+      <ContextBridge contextValue={appContext}>
+        <div
+          className={`browser-container ${windowState}`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <BrowserHeader />
+
+          <div
+            className={`browser-content${
+              language == LANGUAGE.HE ? " rtl" : ""
+            }`}
+            ref={contentRef}
+          >
+            <Navigation containerRef={contentRef} />
+            {SCREENS.map(({ id, Screen }) => (
+              <WebsiteSection
+                key={id}
+                id={id}
+                isVisible={visibleScreens.has(id)}
+                Screen={Screen}
+                setRef={setScreenRef(id)}
+                containerRef={contentRef}
+              />
+            ))}
           </div>
-
-          <div className="browser-title">shir.z / workspace</div>
         </div>
-
-        <div className="browser-content" ref={contentRef}>
-          {SCREENS.map(({ id, Screen }) => (
-            <WebsiteSection
-              key={id}
-              id={id}
-              isVisible={visibleScreens.has(id)}
-              Screen={Screen}
-              setRef={setScreenRef(id)}
-            />
-          ))}
-        </div>
-      </div>
+      </ContextBridge>
     </Html>
   );
 }

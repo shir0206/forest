@@ -34,7 +34,10 @@ export interface EmailConfig {
   body: string;
 }
 
-export type SectionComponent = React.ComponentType<{ isVisible: boolean }>;
+export type SectionComponent = React.ComponentType<{
+  isVisible: boolean;
+  containerRef?: React.RefObject<HTMLDivElement | null>;
+}>;
 
 export interface ScreenConfig {
   id: string;

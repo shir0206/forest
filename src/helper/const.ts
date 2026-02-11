@@ -4,7 +4,7 @@ import {
   generateGoogleCalendarLink,
   generateEmailLink,
 } from "../utils/links";
-import ExpertiseCards from "../components/sections/ExpertiseCards/ExpertiseCards";
+import Service from "../components/sections/Service/Service";
 import AboutMe from "../components/sections/AboutMe/AboutMe";
 import Overview from "../components/sections/Overview/Overview";
 import Contact from "../components/ui/Contact/Contact";
@@ -19,6 +19,6 @@ export { SCREEN_IDS };
 export const SCREENS = [
   { id: SCREEN_IDS.OVERVIEW, Screen: Overview },
   { id: SCREEN_IDS.ABOUT, Screen: AboutMe },
-  { id: SCREEN_IDS.EXPERTISE, Screen: ExpertiseCards },
+  { id: SCREEN_IDS.SEVICE, Screen: Service },
   { id: SCREEN_IDS.CONTACT, Screen: Contact },
 ] as const;

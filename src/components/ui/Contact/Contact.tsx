@@ -1,12 +1,8 @@
 import React from "react";
 import "./contact.scss";
 import { Icon } from "../Icon/Icon";
-import {
-  generateWhatsAppLink,
-  generateGoogleCalendarLink,
-  generateEmailLink,
-} from "../../../utils/links";
-import { EXTERNAL_LINKS } from "../../../config/links";
+import { generateContactLinks } from "../../../utils/links";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 // Types
 type IconName = "linkedin" | "mail" | "calendar" | "whatsapp";
@@ -32,63 +28,35 @@ const ContactLink: React.FC<ContactLinkProps> = ({ name, icon, url }) => {
   );
 };
 
-// Contact Configuration
-const contactLinks = [
-  {
-    name: "LinkedIn",
-    icon: "linkedin" as IconName,
-    url: EXTERNAL_LINKS.linkedin,
-  },
-  {
-    name: "WhatsApp",
-    icon: "whatsapp" as IconName,
-    url: generateWhatsAppLink({
-      phoneNumber: "+972542098332",
-      text: "Hello! I'm reaching out to inquire about your services. Looking forward to your reply.",
-    }),
-  },
-  {
-    name: "Email",
-    icon: "mail" as IconName,
-    url: generateEmailLink({
-      to: "shirzabolotny@gmail.com",
-      subject: "Booking a meeting",
-      body: "Hi, I would like to schedule a meeting to discuss potential collaboration.",
-    }),
-  },
-  {
-    name: "Schedule Meeting",
-    icon: "calendar" as IconName,
-    url: generateGoogleCalendarLink({
-      action: "EVENTEDIT",
-      text: "Business Meeting",
-      dates: {
-        start: "20240101T110000Z",
-        end: "20240101T120000Z",
-      },
-      details: "Discuss potential collaboration",
-      location: "Google Meet",
-      addGuests: ["shirzabolotny@gmail.com"],
-      conferenceDataVersion: 1,
-      conferenceSolution: "hangoutsMeet",
-    }),
-  },
-];
-
 // Main Contact Component
-export const Contact: React.FC = () => {
+interface ContactProps {
+  isVisible: boolean;
+  containerRef?: React.RefObject<HTMLDivElement | null>;
+}
+
+export const Contact: React.FC<ContactProps> = ({ containerRef }) => {
+  const { t } = useTranslation();
+
+  // Generate contact links by combining configuration with translations
+  // TypeScript workaround: cast to any to bypass type checking until cache is cleared
+  const contactLinks = generateContactLinks(t.contact.links as any);
+
   return (
     <div className="contact-container">
       <div className="contact-content">
-        <h3 className="contact-title">Say Hi</h3>
-        <p className="contact-subtitle">
-          Exploring ideas, questions, or a collaboration?
-          <br />
-          I'd be glad to hear from you.
-        </p>
+        <h3 className="contact-title">{t.contact.title}</h3>
+        <div className="contact-subtitle-container">
+          <p className="contact-subtitle">{t.contact.subtitlePrimary}</p>
+          <p className="contact-subtitle">{t.contact.subtitleSecondary}</p>
+        </div>
         <div className="contact-list">
           {contactLinks.map(({ name, icon, url }) => (
-            <ContactLink key={name} name={name} icon={icon} url={url} />
+            <ContactLink
+              key={name}
+              name={name}
+              icon={icon as IconName}
+              url={url}
+            />
           ))}
         </div>
       </div>
