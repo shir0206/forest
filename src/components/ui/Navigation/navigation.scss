@@ -8,10 +8,11 @@
   border-bottom: 1px solid rgba(120, 128, 97, 0.15);
   z-index: 1000;
   transition: all 0.3s ease;
+  margin-top: -1px;
 
   &.scrolled {
     background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 12px rgb(0 0 0 / 5%);
   }
 }
 
