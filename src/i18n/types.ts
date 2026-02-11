@@ -25,6 +25,7 @@ export interface TextStructure {
     };
     quote: string;
     cta: string;
+    link: string;
   };
   aboutMe: {
     title: string;

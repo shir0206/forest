@@ -36,6 +36,9 @@ const Overview: React.FC = () => {
       </div>
       <p className="overview-quote">{parseBoldText(t.overview.quote)}</p>
       <p className="overview-cta">{t.overview.cta}</p>
+      <button className="overview-link" onClick={scrollToSection()}>
+        {t.overview.link}
+      </button>
     </div>
   );
 };

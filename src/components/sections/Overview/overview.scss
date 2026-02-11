@@ -125,3 +125,15 @@
     margin: 4rem;
   }
 }
+
+.overview-link {
+  color: #a8b3a5;
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s ease;
+
+  &:hover {
+    border-color: #a8b3a5;
+  }
+}
