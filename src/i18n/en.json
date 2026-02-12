@@ -10,7 +10,7 @@
   "navigation": {
     "overview": "Overview",
     "about": "About",
-    "service": "service",
+    "service": "Services",
     "contact": "Contact"
   },
   "overview": {
@@ -21,7 +21,8 @@
       "design": "Design",
       "userExperience": "User Experience"
     },
-    "quote": "To me, a website is more than code or visuals - it should tell **your brand's story** and **turn visitors into believers** in what you do.",
+    "hook": "To me, a website is more than code or visuals.",
+    "quote": "It should tell **your brand's story** and **turn visitors into believers** in what you do.",
     "cta": "Let's create something that makes you unique and helps your business grow.",
     "link": "Reach out for details"
   },
@@ -29,7 +30,7 @@
     "title": "About me",
     "paragraph1": "I've shaped my skills at top tech companies, with an M.Sc. in Information Systems.",
     "paragraph2": "I blend technical precision with design intuition, creating reliable and functional solutions, while prioritizing work done correctly and thoroughly",
-    "paragraph3": "I bring an artist's eye to every project - turning color, composition, and hierarchy into interfaces that feel intuitive."
+    "paragraph3": "I bring an artist's eye to every project, turning color, composition, and hierarchy into interfaces that feel intuitive."
   },
   "service": {
     "title": "Services",

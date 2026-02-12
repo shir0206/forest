@@ -59,7 +59,7 @@
   color: #a8b3a5;
   font-size: 0.95rem;
   @media screen and (max-width: 480px) {
-    font-size: 0.8rem;
+    font-size: 1rem;
   }
 }
 
@@ -95,9 +95,12 @@
   }
 
   @media (max-width: 480px) {
-    right: -32px;
-    top: 16px;
+    margin: 4px 0;
     width: 80px;
+
+    .rtl & {
+      margin: 0 -32px; //if grandparent has classname 'rtl' adjust position
+    }
   }
 }
 

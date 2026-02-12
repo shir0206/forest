@@ -46,7 +46,10 @@ const Overview: React.FC<OverviewProps> = ({ containerRef }) => {
         <Branch aria-hidden className="background-branch branch-left" />
         <Branch aria-hidden className="background-branch branch-right" />
       </div>
-      <p className="overview-quote">{parseBoldText(t.overview.quote)}</p>
+      <div className="overview-quote-wrapper">
+        <p className="overview-quote">{t.overview.hook}</p>
+        <p className="overview-quote">{parseBoldText(t.overview.quote)}</p>
+      </div>
       <p className="overview-cta">{t.overview.cta}</p>
       <button
         className="overview-link"

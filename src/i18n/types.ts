@@ -23,6 +23,7 @@ export interface TextStructure {
       design: string;
       userExperience: string;
     };
+    hook: string;
     quote: string;
     cta: string;
     link: string;
