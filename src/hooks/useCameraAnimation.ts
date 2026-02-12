@@ -46,7 +46,7 @@ export default function useCameraAnimation(controlsRef: React.RefObject<any>) {
       onStart,
       onComplete,
       lookAt = [0, 0, 0],
-      arcHeight = CAMERA_ANIMATION_PRESETS.smoothArc.arcHeight, // Default arc height from preset
+      arcHeight = -CAMERA_ANIMATION_PRESETS.smoothArc.arcHeight, // Default arc height from preset
     }: CameraAnimationConfig) => {
       const controls = controlsRef.current;
       if (!controls) return;
