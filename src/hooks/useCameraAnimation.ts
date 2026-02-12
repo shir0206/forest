@@ -2,7 +2,7 @@ import { useRef, useCallback } from "react";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import gsap from "gsap";
-
+import { CAMERA_ANIMATION_PRESETS } from "../config/3d";
 export type CameraAnimationConfig = {
   targetPosition: THREE.Vector3 | [number, number, number];
   duration?: number;
@@ -10,6 +10,12 @@ export type CameraAnimationConfig = {
   onStart?: () => void;
   onComplete?: () => void;
   lookAt?: THREE.Vector3 | [number, number, number];
+  /**
+   * Height of the parabolic arc as a percentage of the distance (0-1)
+   * Default: 0.3 (30% of distance)
+   * Set to 0 for straight line motion
+   */
+  arcHeight?: number;
 };
 
 export type CameraAnimationSequenceConfig = {
@@ -30,7 +36,7 @@ export default function useCameraAnimation(controlsRef: React.RefObject<any>) {
   const animationRef = useRef<gsap.core.Timeline | null>(null);
 
   /**
-   * Animate camera to a single position
+   * Animate camera to a single position with parabolic motion
    */
   const animateToPosition = useCallback(
     ({
@@ -40,6 +46,7 @@ export default function useCameraAnimation(controlsRef: React.RefObject<any>) {
       onStart,
       onComplete,
       lookAt = [0, 0, 0],
+      arcHeight = CAMERA_ANIMATION_PRESETS.smoothArc.arcHeight, // Default arc height from preset
     }: CameraAnimationConfig) => {
       const controls = controlsRef.current;
       if (!controls) return;
@@ -62,6 +69,26 @@ export default function useCameraAnimation(controlsRef: React.RefObject<any>) {
       const lookAtTarget =
         lookAt instanceof THREE.Vector3 ? lookAt : new THREE.Vector3(...lookAt);
 
+      // Store initial position
+      const startPosition = camera.position.clone();
+
+      // Calculate control point for parabolic curve
+      // The control point is placed above the midpoint to create an arc
+      const midpoint = new THREE.Vector3()
+        .addVectors(startPosition, target)
+        .multiplyScalar(0.5);
+
+      // Calculate height of the arc based on distance
+      const distance = startPosition.distanceTo(target);
+      const arcHeightValue = distance * arcHeight;
+
+      // Create control point above the midpoint
+      const controlPoint = midpoint.clone();
+      controlPoint.y += arcHeightValue;
+
+      // Create animation object to track progress
+      const animationProgress = { t: 0 };
+
       animationRef.current = gsap.timeline({
         onComplete: () => {
           controls.enabled = true;
@@ -69,13 +96,37 @@ export default function useCameraAnimation(controlsRef: React.RefObject<any>) {
         },
       });
 
-      animationRef.current.to(camera.position, {
-        x: target.x,
-        y: target.y,
-        z: target.z,
+      // Animate the progress parameter from 0 to 1
+      animationRef.current.to(animationProgress, {
+        t: 1,
         duration,
         ease,
         onUpdate: () => {
+          const t = animationProgress.t;
+
+          // Quadratic Bezier curve formula
+          // B(t) = (1-t)² * P0 + 2(1-t)t * P1 + t² * P2
+          // where P0 = start, P1 = control point, P2 = end
+          const oneMinusT = 1 - t;
+          const oneMinusTSquared = oneMinusT * oneMinusT;
+          const tSquared = t * t;
+          const twoOneMinusTTimesT = 2 * oneMinusT * t;
+
+          camera.position.x =
+            oneMinusTSquared * startPosition.x +
+            twoOneMinusTTimesT * controlPoint.x +
+            tSquared * target.x;
+
+          camera.position.y =
+            oneMinusTSquared * startPosition.y +
+            twoOneMinusTTimesT * controlPoint.y +
+            tSquared * target.y;
+
+          camera.position.z =
+            oneMinusTSquared * startPosition.z +
+            twoOneMinusTTimesT * controlPoint.z +
+            tSquared * target.z;
+
           camera.lookAt(lookAtTarget);
           camera.updateProjectionMatrix();
           controls.update();

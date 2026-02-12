@@ -9,7 +9,7 @@ import "./butterfly.scss";
 import { useAppContext } from "../../../contexts/AppContext";
 import { WINDOW_STATE } from "../../../types/app";
 import useCameraAnimation from "../../../hooks/useCameraAnimation";
-
+import { CAMERA_ANIMATION_PRESETS } from "../../../config/3d";
 type ButterflyProps = {
   position: [number, number, number];
   /**
@@ -82,11 +82,12 @@ export default function Butterfly({
         "📍 Camera too far from butterfly position. Animating to position..."
       );
 
-      // Animate camera to the target position
+      // Animate camera to the target position with parabolic motion
       animateToPosition({
         targetPosition: targetCameraPosition,
-        duration: 2,
-        ease: "power2.inOut",
+        duration: CAMERA_ANIMATION_PRESETS.smoothArc.duration,
+        ease: CAMERA_ANIMATION_PRESETS.smoothArc.ease,
+        arcHeight: CAMERA_ANIMATION_PRESETS.smoothArc.arcHeight,
         onComplete: () => {
           console.log("🎬 Camera animation complete");
           // After animation completes, open the window
