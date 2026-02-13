@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense, useCallback } from "react";
+import React, { Suspense, useCallback, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import Butterfly from "../../ui/Butterfly/Butterfly.tsx";
@@ -24,6 +24,7 @@ export default function ForestScene() {
     },
     [setWindowState]
   );
+  const controlsRef = useRef(null);
 
   return (
     <div className="w-full h-openInfoscreen bg-black">
@@ -42,13 +43,15 @@ export default function ForestScene() {
         <Suspense fallback={<Loader />}>
           <Environment files={SCENE_CONFIG.backgroundFile} background={true} />
 
-          <CameraControls runIntro={runIntro} />
+          <CameraControls runIntro={runIntro} controlsRef={controlsRef} />
           <CinematicEffects isAboutOpen={windowState !== "closed"} />
-          <Butterfly position={SCENE_CONFIG.butterflyPos} />
+          <Butterfly
+            position={SCENE_CONFIG.butterflyPos}
+            controlsRef={controlsRef}
+            clickDistanceThreshold={0.5}
+          />
 
-          {windowState !== WINDOW_STATE.CLOSED && (
-            <Browser position={SCENE_CONFIG.butterflyPos}></Browser>
-          )}
+          <Browser position={SCENE_CONFIG.butterflyPos}></Browser>
         </Suspense>
       </Canvas>
     </div>

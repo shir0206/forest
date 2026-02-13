@@ -3,23 +3,27 @@ import { useRef, useEffect } from "react";
 import { useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
-import gsap from "gsap";
 import useDynamicFov from "../../../hooks/useDynamicFov";
+import useCameraAnimation from "../../../hooks/useCameraAnimation";
 import { SCENE_ANIMATION_POSITIONS } from "../../../config/3d";
 import { useAppContext } from "../../../contexts/AppContext";
 import { WINDOW_STATE } from "../../../types/app";
 
 type CameraControlsProps = {
   runIntro: boolean;
+  controlsRef: React.RefObject<any>;
 };
 
-export default function CameraControls({ runIntro }: CameraControlsProps) {
-  const controlsRef = useRef<THREE.EventDispatcher | any>(null);
-  const { camera, gl } = useThree();
+export default function CameraControls({
+  runIntro,
+  controlsRef,
+}: CameraControlsProps) {
+  const { camera } = useThree();
   const { windowState } = useAppContext();
 
-  // Hook responsible for dynamic FOV changes
+  // Custom hooks
   useDynamicFov(controlsRef);
+  const { animateSequence } = useCameraAnimation(controlsRef);
 
   // Log camera position & FOV on change
   useEffect(() => {
@@ -39,38 +43,13 @@ export default function CameraControls({ runIntro }: CameraControlsProps) {
   // Intro animation
   useEffect(() => {
     if (!runIntro) return;
-    const controls = controlsRef.current;
-    if (!controls) return;
 
-    controls.enabled = false;
-
-    const timeline = gsap.timeline({
-      onComplete: () => {
-        controls.enabled = true;
-        console.log("🎬 Intro animation finished — user control restored");
-      },
+    animateSequence({
+      positions: SCENE_ANIMATION_POSITIONS,
+      duration: 3,
+      ease: "power1.inOut",
     });
-
-    const sceneAnimationPoints = SCENE_ANIMATION_POSITIONS.map(
-      ([x, y, z]: [number, number, number]) => new THREE.Vector3(x, y, z)
-    );
-
-    sceneAnimationPoints.forEach((targetPoint) => {
-      timeline.to(camera.position, {
-        x: targetPoint.x,
-        y: targetPoint.y,
-        z: targetPoint.z,
-        duration: 3,
-        ease: "power1.inOut",
-        onUpdate: () => {
-          // Ensure camera keeps looking at the scene center
-          camera.lookAt(0, 0, 0);
-          camera.updateProjectionMatrix();
-          controls.update();
-        },
-      });
-    });
-  }, [runIntro, camera]);
+  }, [runIntro, animateSequence]);
 
   return (
     <OrbitControls

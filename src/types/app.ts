@@ -56,3 +56,9 @@ export interface AnimationConfig {
   stiffness?: number;
   duration?: number;
 }
+
+export type MovingDirection = "left" | "right";
+export const MOVING_DIRECTION = {
+  LEFT: "left" as MovingDirection,
+  RIGHT: "right" as MovingDirection,
+} as const;
