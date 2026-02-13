@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { Html } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
-
+import { BUTTERFLY_DIRECTION, ButterflyDirection } from "../../../types/app";
 import "./butterfly.scss";
 import { useAppContext } from "../../../contexts/AppContext";
 import { WINDOW_STATE } from "../../../types/app";
@@ -24,20 +24,20 @@ type ButterflyProps = {
   clickDistanceThreshold?: number;
 };
 
-function Wing({ paused }: { paused: boolean }) {
+function Wing() {
   return (
-    <div className={`wing${paused ? " pause-animation" : ""}`}>
+    <div className="wing">
       <div className="bit" />
       <div className="bit" />
     </div>
   );
 }
 
-function Sparkles({ paused, count = 6 }: { paused: boolean; count?: number }) {
+function Sparkles({ count = 6 }: { count?: number }) {
   return (
     <div className="sparkles">
       {Array.from({ length: count }).map((_, i) => (
-        <i key={i} className={`sparkle${paused ? " pause-animation" : ""}`} />
+        <i key={i} className="sparkle" />
       ))}
     </div>
   );
@@ -50,7 +50,11 @@ export default function Butterfly({
 }: ButterflyProps) {
   const { windowState, setWindowState } = useAppContext();
   const { camera } = useThree();
-  const { animateToPosition } = useCameraAnimation(controlsRef);
+  const { animateToPosition, getCameraRelativePosition } =
+    useCameraAnimation(controlsRef);
+  const [lookingDirection, setLookingDirection] = useState<ButterflyDirection>(
+    BUTTERFLY_DIRECTION.LEFT
+  );
 
   const paused = windowState !== WINDOW_STATE.CLOSED;
 
@@ -82,6 +86,13 @@ export default function Butterfly({
         "📍 Camera too far from butterfly position. Animating to position..."
       );
 
+      const relativePosition = getCameraRelativePosition(targetCameraPosition);
+      setLookingDirection(
+        relativePosition.isLeft
+          ? BUTTERFLY_DIRECTION.LEFT
+          : BUTTERFLY_DIRECTION.RIGHT
+      );
+
       // Animate camera to the target position with parabolic motion
       animateToPosition({
         targetPosition: targetCameraPosition,
@@ -110,16 +121,18 @@ export default function Butterfly({
       scale={[0.005, 0.005, 0.005]}
     >
       <button
-        className="butterfly-button"
+        className={`butterfly-button looking-${lookingDirection} ${
+          paused ? "pause-animation" : ""
+        }`}
         onClick={handleClick}
         aria-label="Interactive butterfly - click to learn more about the developer"
       >
-        <div className={`butterfly${paused ? " pause-animation" : ""}`}>
-          <Wing paused={paused} />
-          <Wing paused={paused} />
+        <div className="butterfly">
+          <Wing />
+          <Wing />
         </div>
 
-        <Sparkles paused={paused} />
+        <Sparkles />
       </button>
     </Html>
   );

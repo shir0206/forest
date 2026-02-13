@@ -56,3 +56,9 @@ export interface AnimationConfig {
   stiffness?: number;
   duration?: number;
 }
+
+export type ButterflyDirection = "left" | "right";
+export const BUTTERFLY_DIRECTION = {
+  LEFT: "left" as ButterflyDirection,
+  RIGHT: "right" as ButterflyDirection,
+} as const;

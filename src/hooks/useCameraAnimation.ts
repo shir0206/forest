@@ -3,6 +3,7 @@ import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import gsap from "gsap";
 import { CAMERA_ANIMATION_PRESETS } from "../config/3d";
+
 export type CameraAnimationConfig = {
   targetPosition: THREE.Vector3 | [number, number, number];
   duration?: number;
@@ -11,9 +12,11 @@ export type CameraAnimationConfig = {
   onComplete?: () => void;
   lookAt?: THREE.Vector3 | [number, number, number];
   /**
-   * Height of the parabolic arc as a percentage of the distance (0-1)
-   * Default: 0.3 (30% of distance)
-   * Set to 0 for straight line motion
+   * Height of the parabolic arc as a percentage of the distance
+   * - Positive values (0.1 to 1.0): Arc curves upward (∩)
+   * - Negative values (-0.1 to -1.0): Arc curves downward (∪)
+   * - Zero (0): Straight line (no arc)
+   * Default: from preset (typically -0.3)
    */
   arcHeight?: number;
 };
@@ -27,6 +30,29 @@ export type CameraAnimationSequenceConfig = {
   lookAt?: THREE.Vector3 | [number, number, number];
 };
 
+export interface CameraRelativePosition {
+  /** Is camera to the left of target? */
+  isLeft: boolean;
+  /** Is camera to the right of target? */
+  isRight: boolean;
+  /** Is camera above target? */
+  isAbove: boolean;
+  /** Is camera below target? */
+  isBelow: boolean;
+  /** Is camera in front of target (closer to viewer)? */
+  isInFront: boolean;
+  /** Is camera behind target (further from viewer)? */
+  isBehind: boolean;
+  /** Horizontal offset (-1 to 1, negative = left, positive = right) */
+  horizontalOffset: number;
+  /** Vertical offset (-1 to 1, negative = below, positive = above) */
+  verticalOffset: number;
+  /** Depth offset (-1 to 1, negative = behind, positive = in front) */
+  depthOffset: number;
+  /** Overall distance from camera to target */
+  distance: number;
+}
+
 /**
  * Custom hook for animating camera position with GSAP
  * Handles both single animations and sequences
@@ -34,6 +60,90 @@ export type CameraAnimationSequenceConfig = {
 export default function useCameraAnimation(controlsRef: React.RefObject<any>) {
   const { camera } = useThree();
   const animationRef = useRef<gsap.core.Timeline | null>(null);
+
+  /**
+   * Get camera position relative to target from screen perspective
+   *
+   * @param targetPosition - Target position as Vector3 or [x, y, z]
+   * @param lookAtPoint - Point the camera is looking at (default: origin)
+   * @returns Object with relative position information
+   *
+   * @example
+   * const relPos = getCameraRelativePosition([0.6, 0.24, 0.6234]);
+   * if (relPos.isLeft) {
+   *   console.log("Camera is to the LEFT of target");
+   * }
+   */
+  const getCameraRelativePosition = useCallback(
+    (
+      targetPosition: THREE.Vector3 | [number, number, number],
+      lookAtPoint: THREE.Vector3 | [number, number, number] = [0, 0, 0]
+    ): CameraRelativePosition => {
+      // Convert target to Vector3 if needed
+      const target =
+        targetPosition instanceof THREE.Vector3
+          ? targetPosition
+          : new THREE.Vector3(...targetPosition);
+
+      // Convert lookAt to Vector3 if needed
+      const lookAt =
+        lookAtPoint instanceof THREE.Vector3
+          ? lookAtPoint
+          : new THREE.Vector3(...lookAtPoint);
+
+      const cameraPosition = camera.position;
+
+      // Calculate camera's local axes
+      const cameraRight = new THREE.Vector3();
+      const cameraUp = new THREE.Vector3();
+      const cameraForward = new THREE.Vector3();
+
+      // Get camera's forward direction (where it's looking)
+      cameraForward.subVectors(lookAt, cameraPosition).normalize();
+
+      // Get camera's up direction
+      cameraUp.copy(camera.up).normalize();
+
+      // Calculate right vector (perpendicular to forward and up)
+      cameraRight.crossVectors(cameraForward, cameraUp).normalize();
+
+      // Recalculate true up (perpendicular to forward and right)
+      cameraUp.crossVectors(cameraRight, cameraForward).normalize();
+
+      // Vector from camera to target
+      const toTarget = new THREE.Vector3().subVectors(target, cameraPosition);
+      const distance = toTarget.length();
+
+      // Project toTarget onto camera's local axes
+      const rightComponent = toTarget.dot(cameraRight);
+      const upComponent = toTarget.dot(cameraUp);
+      const forwardComponent = toTarget.dot(cameraForward);
+
+      // Normalize components to -1 to 1 range
+      const horizontalOffset = rightComponent / distance;
+      const verticalOffset = upComponent / distance;
+      const depthOffset = forwardComponent / distance;
+
+      return {
+        // Simple boolean checks
+        isLeft: rightComponent < 0,
+        isRight: rightComponent > 0,
+        isAbove: upComponent > 0,
+        isBelow: upComponent < 0,
+        isInFront: forwardComponent > 0,
+        isBehind: forwardComponent < 0,
+
+        // Normalized offsets (-1 to 1)
+        horizontalOffset,
+        verticalOffset,
+        depthOffset,
+
+        // Distance
+        distance,
+      };
+    },
+    [camera]
+  );
 
   /**
    * Animate camera to a single position with parabolic motion
@@ -217,5 +327,6 @@ export default function useCameraAnimation(controlsRef: React.RefObject<any>) {
     animateToPosition,
     animateSequence,
     cancelAnimation,
+    getCameraRelativePosition,
   };
 }
