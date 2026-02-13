@@ -51,9 +51,7 @@ export default function ForestScene() {
             clickDistanceThreshold={0.5}
           />
 
-          {windowState !== WINDOW_STATE.CLOSED && (
-            <Browser position={SCENE_CONFIG.butterflyPos}></Browser>
-          )}
+          <Browser position={SCENE_CONFIG.butterflyPos}></Browser>
         </Suspense>
       </Canvas>
     </div>
