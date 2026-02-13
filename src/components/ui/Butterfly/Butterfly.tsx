@@ -4,7 +4,7 @@ import React, { useMemo, useRef, useState } from "react";
 import { Html } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { BUTTERFLY_DIRECTION, ButterflyDirection } from "../../../types/app";
+import { MOVING_DIRECTION, MovingDirection } from "../../../types/app";
 import "./butterfly.scss";
 import { useAppContext } from "../../../contexts/AppContext";
 import { WINDOW_STATE } from "../../../types/app";
@@ -52,8 +52,8 @@ export default function Butterfly({
   const { camera } = useThree();
   const { animateToPosition, getCameraRelativePosition } =
     useCameraAnimation(controlsRef);
-  const [lookingDirection, setLookingDirection] = useState<ButterflyDirection>(
-    BUTTERFLY_DIRECTION.LEFT
+  const [lookingDirection, setLookingDirection] = useState<MovingDirection>(
+    MOVING_DIRECTION.LEFT
   );
 
   const paused = windowState !== WINDOW_STATE.CLOSED;
@@ -87,10 +87,9 @@ export default function Butterfly({
       );
 
       const relativePosition = getCameraRelativePosition(targetCameraPosition);
+      console.log("📐 Relative position to target:", relativePosition);
       setLookingDirection(
-        relativePosition.isLeft
-          ? BUTTERFLY_DIRECTION.LEFT
-          : BUTTERFLY_DIRECTION.RIGHT
+        relativePosition.isLeft ? MOVING_DIRECTION.RIGHT : MOVING_DIRECTION.LEFT
       );
 
       // Animate camera to the target position with parabolic motion

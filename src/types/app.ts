@@ -57,8 +57,8 @@ export interface AnimationConfig {
   duration?: number;
 }
 
-export type ButterflyDirection = "left" | "right";
-export const BUTTERFLY_DIRECTION = {
-  LEFT: "left" as ButterflyDirection,
-  RIGHT: "right" as ButterflyDirection,
+export type MovingDirection = "left" | "right";
+export const MOVING_DIRECTION = {
+  LEFT: "left" as MovingDirection,
+  RIGHT: "right" as MovingDirection,
 } as const;
