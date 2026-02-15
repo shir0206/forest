@@ -11,34 +11,85 @@ import Browser from "../../ui/Browser/Browser.tsx";
 import { useAppContext } from "../../../shared/contexts/AppContext";
 import { WINDOW_STATE } from "../../../types/app";
 
-export default function ForestScene() {
-  //@ts-ignore
-  const { runIntro, windowState, setWindowState } = useAppContext();
+/**
+ * Configuration interface for ForestScene component
+ */
+interface ForestSceneConfig {
+  /** Initial camera position */
+  cameraPosition: [number, number, number];
+  /** Camera field of view */
+  cameraFov: number;
+  /** Butterfly position */
+  butterflyPosition: [number, number, number];
+  /** Click distance threshold for butterfly interaction */
+  clickDistanceThreshold: number;
+}
 
-  const handleClose = useCallback(
-    (event: React.MouseEvent) => {
-      event.stopPropagation();
-      if (windowState !== WINDOW_STATE.CLOSED) {
-        setWindowState(WINDOW_STATE.CLOSED);
-      }
-    },
-    [setWindowState]
-  );
+/**
+ * Default configuration for ForestScene
+ */
+const DEFAULT_SCENE_CONFIG: ForestSceneConfig = {
+  cameraPosition: SCENE_CONFIG.initCameraPos,
+  cameraFov: 60,
+  butterflyPosition: SCENE_CONFIG.butterflyPos,
+  clickDistanceThreshold: 0.5,
+};
+
+/**
+ * Handles canvas click events to close the browser window
+ */
+const createCanvasClickHandler = (
+  windowState: (typeof WINDOW_STATE)[keyof typeof WINDOW_STATE],
+  setWindowState: (
+    state: (typeof WINDOW_STATE)[keyof typeof WINDOW_STATE]
+  ) => void
+) => {
+  return (event: React.MouseEvent) => {
+    event.stopPropagation();
+    if (windowState !== WINDOW_STATE.CLOSED) {
+      setWindowState(WINDOW_STATE.CLOSED);
+    }
+  };
+};
+
+/**
+ * Gets camera aspect ratio based on current window dimensions
+ */
+const getCameraAspect = (): number => {
+  if (typeof window === "undefined") return 1;
+  return window.innerWidth / window.innerHeight;
+};
+
+/**
+ * Main 3D Forest Scene component
+ */
+export default function ForestScene() {
+  const appContext = useAppContext();
   const controlsRef = useRef(null);
+
+  // Handle case where context is undefined
+  if (!appContext) {
+    console.error("ForestScene: AppContext not found");
+    return null;
+  }
+
+  const { runIntro, windowState, setWindowState } = appContext;
+
+  const handleCanvasClick = useCallback(
+    createCanvasClickHandler(windowState, setWindowState),
+    [windowState, setWindowState]
+  );
 
   return (
     <div className="w-full h-openInfoscreen bg-black">
       <Canvas
         style={{ width: "100vw", height: "100vh" }}
         camera={{
-          position: SCENE_CONFIG.initCameraPos,
-          fov: 60,
-          aspect:
-            typeof window !== "undefined"
-              ? window.innerWidth / window.innerHeight
-              : 1,
+          position: DEFAULT_SCENE_CONFIG.cameraPosition,
+          fov: DEFAULT_SCENE_CONFIG.cameraFov,
+          aspect: getCameraAspect(),
         }}
-        onClick={handleClose}
+        onClick={handleCanvasClick}
       >
         <Suspense fallback={<Loader />}>
           <Environment files={SCENE_CONFIG.backgroundFile} background={true} />
@@ -46,12 +97,12 @@ export default function ForestScene() {
           <CameraControls runIntro={runIntro} controlsRef={controlsRef} />
           <CinematicEffects isAboutOpen={windowState !== "closed"} />
           <Butterfly
-            position={SCENE_CONFIG.butterflyPos}
+            position={DEFAULT_SCENE_CONFIG.butterflyPosition}
             controlsRef={controlsRef}
-            clickDistanceThreshold={0.5}
+            clickDistanceThreshold={DEFAULT_SCENE_CONFIG.clickDistanceThreshold}
           />
 
-          <Browser position={SCENE_CONFIG.butterflyPos}></Browser>
+          <Browser position={DEFAULT_SCENE_CONFIG.butterflyPosition} />
         </Suspense>
       </Canvas>
     </div>
