@@ -2,7 +2,7 @@ import React from "react";
 import "./contact.scss";
 import { Icon } from "../../../shared/components/Icon/Icon";
 import { generateContactLinks } from "../../../utils/links";
-import { useTranslation } from "../../../hooks/useTranslation";
+import { useTranslation } from "../../../hooks/i18n/useTranslation";
 
 // Types
 type IconName = "linkedin" | "mail" | "calendar" | "whatsapp";

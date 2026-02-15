@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { SCREEN_IDS } from "../types/app";
+import { SCREEN_IDS } from "../../types/app";
 
 export interface UseScrollNavigationProps {
   containerRef: React.RefObject<HTMLElement | null>;

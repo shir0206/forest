@@ -2,7 +2,7 @@ import { useRef, useCallback } from "react";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import gsap from "gsap";
-import { CAMERA_ANIMATION_PRESETS } from "../config/3d";
+import { CAMERA_ANIMATION_PRESETS } from "../../config/3d";
 
 export type CameraAnimationConfig = {
   targetPosition: THREE.Vector3 | [number, number, number];

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useAppContext } from "../../../shared/contexts/AppContext";
-import { useTranslation } from "../../../hooks/useTranslation";
-import { useScrollNavigation } from "../../../hooks/useScrollNavigation";
+import { useTranslation } from "../../../hooks/i18n/useTranslation";
+import { useScrollNavigation } from "../../../hooks/navigation/useScrollNavigation";
 import LanguageSwitcher from "../../../shared/components/LanguageSwitcher/LanguageSwitcher";
 import "./navigation.scss";
 import { SCREEN_IDS } from "../../../types/app";

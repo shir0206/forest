@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useTranslation } from "../../../hooks/useTranslation";
+import { useTranslation } from "../../../hooks/i18n/useTranslation";
 import { useAppContext } from "../../../shared/contexts/AppContext";
 import { LANGUAGE, Language } from "../../../types/app";
 import { Icon } from "../Icon/Icon";

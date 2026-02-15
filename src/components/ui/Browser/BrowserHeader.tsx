@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { Icon } from "../../../shared/components/Icon/Icon";
-import { useTranslation } from "../../../hooks/useTranslation";
+import { useTranslation } from "../../../hooks/i18n/useTranslation";
 import "./browser.scss";
 import { WINDOW_STATE } from "../../../types/app";
 import { useEnhancedAppContext } from "../../../shared/contexts/AppContext";
