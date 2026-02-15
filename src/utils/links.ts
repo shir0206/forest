@@ -48,27 +48,77 @@ export const generateWhatsAppLink = (config: WhatsAppConfig): string =>
   `https://wa.me/${config.phoneNumber}?text=${encodeURIComponent(config.text)}`;
 
 /**
+ * Encodes URL parameters safely
+ */
+const encodeUrlParam = (value: string): string => encodeURIComponent(value);
+
+/**
+ * Builds optional conference parameters for Google Calendar links
+ */
+const buildConferenceParams = (
+  conferenceDataVersion?: number,
+  conferenceSolution?: string
+): string => {
+  const params: string[] = [];
+
+  if (conferenceDataVersion !== undefined) {
+    params.push(`&conferenceDataVersion=${conferenceDataVersion}`);
+  }
+
+  if (conferenceSolution) {
+    params.push(`&conferenceSolution=${conferenceSolution}`);
+  }
+
+  return params.join("");
+};
+
+/**
+ * Builds guest list parameter for Google Calendar links
+ */
+const buildGuestsParam = (guests: string[]): string => {
+  return guests.length > 0 ? guests.join(",") : "";
+};
+
+/**
+ * Builds the base URL for Google Calendar events
+ */
+const buildCalendarBaseUrl = (action: string): string => {
+  return `https://calendar.google.com/calendar/u/0/r/eventedit?action=${action}`;
+};
+
+/**
+ * Builds the query parameters for Google Calendar links
+ */
+const buildCalendarQueryParams = (config: GoogleCalendarConfig): string => {
+  const params = new URLSearchParams();
+
+  params.set("text", encodeUrlParam(config.text));
+  params.set("dates", `${config.dates.start}/${config.dates.end}`);
+  params.set("details", encodeUrlParam(config.details));
+  params.set("location", encodeUrlParam(config.location));
+
+  const guests = buildGuestsParam(config.addGuests);
+  if (guests) {
+    params.set("add", encodeUrlParam(guests));
+  }
+
+  return params.toString();
+};
+
+/**
  * Generates a Google Calendar link with the provided configuration
  */
 export const generateGoogleCalendarLink = (
   config: GoogleCalendarConfig
 ): string => {
-  const guests = config.addGuests.join(",");
-  const conferenceDataVersion = config.conferenceDataVersion
-    ? `&conferenceDataVersion=${config.conferenceDataVersion}`
-    : "";
-  const conferenceSolution = config.conferenceSolution
-    ? `&conferenceSolution=${config.conferenceSolution}`
-    : "";
-  return `https://calendar.google.com/calendar/u/0/r/eventedit?action=${
-    config.action
-  }&text=${encodeURIComponent(config.text)}&dates=${config.dates.start}/${
-    config.dates.end
-  }&details=${encodeURIComponent(config.details)}&location=${encodeURIComponent(
-    config.location
-  )}&add=${encodeURIComponent(
-    guests
-  )}${conferenceDataVersion}${conferenceSolution}`;
+  const baseUrl = buildCalendarBaseUrl(config.action);
+  const queryParams = buildCalendarQueryParams(config);
+  const conferenceParams = buildConferenceParams(
+    config.conferenceDataVersion,
+    config.conferenceSolution
+  );
+
+  return `${baseUrl}&${queryParams}${conferenceParams}`;
 };
 
 /**
@@ -181,64 +231,99 @@ export const CONTACT_LINKS_CONFIG: ContactLinkConfig[] = [
 ];
 
 /**
+ * Type-safe translation interface for contact links
+ */
+interface ContactTranslation {
+  name: string;
+  text?: string;
+  subject?: string;
+  body?: string;
+  details?: string;
+}
+
+/**
+ * Type-safe link generation for each link type
+ */
+const generateExternalLink = (
+  linkConfig: ContactLinkConfig,
+  translation: ContactTranslation
+) => ({
+  id: linkConfig.id,
+  name: translation.name,
+  icon: linkConfig.icon,
+  url: (linkConfig.config as { url: string }).url,
+});
+
+const generateWhatsAppLinkWithTranslation = (
+  linkConfig: ContactLinkConfig,
+  translation: ContactTranslation
+) => ({
+  id: linkConfig.id,
+  name: translation.name,
+  icon: linkConfig.icon,
+  url: generateWhatsAppLink({
+    phoneNumber: (linkConfig.config as WhatsAppConfig).phoneNumber,
+    text: translation.text || "",
+  }),
+});
+
+const generateEmailLinkWithTranslation = (
+  linkConfig: ContactLinkConfig,
+  translation: ContactTranslation
+) => ({
+  id: linkConfig.id,
+  name: translation.name,
+  icon: linkConfig.icon,
+  url: generateEmailLink({
+    to: (linkConfig.config as EmailConfig).to,
+    subject: translation.subject || "",
+    body: translation.body || "",
+  }),
+});
+
+const generateCalendarLinkWithTranslation = (
+  linkConfig: ContactLinkConfig,
+  translation: ContactTranslation
+) => ({
+  id: linkConfig.id,
+  name: translation.name,
+  icon: linkConfig.icon,
+  url: generateGoogleCalendarLink({
+    action: (linkConfig.config as GoogleCalendarConfig).action,
+    text: translation.text || "",
+    dates: (linkConfig.config as GoogleCalendarConfig).dates,
+    details: translation.details || "",
+    location: "Google Meet",
+    addGuests: (linkConfig.config as GoogleCalendarConfig).addGuests,
+    conferenceDataVersion: (linkConfig.config as GoogleCalendarConfig)
+      .conferenceDataVersion,
+    conferenceSolution: (linkConfig.config as GoogleCalendarConfig)
+      .conferenceSolution,
+  }),
+});
+
+/**
  * Generates contact links by combining configuration with translations
  */
 export const generateContactLinks = (
   translations: TextStructure["contact"]["links"]
 ) => {
   return CONTACT_LINKS_CONFIG.map((linkConfig) => {
-    const translation =
-      translations[linkConfig.id as keyof typeof translations];
+    const translation = translations[
+      linkConfig.id as keyof TextStructure["contact"]["links"]
+    ] as ContactTranslation;
 
     switch (linkConfig.type) {
       case "external":
-        return {
-          id: linkConfig.id,
-          name: translation.name,
-          icon: linkConfig.icon,
-          url: (linkConfig.config as { url: string }).url,
-        };
+        return generateExternalLink(linkConfig, translation);
       case "whatsapp":
-        return {
-          id: linkConfig.id,
-          name: translation.name,
-          icon: linkConfig.icon,
-          url: generateWhatsAppLink({
-            phoneNumber: (linkConfig.config as WhatsAppConfig).phoneNumber,
-            text: (translation as any).text,
-          }),
-        };
+        return generateWhatsAppLinkWithTranslation(linkConfig, translation);
       case "email":
-        return {
-          id: linkConfig.id,
-          name: translation.name,
-          icon: linkConfig.icon,
-          url: generateEmailLink({
-            to: (linkConfig.config as EmailConfig).to,
-            subject: (translation as any).subject,
-            body: (translation as any).body,
-          }),
-        };
+        return generateEmailLinkWithTranslation(linkConfig, translation);
       case "calendar":
-        return {
-          id: linkConfig.id,
-          name: translation.name,
-          icon: linkConfig.icon,
-          url: generateGoogleCalendarLink({
-            action: (linkConfig.config as GoogleCalendarConfig).action,
-            text: (translation as any).text,
-            dates: (linkConfig.config as GoogleCalendarConfig).dates,
-            details: (translation as any).details,
-            location: "Google Meet",
-            addGuests: (linkConfig.config as GoogleCalendarConfig).addGuests,
-            conferenceDataVersion: (linkConfig.config as GoogleCalendarConfig)
-              .conferenceDataVersion,
-            conferenceSolution: (linkConfig.config as GoogleCalendarConfig)
-              .conferenceSolution,
-          }),
-        };
+        return generateCalendarLinkWithTranslation(linkConfig, translation);
       default:
-        throw new Error(`Unknown link type: ${(linkConfig as any).type}`);
+        throw new Error(`Unknown link type: ${linkConfig.type}`);
     }
   });
 };
