@@ -8,7 +8,7 @@ import { MOVING_DIRECTION, MovingDirection } from "../../../types/app";
 import "./butterfly.scss";
 import { useAppContext } from "../../../shared/contexts/AppContext";
 import { WINDOW_STATE } from "../../../types/app";
-import useCameraAnimation from "../../../hooks/useCameraAnimation";
+import useCameraAnimation from "../../../hooks/animation/useCameraAnimation";
 import { CAMERA_ANIMATION_PRESETS } from "../../../config/3d";
 type ButterflyProps = {
   position: [number, number, number];
