@@ -1,5 +1,5 @@
 import React from "react";
-import { Icon, IconName } from "../../ui/Icon/Icon";
+import { Icon, IconName } from "../../../shared/components/Icon/Icon";
 import "./service.css";
 import { useTranslation } from "../../../hooks/useTranslation";
 

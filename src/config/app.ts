@@ -6,6 +6,19 @@ export const APP_CONFIG = {
   debounceDelay: 100,
 } as const;
 
+// Screen configuration
+import Overview from "../components/sections/Overview/Overview";
+import AboutMe from "../components/sections/AboutMe/AboutMe";
+import Service from "../components/sections/Service/Service";
+import Contact from "../components/ui/Contact/Contact";
+
+export const SCREENS = [
+  { id: "overview", Screen: Overview },
+  { id: "about", Screen: AboutMe },
+  { id: "service", Screen: Service },
+  { id: "contact", Screen: Contact },
+] as const;
+
 // Animation configurations
 export const ANIMATION_CONFIG = {
   spring: {

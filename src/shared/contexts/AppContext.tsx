@@ -12,7 +12,7 @@ import {
   WINDOW_STATE,
   Language,
   LANGUAGE,
-} from "../types/app";
+} from "../../types/app";
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
 

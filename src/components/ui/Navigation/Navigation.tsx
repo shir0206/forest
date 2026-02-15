@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useAppContext } from "../../../contexts/AppContext";
+import { useAppContext } from "../../../shared/contexts/AppContext";
 import { useTranslation } from "../../../hooks/useTranslation";
 import { useScrollNavigation } from "../../../hooks/useScrollNavigation";
-import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
+import LanguageSwitcher from "../../../shared/components/LanguageSwitcher/LanguageSwitcher";
 import "./navigation.scss";
-import { SCREEN_IDS } from "../../../helper/const";
+import { SCREEN_IDS } from "../../../types/app";
 
 interface NavigationItem {
   id: string;

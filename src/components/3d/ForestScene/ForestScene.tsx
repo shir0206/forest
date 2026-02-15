@@ -5,10 +5,10 @@ import { Environment } from "@react-three/drei";
 import Butterfly from "../../ui/Butterfly/Butterfly.tsx";
 import CameraControls from "../CameraControls/CameraControls.tsx";
 import CinematicEffects from "../CinematicEffects/CinematicEffects.tsx";
-import Loader from "../../ui/Loader/Loader.tsx";
+import Loader from "../../../shared/components/Loader/Loader.tsx";
 import { SCENE_CONFIG } from "../../../config/3d";
 import Browser from "../../ui/Browser/Browser.tsx";
-import { useAppContext } from "../../../contexts/AppContext";
+import { useAppContext } from "../../../shared/contexts/AppContext";
 import { WINDOW_STATE } from "../../../types/app";
 
 export default function ForestScene() {

@@ -6,7 +6,7 @@ import * as THREE from "three";
 import useDynamicFov from "../../../hooks/useDynamicFov";
 import useCameraAnimation from "../../../hooks/useCameraAnimation";
 import { SCENE_ANIMATION_POSITIONS } from "../../../config/3d";
-import { useAppContext } from "../../../contexts/AppContext";
+import { useAppContext } from "../../../shared/contexts/AppContext";
 import { WINDOW_STATE } from "../../../types/app";
 
 type CameraControlsProps = {

@@ -1,6 +1,6 @@
 import React from "react";
 import "./contact.scss";
-import { Icon } from "../Icon/Icon";
+import { Icon } from "../../../shared/components/Icon/Icon";
 import { generateContactLinks } from "../../../utils/links";
 import { useTranslation } from "../../../hooks/useTranslation";
 

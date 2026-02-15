@@ -3,7 +3,7 @@ import "./overview.scss";
 import { ReactComponent as Branch } from "../../../assets/images/branch.svg";
 import { useTranslation } from "../../../hooks/useTranslation";
 import { useScrollNavigation } from "../../../hooks/useScrollNavigation";
-import { SCREEN_IDS } from "../../../helper/const";
+import { SCREEN_IDS } from "../../../types/app";
 
 interface OverviewProps {
   isVisible: boolean;

@@ -62,3 +62,36 @@ export const MOVING_DIRECTION = {
   LEFT: "left" as MovingDirection,
   RIGHT: "right" as MovingDirection,
 } as const;
+
+// Additional types from legacy helper/types.ts
+export type PositionThreeD = [number, number, number];
+
+export interface WhatsAppConfig {
+  phoneNumber: string;
+  text: string;
+}
+
+export interface GoogleCalendarConfig {
+  action: string;
+  text: string;
+  dates: {
+    start: string;
+    end: string;
+  };
+  details: string;
+  location: string;
+  addGuests: string[];
+  conferenceDataVersion?: number;
+  conferenceSolution?: string;
+}
+
+export interface EmailConfig {
+  to: string;
+  subject: string;
+  body: string;
+}
+
+export type SectionComponent = React.ComponentType<{
+  isVisible: boolean;
+  containerRef?: React.RefObject<HTMLDivElement | null>;
+}>;

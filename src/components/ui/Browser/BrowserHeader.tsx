@@ -1,9 +1,9 @@
 import React, { useCallback } from "react";
-import { Icon } from "../Icon/Icon";
+import { Icon } from "../../../shared/components/Icon/Icon";
 import { useTranslation } from "../../../hooks/useTranslation";
 import "./browser.scss";
 import { WINDOW_STATE } from "../../../types/app";
-import { useEnhancedAppContext } from "../../../contexts/AppContext";
+import { useEnhancedAppContext } from "../../../shared/contexts/AppContext";
 
 export const BrowserHeader: React.FC = ({}) => {
   const appContext = useEnhancedAppContext();

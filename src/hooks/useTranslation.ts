@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { useEnhancedAppContext } from "../contexts/AppContext";
+import { useEnhancedAppContext } from "../shared/contexts/AppContext";
 import { getText } from "../i18n";
 import type { TextStructure } from "../i18n/types";
 import { LANGUAGE } from "../types/app";

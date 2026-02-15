@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "../../../hooks/useTranslation";
-import { useAppContext } from "../../../contexts/AppContext";
+import { useAppContext } from "../../../shared/contexts/AppContext";
 import { LANGUAGE, Language } from "../../../types/app";
 import { Icon } from "../Icon/Icon";
 import "./languageSwitcher.scss";

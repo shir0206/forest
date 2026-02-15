@@ -6,7 +6,7 @@ import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { MOVING_DIRECTION, MovingDirection } from "../../../types/app";
 import "./butterfly.scss";
-import { useAppContext } from "../../../contexts/AppContext";
+import { useAppContext } from "../../../shared/contexts/AppContext";
 import { WINDOW_STATE } from "../../../types/app";
 import useCameraAnimation from "../../../hooks/useCameraAnimation";
 import { CAMERA_ANIMATION_PRESETS } from "../../../config/3d";
