@@ -16,13 +16,13 @@ import {
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
 
-export const useAppContext = () => {
+export const useAppContext = (): AppContextType => {
   const context = useContext(AppContext);
-  if (!context) {
-    console.error("useAppContext: context not found");
 
-    return undefined;
+  if (!context) {
+    throw new Error("useAppContext must be used within AppProvider");
   }
+
   return context;
 };
 
