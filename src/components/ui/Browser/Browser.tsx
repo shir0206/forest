@@ -17,28 +17,14 @@ type BrowserProps = {
 };
 
 export default function Browser({ position }: BrowserProps) {
-  console.log("Rendering Browser component");
   const appContext = useAppContext();
 
   if (!appContext) {
     console.error("Browser: AppContext not found");
-    // return null;
   }
-  //@ts-ignore
+
   const { windowState, visibleScreens, language } = appContext;
   // Extract the full context value to pass to the bridge
-  console.log("Browser: Extracting context value for bridge", {
-    //@ts-ignore
-
-    runIntro: appContext.runIntro, //@ts-ignore
-
-    windowState: appContext.windowState, //@ts-ignore
-
-    visibleScreens: Array.from(appContext.visibleScreens), //@ts-ignore
-
-    language: appContext.language,
-  });
-
   const { ref: contentRef, ready } = useHtmlReady<HTMLDivElement>();
   const { setScreenRef } = useScreenVisibility(contentRef, ready);
 

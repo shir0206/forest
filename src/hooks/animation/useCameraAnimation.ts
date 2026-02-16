@@ -279,8 +279,9 @@ export default function useCameraAnimation(controlsRef: React.RefObject<any>) {
       animationRef.current = gsap.timeline({
         onComplete: () => {
           controls.enabled = true;
-          if (onComplete) onComplete();
-          console.log("🎬 Animation sequence finished — user control restored");
+          if (onComplete) {
+            onComplete();
+          }
         },
       });
 
