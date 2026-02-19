@@ -10,6 +10,7 @@ import { SCENE_CONFIG } from "../../../config/3d";
 import Browser from "../../ui/Browser/Browser.tsx";
 import { useAppContext } from "../../../shared/contexts/AppContext";
 import { WINDOW_STATE } from "../../../types/app";
+import Background from "./Background.tsx";
 
 /**
  * Configuration interface for ForestScene component
@@ -83,7 +84,7 @@ export default function ForestScene() {
   return (
     <div className="w-full h-openInfoscreen bg-black">
       <Canvas
-        style={{ width: "100vw", height: "100vh" }}
+        style={{ width: "100vw", height: "100vh", filter: "blur(0px)" }}
         camera={{
           position: DEFAULT_SCENE_CONFIG.cameraPosition,
           fov: DEFAULT_SCENE_CONFIG.cameraFov,
@@ -92,8 +93,7 @@ export default function ForestScene() {
         onClick={handleCanvasClick}
       >
         <Suspense fallback={<Loader />}>
-          <Environment files={SCENE_CONFIG.backgroundFile} background={true} />
-
+          <Background />
           <CameraControls runIntro={runIntro} controlsRef={controlsRef} />
           <CinematicEffects isAboutOpen={windowState !== "closed"} />
           <Butterfly
