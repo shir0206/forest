@@ -33,6 +33,9 @@ public/hdri/*
 !public/hdri/Gemini_Generated_Image_h6the9h6the9h6th.exr
 !public/hdri/Gemini_Generated_Image_x3ggayx3ggayx3gg.exr
 !public/hdri/Gemini_Generated_Image_c4rtmic4rtmic4rt.exr
+!public/hdri/Gemini_Generated_Image_c4rtmic4rtmic4rt-topaz-enhance-6x.webp
+!public/hdri/Gemini_Generated_Image_mrpfnvmrpfnvmrpf_topaz-enhance-6x.webp
+
 build/
 .env
 .DS_Store
