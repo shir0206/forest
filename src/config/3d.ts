@@ -3,7 +3,7 @@ import { PositionThreeD } from "../types/3d";
 // 3D Scene Configuration
 export const SCENE_CONFIG = {
   backgroundFile:
-    "hdri/Gemini_Generated_Image_c4rtmic4rtmic4rt-topaz-enhance-6x.webp",
+    "hdri/Gemini_Generated_Image_mrpfnvmrpfnvmrpf_topaz-enhance-6x.webp",
   initCameraPos: [-0.0069, -0.9996, -0.0255] as PositionThreeD,
   butterflyPos: [-0.42, -0.1635, -0.4365] as PositionThreeD,
   animationDuration: 2000,
