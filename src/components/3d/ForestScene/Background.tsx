@@ -1,19 +1,21 @@
-import { useThree } from "@react-three/fiber";
+import { useThree, useLoader } from "@react-three/fiber";
 import { useEffect } from "react";
 import * as THREE from "three";
 import { SCENE_CONFIG } from "../../../config/3d";
 
 export default function Background() {
   const { scene } = useThree();
+  const texture = useLoader(THREE.TextureLoader, SCENE_CONFIG.backgroundFile);
 
   useEffect(() => {
-    const loader = new THREE.TextureLoader();
-    loader.load(SCENE_CONFIG.backgroundFile, (texture) => {
-      texture.colorSpace = THREE.SRGBColorSpace;
-      texture.mapping = THREE.EquirectangularReflectionMapping;
-      scene.background = texture;
-    });
-  }, [scene]);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.mapping = THREE.EquirectangularReflectionMapping;
+    scene.background = texture;
+
+    return () => {
+      scene.background = null;
+    };
+  }, [texture, scene]);
 
   return null;
 }
