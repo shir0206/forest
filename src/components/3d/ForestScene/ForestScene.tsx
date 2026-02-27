@@ -11,6 +11,7 @@ import Browser from "../../ui/Browser/Browser.tsx";
 import { useAppContext } from "../../../shared/contexts/AppContext";
 import { WINDOW_STATE } from "../../../types/app";
 import Background from "./Background.tsx";
+import DecorativeButterflies from "./Decorativebutterflies.tsx";
 
 /**
  * Configuration interface for ForestScene component
@@ -94,8 +95,11 @@ export default function ForestScene() {
       >
         <Suspense fallback={<Loader />}>
           <Background />
-          <CameraControls runIntro={runIntro} controlsRef={controlsRef} />
+          <CameraControls runIntro={false} controlsRef={controlsRef} />
           <CinematicEffects isAboutOpen={windowState !== "closed"} />
+          {runIntro && (
+            <DecorativeButterflies count={9} flyAwayAfterMs={4500} />
+          )}
           <Butterfly
             position={DEFAULT_SCENE_CONFIG.butterflyPosition}
             controlsRef={controlsRef}

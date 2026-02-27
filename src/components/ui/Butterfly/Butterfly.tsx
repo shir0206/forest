@@ -53,7 +53,7 @@ export default function Butterfly({
   const { animateToPosition, getCameraRelativePosition } =
     useCameraAnimation(controlsRef);
   const [lookingDirection, setLookingDirection] = useState<MovingDirection>(
-    MOVING_DIRECTION.LEFT
+    MOVING_DIRECTION.RIGHT
   );
 
   const paused = windowState !== WINDOW_STATE.CLOSED;
