@@ -35,6 +35,8 @@ interface DecorativeButterflyProps {
   offset: { x: number; y: number; z: number };
   /** Per-butterfly S-wave parameters so each one weaves differently */
   wave: { amplitude: number; frequency: number; phase: number };
+  /** Wing flap speed: base duration in ms for the CSS animation */
+  flapDuration: { left: number; right: number };
   /** Delay before flying away (stagger) */
   flyAwayDelay: number;
   /** Startup delay in seconds before the butterfly begins moving */
@@ -48,6 +50,7 @@ function DecorativeButterflyInstance({
   flyAway,
   offset,
   wave,
+  flapDuration,
   flyAwayDelay,
   startDelay,
   onGone,
@@ -157,7 +160,7 @@ function DecorativeButterflyInstance({
       return;
     }
 
-    // ── FLYING AWAY ───────────────────────────────────────────────────────────
+    // ── FLYING AWAY (S-wave weave along escape vector) ───────────────────────
     if (stateRef.current === "flyingAway") {
       if (!flyAwayStartRef.current || !flyAwayTargetRef.current) return;
 
@@ -166,14 +169,37 @@ function DecorativeButterflyInstance({
         flyAwayElapsedRef.current / flyAwayDurationRef.current,
         1
       );
-      // Ease-in acceleration
-      const eased = t * t;
 
+      // Ease-in acceleration along the escape path
+      const eased = t * t;
       group.position.lerpVectors(
         flyAwayStartRef.current,
         flyAwayTargetRef.current,
         eased
       );
+
+      // S-wave perpendicular to the escape direction.
+      // Envelope = sin(πt) so the weave starts at 0, peaks mid-flight, and
+      // fades back to 0 at arrival — butterfly reaches its exit point cleanly.
+      _tangent
+        .subVectors(flyAwayTargetRef.current, flyAwayStartRef.current)
+        .normalize();
+      _right.crossVectors(_tangent, _up).normalize();
+
+      const envelope = Math.sin(t * Math.PI); // 0 → 1 → 0
+      const sineOffset =
+        Math.sin(t * Math.PI * 2 * wave.frequency + wave.phase) *
+        wave.amplitude *
+        1.4 * // slightly wider weave than during the intro
+        envelope;
+
+      group.position.addScaledVector(_right, sineOffset);
+      // gentle vertical component so the weave is truly 3-D
+      group.position.y +=
+        Math.cos(t * Math.PI * 2 * wave.frequency + wave.phase) *
+        wave.amplitude *
+        0.5 *
+        envelope;
 
       if (t >= 1) {
         setVisible(false);
@@ -198,8 +224,29 @@ function DecorativeButterflyInstance({
           aria-hidden="true"
         >
           <div className="butterfly">
-            <DecorativeWing />
-            <DecorativeWing />
+            {/* Each wing gets its own --flap-duration so they flutter independently */}
+            <div
+              className="wing"
+              style={
+                {
+                  "--flap-duration": `${flapDuration.left}ms`,
+                } as React.CSSProperties
+              }
+            >
+              <div className="bit" />
+              <div className="bit" />
+            </div>
+            <div
+              className="wing"
+              style={
+                {
+                  "--flap-duration": `${flapDuration.right}ms`,
+                } as React.CSSProperties
+              }
+            >
+              <div className="bit" />
+              <div className="bit" />
+            </div>
           </div>
         </div>
       </Html>
@@ -252,6 +299,11 @@ export default function DecorativeButterflies({
           frequency: 1.5 + Math.random() * 1.0, // how many S cycles across the path
           phase: Math.random() * Math.PI * 2, // where in the cycle it starts
         },
+        // Each wing flaps at its own random rhythm (80–220ms per cycle)
+        flapDuration: {
+          left: 80 + Math.random() * 140,
+          right: 80 + Math.random() * 140,
+        },
         flyAwayDelay: i * 0.12 + Math.random() * 0.2,
         startDelay: 0.15 + Math.random() * 0.35, // slight stagger so they don't all start together
       })),
@@ -282,6 +334,7 @@ export default function DecorativeButterflies({
             flyAway={flyAway}
             offset={b.offset}
             wave={b.wave}
+            flapDuration={b.flapDuration}
             flyAwayDelay={b.flyAwayDelay}
             startDelay={b.startDelay}
             onGone={handleGone}

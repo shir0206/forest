@@ -54,7 +54,7 @@ $sparkle-container-width: 150px;
 $sparkle-container-height: 100px;
 
 // Animation tokens
-$duration-base: 750ms;
+$duration-base: var(--flap-duration, 0.15s);
 $timing-smooth: cubic-bezier(0.48, 0.01, 0.54, 1);
 
 // ============================================

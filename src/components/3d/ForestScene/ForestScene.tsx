@@ -95,10 +95,10 @@ export default function ForestScene() {
       >
         <Suspense fallback={<Loader />}>
           <Background />
-          <CameraControls runIntro={false} controlsRef={controlsRef} />
+          <CameraControls runIntro={runIntro} controlsRef={controlsRef} />
           <CinematicEffects isAboutOpen={windowState !== "closed"} />
           {runIntro && (
-            <DecorativeButterflies count={9} flyAwayAfterMs={4500} />
+            <DecorativeButterflies count={9} flyAwayAfterMs={7500} />
           )}
           <Butterfly
             position={DEFAULT_SCENE_CONFIG.butterflyPosition}
