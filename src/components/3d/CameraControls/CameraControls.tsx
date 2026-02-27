@@ -46,7 +46,7 @@ export default function CameraControls({
 
     animateSequence({
       positions: SCENE_ANIMATION_POSITIONS,
-      duration: 3,
+      duration: 1,
       ease: "none",
     });
   }, [runIntro, animateSequence]);

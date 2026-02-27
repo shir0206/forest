@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useMemo } from "react";
-import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { SCENE_ANIMATION_POSITIONS } from "../../../config/3d";
+import Butterfly from "../../ui/Butterfly/Butterfly";
 
 /** Total intro travel duration in seconds – should match camera intro */
 const INTRO_DURATION = 3.2;
@@ -14,18 +14,6 @@ const _tangent = new THREE.Vector3();
 const _up = new THREE.Vector3(0, 1, 0);
 const _right = new THREE.Vector3();
 const _curvePoint = new THREE.Vector3();
-
-/**
- * A single decorative (non-interactive) butterfly with HTML/CSS animation
- */
-function DecorativeWing() {
-  return (
-    <div className="wing">
-      <div className="bit" />
-      <div className="bit" />
-    </div>
-  );
-}
 
 interface DecorativeButterflyProps {
   id: number;
@@ -210,46 +198,12 @@ function DecorativeButterflyInstance({
 
   if (!visible) return null;
 
+  // positionVec is updated every frame via groupRef, but Butterfly's Html
+  // needs a stable position prop — we pass [0,0,0] and let the THREE.Group
+  // handle world positioning instead.
   return (
     <group ref={groupRef}>
-      <Html
-        center
-        wrapperClass="butterfly-container"
-        distanceFactor={2}
-        scale={[0.004, 0.004, 0.004]}
-      >
-        <div
-          className="butterfly-button"
-          style={{ pointerEvents: "none", opacity: 0.85 }}
-          aria-hidden="true"
-        >
-          <div className="butterfly">
-            {/* Each wing gets its own --flap-duration so they flutter independently */}
-            <div
-              className="wing"
-              style={
-                {
-                  "--flap-duration": `${flapDuration.left}ms`,
-                } as React.CSSProperties
-              }
-            >
-              <div className="bit" />
-              <div className="bit" />
-            </div>
-            <div
-              className="wing"
-              style={
-                {
-                  "--flap-duration": `${flapDuration.right}ms`,
-                } as React.CSSProperties
-              }
-            >
-              <div className="bit" />
-              <div className="bit" />
-            </div>
-          </div>
-        </div>
-      </Html>
+      <Butterfly position={[0, 0, 0]} decorative flapDuration={flapDuration} />
     </group>
   );
 }
