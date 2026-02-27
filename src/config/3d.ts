@@ -2,23 +2,24 @@ import { PositionThreeD } from "../types/3d";
 
 // Camera animation positions for the scene tour
 export const SCENE_ANIMATION_POSITIONS: PositionThreeD[] = [
-  [-0.9074, -0.245, -0.3414],
-  [-0.7141, 0.2198, -0.6647],
-  [0.6123, -0.0359, -0.7898],
-  [0.8787, -0.156, -0.6],
-  [0.953, 0.3001, -0.0422],
-  [0.4481, 0.3722, 0.8128],
-  [0.3057, 0.1594, 0.9387],
+  [-0.878, -0.4022, -0.2595], // forest
+  [-0.9074, -0.245, -0.3414], // path
+  [0.0867, 0.5956, -0.7986], // stone
+  [0.7003, 0.4125, -0.5827], // cliff
+  [0.9033, 0.3487, -0.25], // waterfall
+  [0.9077, 0.2216, 0.3564], // vally
+  [0.3057, 0.1594, 0.9387], // workspace
 ] as const;
 
 // 3D Scene Configuration
 export const SCENE_CONFIG = {
   backgroundFile: "hdri/background.webp",
   initCameraPos: SCENE_ANIMATION_POSITIONS[0],
-  butterflyPos: [-0.42, -0.1635, -0.4365] as PositionThreeD,
-  animationDuration: 2000,
-  cameraTransitionDuration: 1500,
+  butterflyPos: [-0.1, -0.1, -0.5] as PositionThreeD,
+  animationDuration: 1000,
+  cameraTransitionDuration: 1000,
 } as const;
+
 // Camera configuration
 export const CAMERA_CONFIG = {
   near: 0.1,

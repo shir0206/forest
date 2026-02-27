@@ -6,9 +6,9 @@ import * as THREE from "three";
 import Butterfly from "../../ui/Butterfly/Butterfly";
 
 // ─── Timing constants (seconds) ──────────────────────────────────────────────
-const SPAWN_DURATION = 1.8; // fade-in + drift outward from center
-const WANDER_DURATION = 2.5; // free individual S-wave flight
-const GATHER_DURATION = 2.0; // curve toward the shared swarm center
+const SPAWN_DURATION = 5; // fade-in + drift outward from center
+const WANDER_DURATION = 5; // free individual S-wave flight
+const GATHER_DURATION = 5; // curve toward the shared swarm center
 // After gathering they swarm until flyAway fires (controlled by flyAwayAfterMs)
 
 // Shared convergence point in world space
@@ -81,6 +81,7 @@ function DecorativeButterflyInstance({ data, flyAway, onGone }: InstanceProps) {
     const timer = setTimeout(() => {
       if (!groupRef.current) return;
       phaseRef.current = "flyingAway";
+      console.log("phaseRef.current", phaseRef.current);
       phaseElapsedRef.current = 0;
       flyAwayElapsed.current = 0;
       flyAwayStartRef.current = groupRef.current.position.clone();
@@ -114,6 +115,8 @@ function DecorativeButterflyInstance({ data, flyAway, onGone }: InstanceProps) {
     // Scale: starts tiny (0.05) and grows to 1.
     // Opacity: fades in from 0 to 1.
     if (phaseRef.current === "spawning") {
+      console.log("phaseRef.current", phaseRef.current);
+
       const rawT = Math.min(pe / SPAWN_DURATION, 1);
       const eased = rawT * rawT * (3 - 2 * rawT); // smooth-step for base travel
 
@@ -140,13 +143,15 @@ function DecorativeButterflyInstance({ data, flyAway, onGone }: InstanceProps) {
         envelope;
 
       // Scale: grow from tiny to full size using a cubic ease
-      group.scale.setScalar(0.05 + eased * 0.95);
+      group.scale.setScalar(0.005 + eased * 0.95);
 
       // Opacity: fade in
       updateOpacity(eased);
 
       if (rawT >= 1) {
         phaseRef.current = "wandering";
+        console.log("phaseRef.current", phaseRef.current);
+
         phaseElapsedRef.current = 0;
       }
       return;
@@ -154,6 +159,8 @@ function DecorativeButterflyInstance({ data, flyAway, onGone }: InstanceProps) {
 
     // ── WANDERING ────────────────────────────────────────────────────────────
     if (phaseRef.current === "wandering") {
+      console.log("phaseRef.current", phaseRef.current);
+
       const orbitAngle = pe * 1.1 + data.wave.phase;
       const orbitR = 0.28 + Math.sin(pe * 0.6 + data.wave.phase) * 0.12;
       group.position.set(
@@ -167,6 +174,8 @@ function DecorativeButterflyInstance({ data, flyAway, onGone }: InstanceProps) {
       updateOpacity(1);
       if (pe >= WANDER_DURATION) {
         phaseRef.current = "gathering";
+        console.log("phaseRef.current", phaseRef.current);
+
         phaseElapsedRef.current = 0;
       }
       return;
@@ -174,6 +183,8 @@ function DecorativeButterflyInstance({ data, flyAway, onGone }: InstanceProps) {
 
     // ── GATHERING ────────────────────────────────────────────────────────────
     if (phaseRef.current === "gathering") {
+      console.log("phaseRef.current", phaseRef.current);
+
       const rawT = Math.min(pe / GATHER_DURATION, 1);
       const eased = rawT * rawT * (3 - 2 * rawT);
       _tmp.lerpVectors(group.position, SWARM_CENTER, eased);
@@ -192,6 +203,8 @@ function DecorativeButterflyInstance({ data, flyAway, onGone }: InstanceProps) {
         envelope;
       if (rawT >= 1) {
         phaseRef.current = "swarming";
+        console.log("phaseRef.current", phaseRef.current);
+
         phaseElapsedRef.current = 0;
       }
       return;
@@ -199,6 +212,8 @@ function DecorativeButterflyInstance({ data, flyAway, onGone }: InstanceProps) {
 
     // ── SWARMING ─────────────────────────────────────────────────────────────
     if (phaseRef.current === "swarming") {
+      console.log("phaseRef.current", phaseRef.current);
+
       const { angleOffset, radius, yOffset, speed } = data.swarmSlot;
       const angle = pe * speed + angleOffset;
       group.position.x = SWARM_CENTER.x + Math.cos(angle) * radius;
@@ -222,6 +237,8 @@ function DecorativeButterflyInstance({ data, flyAway, onGone }: InstanceProps) {
 
     // ── FLYING AWAY ──────────────────────────────────────────────────────────
     if (phaseRef.current === "flyingAway") {
+      console.log("phaseRef.current", phaseRef.current);
+
       if (!flyAwayStartRef.current || !flyAwayTargetRef.current) return;
       flyAwayElapsed.current += delta;
       const rawT = Math.min(

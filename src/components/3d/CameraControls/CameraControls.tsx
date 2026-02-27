@@ -1,8 +1,7 @@
 "use client";
-import { useRef, useEffect } from "react";
+import { useEffect } from "react";
 import { useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import * as THREE from "three";
 import useDynamicFov from "../../../hooks/animation/useDynamicFov";
 import useCameraAnimation from "../../../hooks/animation/useCameraAnimation";
 import { SCENE_ANIMATION_POSITIONS } from "../../../config/3d";
@@ -21,7 +20,6 @@ export default function CameraControls({
   const { camera } = useThree();
   const { windowState } = useAppContext();
 
-  // Custom hooks
   useDynamicFov(controlsRef);
   const { animateSequence } = useCameraAnimation(controlsRef);
 
@@ -46,8 +44,9 @@ export default function CameraControls({
 
     animateSequence({
       positions: SCENE_ANIMATION_POSITIONS,
-      duration: 1,
-      ease: "none",
+      duration: 10, // ← total seconds for the whole journey (was per-segment before)
+      ease: "power2.inOut",
+      tension: 0.8, // ← 0 = loose/swoopy, 1 = tight
     });
   }, [runIntro, animateSequence]);
 
