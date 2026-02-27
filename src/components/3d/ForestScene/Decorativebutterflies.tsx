@@ -3,278 +3,333 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { SCENE_ANIMATION_POSITIONS } from "../../../config/3d";
 import Butterfly from "../../ui/Butterfly/Butterfly";
 
-/** Total intro travel duration in seconds – should match camera intro */
-const INTRO_DURATION = 3.2;
+// ─── Timing constants (seconds) ──────────────────────────────────────────────
+const SPAWN_DURATION = 1.8; // fade-in + drift outward from center
+const WANDER_DURATION = 2.5; // free individual S-wave flight
+const GATHER_DURATION = 2.0; // curve toward the shared swarm center
+// After gathering they swarm until flyAway fires (controlled by flyAwayAfterMs)
 
-// Reusable vectors to avoid per-frame allocations
+// Shared convergence point in world space
+const SWARM_CENTER = new THREE.Vector3(0, 0.3, 0);
+
+// Reusable vectors — never re-allocated per frame
 const _tangent = new THREE.Vector3();
 const _up = new THREE.Vector3(0, 1, 0);
 const _right = new THREE.Vector3();
-const _curvePoint = new THREE.Vector3();
+const _tmp = new THREE.Vector3();
 
-interface DecorativeButterflyProps {
+// ─── Types ───────────────────────────────────────────────────────────────────
+
+type Phase = "spawning" | "wandering" | "gathering" | "swarming" | "flyingAway";
+
+interface ButterflyData {
   id: number;
-  /** Whether this butterfly should now fly away off-screen */
-  flyAway: boolean;
-  /** Random offset so each butterfly has a unique path */
-  offset: { x: number; y: number; z: number };
-  /** Per-butterfly S-wave parameters so each one weaves differently */
   wave: { amplitude: number; frequency: number; phase: number };
-  /** Wing flap speed: base duration in ms for the CSS animation */
   flapDuration: { left: number; right: number };
-  /** Delay before flying away (stagger) */
   flyAwayDelay: number;
-  /** Startup delay in seconds before the butterfly begins moving */
-  startDelay: number;
-  /** Called when the fly-away animation completes so we can unmount */
+  wanderTarget: THREE.Vector3;
+  swarmSlot: {
+    angleOffset: number;
+    radius: number;
+    yOffset: number;
+    speed: number;
+  };
+  bounceFreq: number;
+  bounceAmp: number;
+}
+
+interface InstanceProps {
+  data: ButterflyData;
+  flyAway: boolean;
   onGone: (id: number) => void;
 }
 
-function DecorativeButterflyInstance({
-  id,
-  flyAway,
-  offset,
-  wave,
-  flapDuration,
-  flyAwayDelay,
-  startDelay,
-  onGone,
-}: DecorativeButterflyProps) {
+// ─── Single butterfly instance ───────────────────────────────────────────────
+
+function DecorativeButterflyInstance({ data, flyAway, onGone }: InstanceProps) {
   const groupRef = useRef<THREE.Group>(null!);
   const [visible, setVisible] = useState(true);
+  const [opacity, setOpacity] = useState(0);
 
-  /**
-   * State machine refs (mutated in useFrame, never trigger re-renders):
-   *   phase: "waiting" → "travelling" → "hovering" → "flyingAway" → done
-   */
-  const stateRef = useRef<"waiting" | "travelling" | "hovering" | "flyingAway">(
-    "waiting"
+  const phaseRef = useRef<Phase>("spawning");
+  const elapsedRef = useRef(0);
+  const phaseElapsedRef = useRef(0);
+  const opacityRef = useRef(0);
+
+  // Entry point: butterfly flies IN from outside the scene
+  const spawnOriginRef = useRef(
+    (() => {
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 4 + Math.random() * 2;
+      return new THREE.Vector3(
+        Math.cos(angle) * dist,
+        -0.5 + Math.random() * 1.0,
+        Math.sin(angle) * dist
+      );
+    })()
   );
-  const elapsedRef = useRef(0); // seconds since mount
+
   const flyAwayStartRef = useRef<THREE.Vector3 | null>(null);
   const flyAwayTargetRef = useRef<THREE.Vector3 | null>(null);
-  const flyAwayElapsedRef = useRef(0);
-  const flyAwayDurationRef = useRef(1.4 + Math.random() * 0.8);
+  const flyAwayElapsed = useRef(0);
+  const flyAwayDuration = useRef(1.4 + Math.random() * 0.8);
 
-  // Build a CatmullRom spline from scene positions + per-butterfly offset
-  const curve = useMemo(() => {
-    const pts = SCENE_ANIMATION_POSITIONS.map(
-      (p: [number, number, number]) =>
-        new THREE.Vector3(p[0] + offset.x, p[1] + offset.y, p[2] + offset.z)
-    );
-    return new THREE.CatmullRomCurve3(pts);
-  }, [offset]);
-
-  // When flyAway flag flips, transition to the flyingAway phase
   useEffect(() => {
     if (!flyAway) return;
-    const delayTimer = setTimeout(() => {
+    const timer = setTimeout(() => {
       if (!groupRef.current) return;
-      stateRef.current = "flyingAway";
+      phaseRef.current = "flyingAway";
+      phaseElapsedRef.current = 0;
+      flyAwayElapsed.current = 0;
       flyAwayStartRef.current = groupRef.current.position.clone();
-      flyAwayElapsedRef.current = 0;
-
       const angle = Math.random() * Math.PI * 2;
-      const dist = 8 + Math.random() * 6;
+      const dist = 8 + Math.random() * 5;
       flyAwayTargetRef.current = new THREE.Vector3(
         groupRef.current.position.x + Math.cos(angle) * dist,
-        groupRef.current.position.y + 2 + Math.random() * 4,
+        groupRef.current.position.y + 2 + Math.random() * 3,
         groupRef.current.position.z + Math.sin(angle) * dist
       );
-    }, flyAwayDelay * 1000);
-
-    return () => clearTimeout(delayTimer);
-  }, [flyAway, flyAwayDelay]);
+    }, data.flyAwayDelay * 1000);
+    return () => clearTimeout(timer);
+  }, [flyAway, data.flyAwayDelay]);
 
   useFrame((_, delta) => {
     const group = groupRef.current;
     if (!group || !visible) return;
 
     elapsedRef.current += delta;
-    const elapsed = elapsedRef.current;
+    phaseElapsedRef.current += delta;
+    const pe = phaseElapsedRef.current;
 
-    // ── WAITING ──────────────────────────────────────────────────────────────
-    if (stateRef.current === "waiting") {
-      // Place at curve start so it doesn't sit at origin
-      curve.getPoint(0, _curvePoint);
-      group.position.copy(_curvePoint);
-      if (elapsed >= startDelay) {
-        stateRef.current = "travelling";
-      }
-      return;
-    }
+    const updateOpacity = (next: number) => {
+      opacityRef.current = next;
+      if (Math.abs(next - opacity) > 0.04)
+        setOpacity(Math.max(0, Math.min(1, next)));
+    };
 
-    // ── TRAVELLING (intro path + S-wave weave) ───────────────────────────────
-    if (stateRef.current === "travelling") {
-      const travelElapsed = elapsed - startDelay;
-      // Ease-in-out: t goes 0→1 over INTRO_DURATION
-      const rawT = Math.min(travelElapsed / INTRO_DURATION, 1);
-      // Smooth-step easing (matches power1.inOut feel)
-      const t = rawT * rawT * (3 - 2 * rawT);
+    // ── SPAWNING ─────────────────────────────────────────────────────────────
+    // Fly in from a far entry point with S-wave weave.
+    // Scale: starts tiny (0.05) and grows to 1.
+    // Opacity: fades in from 0 to 1.
+    if (phaseRef.current === "spawning") {
+      const rawT = Math.min(pe / SPAWN_DURATION, 1);
+      const eased = rawT * rawT * (3 - 2 * rawT); // smooth-step for base travel
 
-      // Base position on the spline
-      curve.getPoint(t, _curvePoint);
+      // Base position: lerp from far entry to wander target
+      _tmp.lerpVectors(spawnOriginRef.current, data.wanderTarget, eased);
 
-      // S-wave: oscillate perpendicular to the curve tangent (the "right" axis)
-      if (t > 0 && t < 1) {
-        curve.getTangent(t, _tangent).normalize();
-        _right.crossVectors(_tangent, _up).normalize();
-        const sineOffset =
-          Math.sin(t * Math.PI * 2 * wave.frequency + wave.phase) *
-          wave.amplitude;
-        _curvePoint.addScaledVector(_right, sineOffset);
-        // Also a gentle vertical bob (half amplitude)
-        _curvePoint.y +=
-          Math.cos(t * Math.PI * 2 * wave.frequency + wave.phase) *
-          wave.amplitude *
-          0.4;
-      }
+      // S-wave perpendicular to the travel direction
+      // Envelope = sin(πt) so weave starts at 0 and lands cleanly at wanderTarget
+      _tangent
+        .subVectors(data.wanderTarget, spawnOriginRef.current)
+        .normalize();
+      _right.crossVectors(_tangent, _up).normalize();
+      const envelope = Math.sin(rawT * Math.PI);
+      const sineOffset =
+        Math.sin(rawT * Math.PI * 2 * data.wave.frequency + data.wave.phase) *
+        data.wave.amplitude *
+        envelope;
 
-      group.position.copy(_curvePoint);
+      group.position.copy(_tmp).addScaledVector(_right, sineOffset);
+      group.position.y +=
+        Math.cos(rawT * Math.PI * 2 * data.wave.frequency + data.wave.phase) *
+        data.wave.amplitude *
+        0.4 *
+        envelope;
+
+      // Scale: grow from tiny to full size using a cubic ease
+      group.scale.setScalar(0.05 + eased * 0.95);
+
+      // Opacity: fade in
+      updateOpacity(eased);
 
       if (rawT >= 1) {
-        stateRef.current = "hovering";
+        phaseRef.current = "wandering";
+        phaseElapsedRef.current = 0;
       }
       return;
     }
 
-    // ── HOVERING (gentle float in place after intro) ──────────────────────────
-    if (stateRef.current === "hovering") {
-      // Soft vertical sine hover
-      group.position.y += Math.sin(elapsed * 1.8) * 0.0008;
+    // ── WANDERING ────────────────────────────────────────────────────────────
+    if (phaseRef.current === "wandering") {
+      const orbitAngle = pe * 1.1 + data.wave.phase;
+      const orbitR = 0.28 + Math.sin(pe * 0.6 + data.wave.phase) * 0.12;
+      group.position.set(
+        data.wanderTarget.x + Math.cos(orbitAngle) * orbitR,
+        data.wanderTarget.y +
+          Math.sin(pe * data.wave.frequency + data.wave.phase) *
+            data.wave.amplitude *
+            0.5,
+        data.wanderTarget.z + Math.sin(orbitAngle) * orbitR
+      );
+      updateOpacity(1);
+      if (pe >= WANDER_DURATION) {
+        phaseRef.current = "gathering";
+        phaseElapsedRef.current = 0;
+      }
       return;
     }
 
-    // ── FLYING AWAY (S-wave weave along escape vector) ───────────────────────
-    if (stateRef.current === "flyingAway") {
-      if (!flyAwayStartRef.current || !flyAwayTargetRef.current) return;
+    // ── GATHERING ────────────────────────────────────────────────────────────
+    if (phaseRef.current === "gathering") {
+      const rawT = Math.min(pe / GATHER_DURATION, 1);
+      const eased = rawT * rawT * (3 - 2 * rawT);
+      _tmp.lerpVectors(group.position, SWARM_CENTER, eased);
+      _tangent.subVectors(SWARM_CENTER, group.position).normalize();
+      _right.crossVectors(_tangent, _up).normalize();
+      const envelope = Math.sin(rawT * Math.PI);
+      const sineOffset =
+        Math.sin(rawT * Math.PI * 2 * data.wave.frequency + data.wave.phase) *
+        data.wave.amplitude *
+        envelope;
+      group.position.copy(_tmp).addScaledVector(_right, sineOffset);
+      group.position.y +=
+        Math.cos(rawT * Math.PI * 2 * data.wave.frequency + data.wave.phase) *
+        data.wave.amplitude *
+        0.4 *
+        envelope;
+      if (rawT >= 1) {
+        phaseRef.current = "swarming";
+        phaseElapsedRef.current = 0;
+      }
+      return;
+    }
 
-      flyAwayElapsedRef.current += delta;
-      const t = Math.min(
-        flyAwayElapsedRef.current / flyAwayDurationRef.current,
+    // ── SWARMING ─────────────────────────────────────────────────────────────
+    if (phaseRef.current === "swarming") {
+      const { angleOffset, radius, yOffset, speed } = data.swarmSlot;
+      const angle = pe * speed + angleOffset;
+      group.position.x = SWARM_CENTER.x + Math.cos(angle) * radius;
+      group.position.z = SWARM_CENTER.z + Math.sin(angle) * radius;
+      group.position.y =
+        SWARM_CENTER.y +
+        yOffset +
+        Math.sin(elapsedRef.current * data.bounceFreq + data.wave.phase) *
+          data.bounceAmp;
+      const driftAmp = data.wave.amplitude * 0.2;
+      group.position.x +=
+        Math.sin(
+          elapsedRef.current * data.wave.frequency * 0.5 + data.wave.phase
+        ) * driftAmp;
+      group.position.z +=
+        Math.cos(
+          elapsedRef.current * data.wave.frequency * 0.5 + data.wave.phase
+        ) * driftAmp;
+      return;
+    }
+
+    // ── FLYING AWAY ──────────────────────────────────────────────────────────
+    if (phaseRef.current === "flyingAway") {
+      if (!flyAwayStartRef.current || !flyAwayTargetRef.current) return;
+      flyAwayElapsed.current += delta;
+      const rawT = Math.min(
+        flyAwayElapsed.current / flyAwayDuration.current,
         1
       );
-
-      // Ease-in acceleration along the escape path
-      const eased = t * t;
+      const eased = rawT * rawT;
       group.position.lerpVectors(
         flyAwayStartRef.current,
         flyAwayTargetRef.current,
         eased
       );
-
-      // S-wave perpendicular to the escape direction.
-      // Envelope = sin(πt) so the weave starts at 0, peaks mid-flight, and
-      // fades back to 0 at arrival — butterfly reaches its exit point cleanly.
       _tangent
         .subVectors(flyAwayTargetRef.current, flyAwayStartRef.current)
         .normalize();
       _right.crossVectors(_tangent, _up).normalize();
-
-      const envelope = Math.sin(t * Math.PI); // 0 → 1 → 0
+      const envelope = Math.sin(rawT * Math.PI);
       const sineOffset =
-        Math.sin(t * Math.PI * 2 * wave.frequency + wave.phase) *
-        wave.amplitude *
-        1.4 * // slightly wider weave than during the intro
+        Math.sin(rawT * Math.PI * 2 * data.wave.frequency + data.wave.phase) *
+        data.wave.amplitude *
+        1.4 *
         envelope;
-
       group.position.addScaledVector(_right, sineOffset);
-      // gentle vertical component so the weave is truly 3-D
       group.position.y +=
-        Math.cos(t * Math.PI * 2 * wave.frequency + wave.phase) *
-        wave.amplitude *
+        Math.cos(rawT * Math.PI * 2 * data.wave.frequency + data.wave.phase) *
+        data.wave.amplitude *
         0.5 *
         envelope;
-
-      if (t >= 1) {
+      updateOpacity(1 - eased);
+      if (rawT >= 1) {
         setVisible(false);
-        onGone(id);
+        onGone(data.id);
       }
     }
   });
 
   if (!visible) return null;
 
-  // positionVec is updated every frame via groupRef, but Butterfly's Html
-  // needs a stable position prop — we pass [0,0,0] and let the THREE.Group
-  // handle world positioning instead.
   return (
     <group ref={groupRef}>
-      <Butterfly position={[0, 0, 0]} decorative flapDuration={flapDuration} />
+      <Butterfly
+        position={[0, 0, 0]}
+        decorative
+        flapDuration={data.flapDuration}
+        opacity={opacity}
+      />
     </group>
   );
 }
 
-// ---------------------------------------------------------------------------
+// ─── Parent orchestrator ─────────────────────────────────────────────────────
 
 interface DecorativeButterfliesProps {
-  /**
-   * How many extra butterflies to show during the intro.
-   * Default: 8
-   */
+  /** Number of decorative butterflies. Default: 9 */
   count?: number;
   /**
-   * How long after mount (ms) before the swarm flies away.
-   * Should be roughly: intro animation duration + a little dwell time.
-   * Default: 4500
+   * Ms after mount before the swarm scatters.
+   * Default: 9000  (spawn 1.8 + wander 2.5 + gather 2.0 + swarm 2.5 ≈ 8.8s)
    */
   flyAwayAfterMs?: number;
 }
 
-/**
- * Renders a swarm of decorative butterflies that follow the scene intro path
- * with an S-shaped weaving motion, then scatter off-screen leaving only the
- * real interactive butterfly behind.
- */
 export default function DecorativeButterflies({
-  count = 8,
-  flyAwayAfterMs = 4500,
+  count = 9,
+  flyAwayAfterMs = 9000,
 }: DecorativeButterfliesProps) {
   const [flyAway, setFlyAway] = useState(false);
   const [goneIds, setGoneIds] = useState<Set<number>>(new Set());
 
-  // Random per-butterfly data, stable across renders
-  const butterflies = useMemo(
+  const butterflies = useMemo<ButterflyData[]>(
     () =>
       Array.from({ length: count }, (_, i) => ({
         id: i,
-        offset: {
-          x: (Math.random() - 0.5) * 1.4,
-          y: (Math.random() - 0.5) * 0.6,
-          z: (Math.random() - 0.5) * 1.4,
-        },
-        // S-wave: each butterfly gets its own amplitude, frequency & phase
-        // so no two butterflies trace the exact same wiggle
         wave: {
-          amplitude: 0.18 + Math.random() * 0.22, // how wide the S swings
-          frequency: 1.5 + Math.random() * 1.0, // how many S cycles across the path
-          phase: Math.random() * Math.PI * 2, // where in the cycle it starts
+          amplitude: 0.18 + Math.random() * 0.22,
+          frequency: 1.5 + Math.random() * 1.0,
+          phase: Math.random() * Math.PI * 2,
         },
-        // Each wing flaps at its own random rhythm (80–220ms per cycle)
         flapDuration: {
           left: 80 + Math.random() * 140,
           right: 80 + Math.random() * 140,
         },
-        flyAwayDelay: i * 0.12 + Math.random() * 0.2,
-        startDelay: 0.15 + Math.random() * 0.35, // slight stagger so they don't all start together
+        flyAwayDelay: i * 0.14 + Math.random() * 0.2,
+        wanderTarget: new THREE.Vector3(
+          (Math.random() - 0.5) * 2.5,
+          0.1 + Math.random() * 0.8,
+          (Math.random() - 0.5) * 2.5
+        ),
+        swarmSlot: {
+          angleOffset: (i / count) * Math.PI * 2 + Math.random() * 0.4,
+          radius: 0.12 + Math.random() * 0.22,
+          yOffset: (Math.random() - 0.5) * 0.25,
+          speed: 0.6 + Math.random() * 0.8,
+        },
+        bounceFreq: 1.5 + Math.random() * 2.0,
+        bounceAmp: 0.03 + Math.random() * 0.06,
       })),
     [count]
   );
 
-  // Trigger fly-away after the configured delay
   useEffect(() => {
-    const timer = setTimeout(() => setFlyAway(true), flyAwayAfterMs);
-    return () => clearTimeout(timer);
+    const t = setTimeout(() => setFlyAway(true), flyAwayAfterMs);
+    return () => clearTimeout(t);
   }, [flyAwayAfterMs]);
 
-  const handleGone = (id: number) => {
+  const handleGone = (id: number) =>
     setGoneIds((prev) => new Set(prev).add(id));
-  };
 
-  // Fully unmount once every butterfly has gone
   if (goneIds.size >= count) return null;
 
   return (
@@ -284,13 +339,8 @@ export default function DecorativeButterflies({
         .map((b) => (
           <DecorativeButterflyInstance
             key={b.id}
-            id={b.id}
+            data={b}
             flyAway={flyAway}
-            offset={b.offset}
-            wave={b.wave}
-            flapDuration={b.flapDuration}
-            flyAwayDelay={b.flyAwayDelay}
-            startDelay={b.startDelay}
             onGone={handleGone}
           />
         ))}

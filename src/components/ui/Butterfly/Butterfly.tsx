@@ -29,6 +29,8 @@ type ButterflyProps = {
   decorative?: boolean;
   /** Per-wing flap duration in ms. Only used when decorative=true. */
   flapDuration?: { left: number; right: number };
+  /** 0–1 opacity for decorative mode (fade in/out). Default: 1 */
+  opacity?: number;
 };
 
 export function Wing({ style }: { style?: React.CSSProperties }) {
@@ -56,6 +58,7 @@ export default function Butterfly({
   clickDistanceThreshold = 2,
   decorative = false,
   flapDuration,
+  opacity = 1,
 }: ButterflyProps) {
   const { windowState, setWindowState } = useAppContext();
   const { camera } = useThree();
@@ -63,7 +66,7 @@ export default function Butterfly({
     controlsRef as React.RefObject<any>
   );
   const [lookingDirection, setLookingDirection] = useState<MovingDirection>(
-    MOVING_DIRECTION.LEFT
+    MOVING_DIRECTION.RIGHT
   );
 
   const paused = windowState !== WINDOW_STATE.CLOSED;
@@ -138,7 +141,7 @@ export default function Butterfly({
       {decorative ? (
         <div
           className={`butterfly-button looking-${lookingDirection}`}
-          style={{ pointerEvents: "none", opacity: 0.85 }}
+          style={{ pointerEvents: "none", opacity }}
           aria-hidden="true"
         >
           {wings}
