@@ -35,6 +35,7 @@ public/hdri/*
 !public/hdri/Gemini_Generated_Image_c4rtmic4rtmic4rt.exr
 !public/hdri/Gemini_Generated_Image_c4rtmic4rtmic4rt-topaz-enhance-6x.webp
 !public/hdri/Gemini_Generated_Image_mrpfnvmrpfnvmrpf_topaz-enhance-6x.webp
+!public/hdri/background.webp
 
 build/
 .env
