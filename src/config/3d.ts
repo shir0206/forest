@@ -14,7 +14,7 @@ export const SCENE_ANIMATION_POSITIONS: PositionThreeD[] = [
 export const SCENE_CONFIG = {
   backgroundFile: "hdri/background.webp",
   initCameraPos: SCENE_ANIMATION_POSITIONS[0],
-  butterflyPos: [-0.1, -0.1, -0.5] as PositionThreeD,
+  butterflyPos: [-0.17, -0.08, -0.52] as PositionThreeD,
   animationDuration: 1000,
   cameraTransitionDuration: 1000,
 } as const;
