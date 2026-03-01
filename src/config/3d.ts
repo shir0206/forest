@@ -2,7 +2,7 @@ import { PositionThreeD } from "../types/3d";
 
 // Camera animation positions for the scene tour
 export const SCENE_ANIMATION_POSITIONS: PositionThreeD[] = [
-  [-0.878, -0.4022, -0.2595], // forest
+  [-0.9, -0.4, -0.25], // forest
   [-0.7074, -0.245, -0.3414], // path
   [0.0867, 0.4956, -0.7986], // stone
   [0.9033, 0.3487, -0.25], // waterfall
