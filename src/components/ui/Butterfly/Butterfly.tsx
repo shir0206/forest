@@ -9,7 +9,11 @@ import "./butterfly.scss";
 import { useAppContext } from "../../../shared/contexts/AppContext";
 import { WINDOW_STATE } from "../../../types/app";
 import useCameraAnimation from "../../../hooks/animation/useCameraAnimation";
-import { CAMERA_ANIMATION_PRESETS } from "../../../config/3d";
+import {
+  CAMERA_ANIMATION_PRESETS,
+  SCENE_ANIMATION_POSITIONS,
+} from "../../../config/3d";
+
 type ButterflyProps = {
   position: [number, number, number];
   /**
@@ -77,7 +81,10 @@ export default function Butterfly({
   );
 
   const targetCameraPosition = useMemo(
-    () => new THREE.Vector3(0.6, 0.24, 0.6234),
+    () =>
+      new THREE.Vector3(
+        ...SCENE_ANIMATION_POSITIONS[SCENE_ANIMATION_POSITIONS.length - 1]
+      ),
     []
   );
 
