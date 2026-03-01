@@ -9,24 +9,37 @@ import "./butterfly.scss";
 import { useAppContext } from "../../../shared/contexts/AppContext";
 import { WINDOW_STATE } from "../../../types/app";
 import useCameraAnimation from "../../../hooks/animation/useCameraAnimation";
-import { CAMERA_ANIMATION_PRESETS } from "../../../config/3d";
+import {
+  CAMERA_ANIMATION_PRESETS,
+  SCENE_ANIMATION_POSITIONS,
+} from "../../../config/3d";
+
 type ButterflyProps = {
   position: [number, number, number];
   /**
-   * Controls ref from CameraControls component
-   * Passed down to enable camera animation
+   * Controls ref from CameraControls component.
+   * Not required in decorative mode.
    */
-  controlsRef: React.RefObject<any>;
+  controlsRef?: React.RefObject<any>;
   /**
-   * Distance threshold from butterfly position where click is enabled
+   * Distance threshold from butterfly position where click is enabled.
    * Default: 2 units
    */
   clickDistanceThreshold?: number;
+  /**
+   * When true the butterfly is purely visual: no button, no click, no sparkles.
+   * Pass flapDuration to give each wing its own CSS animation speed.
+   */
+  decorative?: boolean;
+  /** Per-wing flap duration in ms. Only used when decorative=true. */
+  flapDuration?: { left: number; right: number };
+  /** 0–1 opacity for decorative mode (fade in/out). Default: 1 */
+  opacity?: number;
 };
 
-function Wing() {
+export function Wing({ style }: { style?: React.CSSProperties }) {
   return (
-    <div className="wing">
+    <div className="wing" style={style}>
       <div className="bit" />
       <div className="bit" />
     </div>
@@ -47,13 +60,17 @@ export default function Butterfly({
   position,
   controlsRef,
   clickDistanceThreshold = 2,
+  decorative = false,
+  flapDuration,
+  opacity = 1,
 }: ButterflyProps) {
   const { windowState, setWindowState } = useAppContext();
   const { camera } = useThree();
-  const { animateToPosition, getCameraRelativePosition } =
-    useCameraAnimation(controlsRef);
+  const { animateToPosition, getCameraRelativePosition } = useCameraAnimation(
+    controlsRef as React.RefObject<any>
+  );
   const [lookingDirection, setLookingDirection] = useState<MovingDirection>(
-    MOVING_DIRECTION.LEFT
+    MOVING_DIRECTION.RIGHT
   );
 
   const paused = windowState !== WINDOW_STATE.CLOSED;
@@ -63,15 +80,14 @@ export default function Butterfly({
     [position]
   );
 
-  // Target camera position for the animation (last position in SCENE_ANIMATION_POSITIONS)
   const targetCameraPosition = useMemo(
-    () => new THREE.Vector3(0.6, 0.24, 0.6234),
+    () =>
+      new THREE.Vector3(
+        ...SCENE_ANIMATION_POSITIONS[SCENE_ANIMATION_POSITIONS.length - 1]
+      ),
     []
   );
 
-  /**
-   * Check if camera is within clickable range of the butterfly
-   */
   function isInClickableRange(): boolean {
     const distance = camera.position.distanceTo(targetCameraPosition);
     return distance <= clickDistanceThreshold;
@@ -79,37 +95,47 @@ export default function Butterfly({
 
   function handleClick(e: React.MouseEvent) {
     e.stopPropagation();
-
-    // Only allow click if camera is in the right position
     if (!isInClickableRange()) {
-      console.log(
-        "📍 Camera too far from butterfly position. Animating to position..."
-      );
-
       const relativePosition = getCameraRelativePosition(targetCameraPosition);
-      console.log("📐 Relative position to target:", relativePosition);
       setLookingDirection(
         relativePosition.isLeft ? MOVING_DIRECTION.RIGHT : MOVING_DIRECTION.LEFT
       );
-
-      // Animate camera to the target position with parabolic motion
       animateToPosition({
         targetPosition: targetCameraPosition,
         duration: CAMERA_ANIMATION_PRESETS.smoothArc.duration,
         ease: CAMERA_ANIMATION_PRESETS.smoothArc.ease,
         arcHeight: CAMERA_ANIMATION_PRESETS.smoothArc.arcHeight,
         onComplete: () => {
-          console.log("🎬 Camera animation complete");
-          // After animation completes, open the window
           setWindowState(WINDOW_STATE.OPEN);
         },
       });
     } else {
-      console.log("📍 Camera in range. Opening window directly.");
-      // Camera is already in position, open immediately
       setWindowState(WINDOW_STATE.OPEN);
     }
   }
+
+  const wings = (
+    <div className="butterfly">
+      <Wing
+        style={
+          flapDuration
+            ? ({
+                "--flap-duration": `${flapDuration.left}ms`,
+              } as React.CSSProperties)
+            : undefined
+        }
+      />
+      <Wing
+        style={
+          flapDuration
+            ? ({
+                "--flap-duration": `${flapDuration.right}ms`,
+              } as React.CSSProperties)
+            : undefined
+        }
+      />
+    </div>
+  );
 
   return (
     <Html
@@ -122,16 +148,14 @@ export default function Butterfly({
       <button
         className={`butterfly-button looking-${lookingDirection} ${
           paused ? "pause-animation" : ""
-        }`}
+        }${decorative ? " decorative" : ""}`}
+        style={{ opacity }}
         onClick={handleClick}
         aria-label="Interactive butterfly - click to learn more about the developer"
+        aria-hidden="true"
       >
-        <div className="butterfly">
-          <Wing />
-          <Wing />
-        </div>
-
-        <Sparkles />
+        {wings}
+        {!decorative && <Sparkles />}
       </button>
     </Html>
   );
