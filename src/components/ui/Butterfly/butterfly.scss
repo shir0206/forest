@@ -83,21 +83,10 @@ $timing-smooth: cubic-bezier(0.48, 0.01, 0.54, 1);
   justify-content: end;
   align-items: center;
   direction: ltr;
+}
 
-  // Pause all animations when pause-animation class is on button
-  &.pause-animation {
-    .butterfly {
-      animation-play-state: paused;
-    }
-
-    .wing {
-      animation-play-state: paused;
-    }
-
-    .sparkle {
-      animation-play-state: paused;
-    }
-  }
+.decorative {
+  cursor: none;
 }
 
 .sparkles {
@@ -379,27 +368,27 @@ $timing-smooth: cubic-bezier(0.48, 0.01, 0.54, 1);
   // Mirrored sparkles
   .sparkle {
     &:nth-child(1) {
-      animation: sparkle1Mirrored 2s ease-in-out infinite !important;
+      animation: sparkle1Mirrored 2s ease-in-out infinite;
     }
 
     &:nth-child(2) {
-      animation: sparkle2Mirrored 2.3s ease-in-out infinite 0.3s !important;
+      animation: sparkle2Mirrored 2.3s ease-in-out infinite 0.3s;
     }
 
     &:nth-child(3) {
-      animation: sparkle3Mirrored 1.8s ease-in-out infinite 0.6s !important;
+      animation: sparkle3Mirrored 1.8s ease-in-out infinite 0.6s;
     }
 
     &:nth-child(4) {
-      animation: sparkle4Mirrored 2s ease-in-out infinite 0.9s !important;
+      animation: sparkle4Mirrored 2s ease-in-out infinite 0.9s;
     }
 
     &:nth-child(5) {
-      animation: sparkle5Mirrored 1.9s ease-in-out infinite 1.2s !important;
+      animation: sparkle5Mirrored 1.9s ease-in-out infinite 1.2s;
     }
 
     &:nth-child(6) {
-      animation: sparkle6Mirrored 2.2s ease-in-out infinite 1.5s !important;
+      animation: sparkle6Mirrored 2.2s ease-in-out infinite 1.5s;
     }
   }
 }
@@ -865,5 +854,22 @@ $timing-smooth: cubic-bezier(0.48, 0.01, 0.54, 1);
     transform-style: preserve-3d;
     transform: rotateX(52deg) rotateY(-40deg) rotateZ(32deg) translateX(-12px)
       translateY(-100px) scaleX(1.1);
+  }
+}
+
+.butterfly-button.looking-right,
+.butterfly-button.looking-left {
+  &.pause-animation {
+    .butterfly {
+      animation-play-state: paused;
+    }
+
+    .wing {
+      animation-play-state: paused;
+    }
+
+    .sparkle {
+      animation-play-state: paused;
+    }
   }
 }

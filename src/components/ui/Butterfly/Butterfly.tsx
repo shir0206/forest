@@ -138,26 +138,18 @@ export default function Butterfly({
       distanceFactor={2}
       scale={[0.005, 0.005, 0.005]}
     >
-      {decorative ? (
-        <div
-          className={`butterfly-button looking-${lookingDirection}`}
-          style={{ pointerEvents: "none", opacity }}
-          aria-hidden="true"
-        >
-          {wings}
-        </div>
-      ) : (
-        <button
-          className={`butterfly-button looking-${lookingDirection} ${
-            paused ? "pause-animation" : ""
-          }`}
-          onClick={handleClick}
-          aria-label="Interactive butterfly - click to learn more about the developer"
-        >
-          {wings}
-          <Sparkles />
-        </button>
-      )}
+      <button
+        className={`butterfly-button looking-${lookingDirection} ${
+          paused ? "pause-animation" : ""
+        }${decorative ? " decorative" : ""}`}
+        style={{ opacity }}
+        onClick={handleClick}
+        aria-label="Interactive butterfly - click to learn more about the developer"
+        aria-hidden="true"
+      >
+        {wings}
+        {!decorative && <Sparkles />}
+      </button>
     </Html>
   );
 }
