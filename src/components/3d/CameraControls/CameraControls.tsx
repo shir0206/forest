@@ -9,16 +9,12 @@ import { useAppContext } from "../../../shared/contexts/AppContext";
 import { WINDOW_STATE } from "../../../types/app";
 
 type CameraControlsProps = {
-  runIntro: boolean;
   controlsRef: React.RefObject<any>;
 };
 
-export default function CameraControls({
-  runIntro,
-  controlsRef,
-}: CameraControlsProps) {
+export default function CameraControls({ controlsRef }: CameraControlsProps) {
   const { camera } = useThree();
-  const { windowState } = useAppContext();
+  const { windowState, runIntro, setRunIntro } = useAppContext();
 
   useDynamicFov(controlsRef);
   const { animateSequence } = useCameraAnimation(controlsRef);
@@ -47,8 +43,11 @@ export default function CameraControls({
       duration: 10, // ← total seconds for the whole journey (was per-segment before)
       ease: "power2.inOut",
       tension: 0.8, // ← 0 = loose/swoopy, 1 = tight
+      onComplete: () => {
+        setRunIntro(false);
+      },
     });
-  }, [runIntro, animateSequence]);
+  }, [runIntro, animateSequence, setRunIntro]);
 
   return (
     <OrbitControls

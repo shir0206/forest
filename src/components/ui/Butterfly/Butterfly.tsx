@@ -64,7 +64,8 @@ export default function Butterfly({
   flapDuration,
   opacity = 1,
 }: ButterflyProps) {
-  const { windowState, setWindowState } = useAppContext();
+  const { windowState, setWindowState, runIntro } = useAppContext();
+
   const { camera } = useThree();
   const { animateToPosition, getCameraRelativePosition } = useCameraAnimation(
     controlsRef as React.RefObject<any>
@@ -95,6 +96,9 @@ export default function Butterfly({
 
   function handleClick(e: React.MouseEvent) {
     e.stopPropagation();
+
+    if (runIntro) return; // Prevent interaction during intro animation
+
     if (!isInClickableRange()) {
       const relativePosition = getCameraRelativePosition(targetCameraPosition);
       setLookingDirection(
@@ -148,7 +152,8 @@ export default function Butterfly({
       <button
         className={`butterfly-button looking-${lookingDirection} ${
           paused ? "pause-animation" : ""
-        }${decorative ? " decorative" : ""}`}
+        }${decorative ? " decorative" : ""}
+        ${runIntro ? " disable-click" : ""}`}
         style={{ opacity }}
         onClick={handleClick}
         aria-label="Interactive butterfly - click to learn more about the developer"
