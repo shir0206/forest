@@ -14,30 +14,6 @@ import Background from "./Background.tsx";
 import DecorativeButterflies from "./Decorativebutterflies.tsx";
 
 /**
- * Configuration interface for ForestScene component
- */
-interface ForestSceneConfig {
-  /** Initial camera position */
-  cameraPosition: [number, number, number];
-  /** Camera field of view */
-  cameraFov: number;
-  /** Butterfly position */
-  butterflyPosition: [number, number, number];
-  /** Click distance threshold for butterfly interaction */
-  clickDistanceThreshold: number;
-}
-
-/**
- * Default configuration for ForestScene
- */
-const DEFAULT_SCENE_CONFIG: ForestSceneConfig = {
-  cameraPosition: SCENE_CONFIG.initCameraPos,
-  cameraFov: 60,
-  butterflyPosition: SCENE_CONFIG.butterflyPos,
-  clickDistanceThreshold: 0.5,
-};
-
-/**
  * Handles canvas click events to close the browser window
  */
 const createCanvasClickHandler = (
@@ -87,8 +63,8 @@ export default function ForestScene() {
       <Canvas
         style={{ width: "100vw", height: "100vh", filter: "blur(0px)" }}
         camera={{
-          position: DEFAULT_SCENE_CONFIG.cameraPosition,
-          fov: DEFAULT_SCENE_CONFIG.cameraFov,
+          position: SCENE_CONFIG.initCameraPos,
+          fov: SCENE_CONFIG.cameraFov,
           aspect: getCameraAspect(),
         }}
         onClick={handleCanvasClick}
@@ -100,13 +76,9 @@ export default function ForestScene() {
           {runIntro && (
             <DecorativeButterflies count={9} flyAwayAfterMs={6500} />
           )}
-          <Butterfly
-            position={DEFAULT_SCENE_CONFIG.butterflyPosition}
-            controlsRef={controlsRef}
-            clickDistanceThreshold={DEFAULT_SCENE_CONFIG.clickDistanceThreshold}
-          />
+          <Butterfly controlsRef={controlsRef} />
 
-          <Browser position={DEFAULT_SCENE_CONFIG.butterflyPosition} />
+          <Browser />
         </Suspense>
       </Canvas>
     </div>

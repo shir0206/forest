@@ -11,20 +11,18 @@ import { ContextBridge } from "../../ContextBridge";
 import { BrowserHeader } from "./BrowserHeader";
 import Navigation from "../Navigation/Navigation";
 import { LANGUAGE } from "../../../types/app.ts";
+import { SCENE_CONFIG } from "../../../config/3d";
 
-type BrowserProps = {
-  position: [number, number, number];
-};
-
-export default function Browser({ position }: BrowserProps) {
+export default function Browser() {
   const appContext = useAppContext();
+  const position = SCENE_CONFIG.butterflyPos;
 
   if (!appContext) {
     console.error("Browser: AppContext not found");
   }
 
   const { windowState, visibleScreens, language } = appContext;
-  // Extract the full context value to pass to the bridge
+
   const { ref: contentRef, ready } = useHtmlReady<HTMLDivElement>();
   const { setScreenRef } = useScreenVisibility(contentRef, ready);
 

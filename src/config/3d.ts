@@ -17,6 +17,8 @@ export const SCENE_CONFIG = {
   butterflyPos: [-0.17, -0.08, -0.52] as PositionThreeD,
   animationDuration: 1000,
   cameraTransitionDuration: 1000,
+  cameraFov: 60,
+  clickDistanceThreshold: 0.5,
 } as const;
 
 // Camera configuration

@@ -74,6 +74,7 @@ export default function Butterfly({
     MOVING_DIRECTION.RIGHT
   );
 
+  const { position, clickDistanceThreshold };
   const paused = windowState !== WINDOW_STATE.CLOSED;
 
   const htmlPosition = useMemo(
