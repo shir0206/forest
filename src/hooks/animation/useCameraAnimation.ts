@@ -3,6 +3,18 @@ import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import gsap from "gsap";
 import { CAMERA_ANIMATION_PRESETS } from "../../config/3d";
+import {
+  getCachedVector,
+  withCachedVector,
+  returnCachedVector,
+  vectorPool,
+} from "./utils/vectorPool";
+import {
+  fastSubtractAndNormalize,
+  fastDot,
+  fastCross,
+  fastLength,
+} from "./utils/mathOptimization";
 
 export type CameraAnimationConfig = {
   targetPosition: THREE.Vector3 | [number, number, number];
@@ -74,6 +86,7 @@ export default function useCameraAnimation(controlsRef: React.RefObject<any>) {
 
   /**
    * Get camera position relative to target from screen perspective
+   * Optimized with vector pooling and fast math operations
    */
   const getCameraRelativePosition = useCallback(
     (
@@ -92,25 +105,34 @@ export default function useCameraAnimation(controlsRef: React.RefObject<any>) {
 
       const cameraPosition = camera.position;
 
-      const cameraRight = new THREE.Vector3();
-      const cameraUp = new THREE.Vector3();
-      const cameraForward = new THREE.Vector3();
+      // Use cached vectors to reduce garbage collection
+      const cameraRight = getCachedVector("cameraRight");
+      const cameraUp = getCachedVector("cameraUp");
+      const cameraForward = getCachedVector("cameraForward");
+      const toTarget = getCachedVector("toTarget");
 
-      cameraForward.subVectors(lookAt, cameraPosition).normalize();
+      // Use optimized math operations
+      fastSubtractAndNormalize(lookAt, cameraPosition, cameraForward);
       cameraUp.copy(camera.up).normalize();
-      cameraRight.crossVectors(cameraForward, cameraUp).normalize();
-      cameraUp.crossVectors(cameraRight, cameraForward).normalize();
+      fastCross(cameraForward, cameraUp, cameraRight).normalize();
+      fastCross(cameraRight, cameraForward, cameraUp).normalize();
 
-      const toTarget = new THREE.Vector3().subVectors(target, cameraPosition);
-      const distance = toTarget.length();
+      fastSubtractAndNormalize(target, cameraPosition, toTarget);
+      const distance = fastLength(toTarget);
 
-      const rightComponent = toTarget.dot(cameraRight);
-      const upComponent = toTarget.dot(cameraUp);
-      const forwardComponent = toTarget.dot(cameraForward);
+      const rightComponent = fastDot(toTarget, cameraRight);
+      const upComponent = fastDot(toTarget, cameraUp);
+      const forwardComponent = fastDot(toTarget, cameraForward);
 
       const horizontalOffset = rightComponent / distance;
       const verticalOffset = upComponent / distance;
       const depthOffset = forwardComponent / distance;
+
+      // Return vectors to pool
+      returnCachedVector("cameraRight", cameraRight);
+      returnCachedVector("cameraUp", cameraUp);
+      returnCachedVector("cameraForward", cameraForward);
+      returnCachedVector("toTarget", toTarget);
 
       return {
         isLeft: rightComponent < 0,
@@ -180,6 +202,8 @@ export default function useCameraAnimation(controlsRef: React.RefObject<any>) {
           controls.enabled = true;
           if (onComplete) onComplete();
         },
+        overwrite: "auto", // Prevent animation conflicts
+        paused: false,
       });
 
       animationRef.current.to(animationProgress, {
@@ -298,7 +322,7 @@ export default function useCameraAnimation(controlsRef: React.RefObject<any>) {
   );
 
   /**
-   * Cancel any ongoing animation
+   * Cancel any ongoing animation with proper cleanup
    */
   const cancelAnimation = useCallback(() => {
     if (animationRef.current) {
@@ -308,6 +332,8 @@ export default function useCameraAnimation(controlsRef: React.RefObject<any>) {
     if (controlsRef.current) {
       controlsRef.current.enabled = true;
     }
+    // Clear cached vectors to prevent memory leaks
+    vectorPool.clear();
   }, [controlsRef]);
 
   return {
