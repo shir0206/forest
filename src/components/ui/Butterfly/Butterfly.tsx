@@ -10,22 +10,17 @@ import { useAppContext } from "../../../shared/contexts/AppContext";
 import { WINDOW_STATE } from "../../../types/app";
 import useCameraAnimation from "../../../hooks/animation/useCameraAnimation";
 import {
+  SCENE_CONFIG,
   CAMERA_ANIMATION_PRESETS,
   SCENE_ANIMATION_POSITIONS,
 } from "../../../config/3d";
 
 type ButterflyProps = {
-  position: [number, number, number];
   /**
    * Controls ref from CameraControls component.
    * Not required in decorative mode.
    */
   controlsRef?: React.RefObject<any>;
-  /**
-   * Distance threshold from butterfly position where click is enabled.
-   * Default: 2 units
-   */
-  clickDistanceThreshold?: number;
   /**
    * When true the butterfly is purely visual: no button, no click, no sparkles.
    * Pass flapDuration to give each wing its own CSS animation speed.
@@ -57,9 +52,7 @@ function Sparkles({ count = 6 }: { count?: number }) {
 }
 
 export default function Butterfly({
-  position,
   controlsRef,
-  clickDistanceThreshold = 2,
   decorative = false,
   flapDuration,
   opacity = 1,
@@ -74,7 +67,9 @@ export default function Butterfly({
     MOVING_DIRECTION.RIGHT
   );
 
-  const { position, clickDistanceThreshold };
+  const position = SCENE_CONFIG.butterflyPos;
+  const clickDistanceThreshold = SCENE_CONFIG.clickDistanceThreshold;
+
   const paused = windowState !== WINDOW_STATE.CLOSED;
 
   const htmlPosition = useMemo(

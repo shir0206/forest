@@ -459,7 +459,6 @@ function DecorativeButterflyInstance({ data, flyAway, onGone }: InstanceProps) {
   return (
     <group ref={groupRef}>
       <Butterfly
-        position={[0, 0, 0]}
         decorative
         flapDuration={data.flapDuration}
         opacity={opacity}
