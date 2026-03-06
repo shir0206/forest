@@ -15,6 +15,7 @@ import {
   DeviceType,
   DEVICE_TYPE,
 } from "../../types/app";
+import { detectDevice } from "../../config/3d";
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
 
@@ -53,7 +54,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     new Set()
   );
   const [language, setLanguageState] = useState<Language>(LANGUAGE.EN);
-  const [device, setDeviceState] = useState<DeviceType>(DEVICE_TYPE.DESKTOP);
+  const [device, setDeviceState] = useState<DeviceType>(detectDevice);
 
   const setRunIntro = useCallback((run: boolean) => {
     setRunIntroState(run);
