@@ -210,8 +210,9 @@ export default function useCameraAnimation(controlsRef: React.RefObject<any>) {
             tSquared * target.z;
 
           camera.lookAt(lookAtTarget);
-          camera.updateProjectionMatrix();
-          controls.update();
+          if (controls.enabled) {
+            controls.update();
+          }
         },
       });
 
@@ -283,8 +284,9 @@ export default function useCameraAnimation(controlsRef: React.RefObject<any>) {
           const point = curve.getPoint(progress.t);
           camera.position.copy(point);
           camera.lookAt(lookAtTarget);
-          camera.updateProjectionMatrix();
-          controls.update();
+          if (controls.enabled) {
+            controls.update();
+          }
         },
         onComplete: () => {
           controls.enabled = true;
