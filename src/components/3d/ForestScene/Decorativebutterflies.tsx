@@ -13,6 +13,10 @@ const PHASE_DURATION = {
   gather: 2,
 } as const;
 
+// How quickly opacity fades in during spawn, in seconds.
+// Independent of PHASE_DURATION.spawn so position/scale can take longer.
+const OPACITY_FADE_IN_DURATION = PHASE_DURATION.spawn * 0.4;
+
 const SWARM_CENTER = new THREE.Vector3(0, 0.3, 0);
 
 // Reusable scratch vectors — never re-allocated per frame
@@ -184,6 +188,11 @@ function tickSpawning({
   const rawProgress = Math.min(phaseElapsed / PHASE_DURATION.spawn, 1);
   const easedProgress = smoothStep(rawProgress);
 
+  // Opacity reaches 1 after OPACITY_FADE_IN_DURATION seconds,
+  // independent of the full 5s spawn movement and scale animation.
+  const opacityProgress = Math.min(phaseElapsed / OPACITY_FADE_IN_DURATION, 1);
+  const easedOpacity = smoothStep(opacityProgress);
+
   scratchLerp.lerpVectors(spawnOrigin, wanderTarget, easedProgress);
 
   const travelDirection = scratchTangent
@@ -196,9 +205,8 @@ function tickSpawning({
   });
 
   group.position.copy(scratchLerp).add(sWaveDisplacement);
-  group.scale.setScalar(0.005 + easedProgress);
-
-  setSmoothedOpacity(easedProgress);
+  group.scale.setScalar(easedProgress);
+  setSmoothedOpacity(easedOpacity);
 
   return rawProgress >= 1;
 }
