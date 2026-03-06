@@ -6,10 +6,10 @@ import Butterfly from "../../ui/Butterfly/Butterfly.tsx";
 import CameraControls from "../CameraControls/CameraControls.tsx";
 import CinematicEffects from "../CinematicEffects/CinematicEffects.tsx";
 import Loader from "../../../shared/components/Loader/Loader.tsx";
-import { SCENE_CONFIG } from "../../../config/3d";
+import { SCENE_CONFIG, DEVICE_CONFIG } from "../../../config/3d";
 import Browser from "../../ui/Browser/Browser.tsx";
 import { useAppContext } from "../../../shared/contexts/AppContext";
-import { WINDOW_STATE } from "../../../types/app";
+import { WINDOW_STATE, DeviceType } from "../../../types/app";
 import Background from "./Background.tsx";
 import DecorativeButterflies from "./Decorativebutterflies.tsx";
 
@@ -51,12 +51,15 @@ export default function ForestScene() {
     return null;
   }
 
-  const { runIntro, windowState, setWindowState } = appContext;
+  const { runIntro, windowState, setWindowState, device } = appContext;
 
   const handleCanvasClick = useCallback(
     createCanvasClickHandler(windowState, setWindowState),
     [windowState, setWindowState]
   );
+
+  // Get butterfly count based on device type
+  const butterflyCount = DEVICE_CONFIG.butterflyCount[device as DeviceType];
 
   return (
     <div className="w-full h-openInfoscreen bg-black">
@@ -74,7 +77,10 @@ export default function ForestScene() {
           <CameraControls controlsRef={controlsRef} />
           <CinematicEffects isAboutOpen={windowState !== "closed"} />
           {runIntro && (
-            <DecorativeButterflies count={9} flyAwayAfterMs={6500} />
+            <DecorativeButterflies
+              count={butterflyCount}
+              flyAwayAfterMs={6500}
+            />
           )}
           <Butterfly controlsRef={controlsRef} />
 
