@@ -45,7 +45,7 @@ interface SwarmSlot {
   orbitSpeed: number;
 }
 
-interface ButterflyData {
+interface ButterflyConfig {
   id: number;
   wave: WaveParams;
   /** Wing-flap cycle time in ms, randomised per side for an organic feel */
@@ -61,10 +61,40 @@ interface ButterflyData {
   bobAmplitude: number;
 }
 
-interface InstanceProps {
-  data: ButterflyData;
-  flyAway: boolean;
-  onGone: (id: number) => void;
+/**
+ * Mutable per-butterfly animation runtime.
+ * Lives in a plain ref array — never in React state — so frame-by-frame
+ * mutations here never schedule a React re-render.
+ */
+interface ButterflyRuntime {
+  /** Static config set at creation — never mutated during animation */
+  config: ButterflyConfig;
+
+  // ── Phase machine ──────────────────────────────────────────────────────────
+  // Each butterfly advances independently through its own phase sequence.
+  currentPhase: Phase;
+  /** Seconds elapsed in the current phase — resets to 0 on each phase transition */
+  phaseElapsed: number;
+  /** Seconds elapsed since this butterfly was created — never resets */
+  totalElapsed: number;
+
+  // ── Opacity ────────────────────────────────────────────────────────────────
+  // Written directly to the DOM node via buttonRefs; never goes through setState.
+  opacity: number;
+
+  // ── Spawning ───────────────────────────────────────────────────────────────
+  spawnOrigin: THREE.Vector3;
+
+  // ── Flying away ────────────────────────────────────────────────────────────
+  // Populated only when the fly-away trigger fires for this individual.
+  flyAwayOrigin: THREE.Vector3 | null;
+  flyAwayDestination: THREE.Vector3 | null;
+  flyAwayElapsed: number;
+  flyAwayDuration: number;
+
+  // ── Lifecycle ──────────────────────────────────────────────────────────────
+  /** Flipped to false when fly-away completes; the frame loop skips it after that */
+  active: boolean;
 }
 
 // ─── Math helpers ─────────────────────────────────────────────────────────────
@@ -335,150 +365,27 @@ function tickFlyingAway({
   if (rawProgress >= 1) onComplete();
 }
 
-// ─── Single butterfly instance ───────────────────────────────────────────────
+// ─── Runtime factory ──────────────────────────────────────────────────────────
 
-function DecorativeButterflyInstance({ data, flyAway, onGone }: InstanceProps) {
-  const groupRef = useRef<THREE.Group>(null!);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const [visible, setVisible] = useState(true);
-
-  const phase = useRef<Phase>("spawning");
-  const totalElapsed = useRef(0);
-  const phaseElapsed = useRef(0);
-  const currentOpacity = useRef(0);
-
-  const spawnOrigin = useRef(randomSpawnOrigin());
-
-  const flyAwayStart = useRef<THREE.Vector3 | null>(null);
-  const flyAwayTarget = useRef<THREE.Vector3 | null>(null);
-  const flyAwayElapsed = useRef(0);
-  const flyAwayDuration = useRef(1.4 + Math.random() * 0.8);
-
-  function setSmoothedOpacity(next: number) {
-    const clamped = Math.max(0, Math.min(1, next));
-    currentOpacity.current = clamped;
-    // Direct DOM manipulation instead of React state to avoid re-renders
-    if (buttonRef.current) {
-      buttonRef.current.style.opacity = String(clamped);
-    }
-  }
-
-  function advanceToPhase(nextPhase: Phase) {
-    phase.current = nextPhase;
-    phaseElapsed.current = 0;
-  }
-
-  useEffect(() => {
-    if (!flyAway) return;
-
-    const timer = setTimeout(() => {
-      if (!groupRef.current) return;
-      flyAwayStart.current = groupRef.current.position.clone();
-      flyAwayTarget.current = randomEscapeTarget(groupRef.current.position);
-      flyAwayElapsed.current = 0;
-      advanceToPhase("flyingAway");
-    }, data.flyAwayDelay * 1000);
-
-    return () => clearTimeout(timer);
-  }, [flyAway, data.flyAwayDelay]);
-
-  useFrame((_, delta) => {
-    const group = groupRef.current;
-    if (!group || !visible) return;
-
-    totalElapsed.current += delta;
-    phaseElapsed.current += delta;
-
-    if (phase.current === "spawning") {
-      const done = tickSpawning({
-        group,
-        phaseElapsed: phaseElapsed.current,
-        spawnOrigin: spawnOrigin.current,
-        wanderTarget: data.wanderTarget,
-        wave: data.wave,
-        setSmoothedOpacity,
-      });
-      if (done) advanceToPhase("wandering");
-      return;
-    }
-
-    if (phase.current === "wandering") {
-      const done = tickWandering({
-        group,
-        phaseElapsed: phaseElapsed.current,
-        wanderTarget: data.wanderTarget,
-        wave: data.wave,
-        setSmoothedOpacity,
-      });
-      if (done) advanceToPhase("gathering");
-      return;
-    }
-
-    if (phase.current === "gathering") {
-      const done = tickGathering({
-        group,
-        phaseElapsed: phaseElapsed.current,
-        wave: data.wave,
-      });
-      if (done) advanceToPhase("swarming");
-      return;
-    }
-
-    if (phase.current === "swarming") {
-      tickSwarming({
-        group,
-        phaseElapsed: phaseElapsed.current,
-        totalElapsed: totalElapsed.current,
-        swarmSlot: data.swarmSlot,
-        wave: data.wave,
-        bobFrequency: data.bobFrequency,
-        bobAmplitude: data.bobAmplitude,
-      });
-      return;
-    }
-
-    if (phase.current === "flyingAway") {
-      if (!flyAwayStart.current || !flyAwayTarget.current) return;
-      flyAwayElapsed.current += delta;
-      tickFlyingAway({
-        group,
-        flyAwayElapsed: flyAwayElapsed.current,
-        flyAwayDuration: flyAwayDuration.current,
-        flyAwayStart: flyAwayStart.current,
-        flyAwayTarget: flyAwayTarget.current,
-        wave: data.wave,
-        setSmoothedOpacity,
-        onComplete: () => {
-          setVisible(false);
-          onGone(data.id);
-        },
-      });
-    }
-  });
-
-  if (!visible) return null;
-
-  return (
-    <group ref={groupRef}>
-      <Butterfly
-        decorative
-        flapDuration={data.flapDuration}
-        buttonRef={buttonRef}
-      />
-    </group>
-  );
+function createButterflyRuntime(config: ButterflyConfig): ButterflyRuntime {
+  return {
+    config,
+    currentPhase: "spawning",
+    phaseElapsed: 0,
+    totalElapsed: 0,
+    opacity: 0,
+    spawnOrigin: randomSpawnOrigin(),
+    flyAwayOrigin: null,
+    flyAwayDestination: null,
+    flyAwayElapsed: 0,
+    flyAwayDuration: 1.4 + Math.random() * 0.8,
+    active: true,
+  };
 }
 
-// ─── Parent orchestrator ─────────────────────────────────────────────────────
+// ─── Config factory ───────────────────────────────────────────────────────────
 
-interface DecorativeButterfliesProps {
-  /** How many decorative butterflies to spawn. Default: 9 */
-  count?: number;
-  /** Milliseconds after mount before the swarm scatters. Default: 9000 */
-  flyAwayAfterMs?: number;
-}
-
-function createButterflyData(count: number): ButterflyData[] {
+function createButterflyConfigs(count: number): ButterflyConfig[] {
   return Array.from({ length: count }, (_, i) => ({
     id: i,
     wave: {
@@ -507,36 +414,224 @@ function createButterflyData(count: number): ButterflyData[] {
   }));
 }
 
+// ─── Opacity helper ───────────────────────────────────────────────────────────
+
+/**
+ * Writes opacity directly to the button DOM node, bypassing React state.
+ * Skips only identical values to avoid redundant DOM writes on frames where
+ * opacity hasn't changed (e.g. during the fully-opaque swarming phase).
+ * Every distinct value is written so fades are smooth and continuous.
+ */
+function applyOpacity(
+  next: number,
+  runtime: ButterflyRuntime,
+  btn: HTMLButtonElement | null
+): void {
+  const clamped = Math.max(0, Math.min(1, next));
+  if (clamped === runtime.opacity) return;
+  runtime.opacity = clamped;
+  if (btn) btn.style.opacity = String(clamped);
+}
+
+// ─── Props ────────────────────────────────────────────────────────────────────
+
+interface DecorativeButterfliesProps {
+  /** How many decorative butterflies to spawn. Default: 9 */
+  count?: number;
+  /** Milliseconds after mount before the swarm scatters. Default: 9000 */
+  flyAwayAfterMs?: number;
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
 export default function DecorativeButterflies({
   count = 9,
   flyAwayAfterMs = 9000,
 }: DecorativeButterfliesProps) {
-  const [flyAway, setFlyAway] = useState(false);
+  // Static per-butterfly config — created once, never changes
+  const configs = useMemo(() => createButterflyConfigs(count), [count]);
+
+  // All mutable per-butterfly animation data lives here.
+  // A plain ref array — mutating fields inside the frame loop never triggers
+  // a React re-render.
+  const allRuntimes = useRef<ButterflyRuntime[]>(
+    configs.map(createButterflyRuntime)
+  );
+
+  // groupRefs[i] → THREE.Group for configs[i], populated via ref callback in JSX
+  const groupRefs = useRef<(THREE.Group | null)[]>(Array(count).fill(null));
+
+  // buttonRefs[i] → <button> DOM node for configs[i].
+  // Opacity is written here directly, bypassing React state entirely.
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>(
+    Array(count).fill(null)
+  );
+
+  // The only piece of React state in this component. Incremented once per
+  // butterfly at the very end of its fly-away, purely to remove its <group>
+  // from the JSX tree.
   const [goneIds, setGoneIds] = useState<Set<number>>(new Set());
 
-  const butterflies = useMemo(() => createButterflyData(count), [count]);
+  // ─── Fly-away trigger ─────────────────────────────────────────────────────
+  // One outer timeout replaces the N useEffects that lived in the old
+  // DecorativeButterflyInstance children. Each butterfly's individual stagger
+  // (config.flyAwayDelay) is preserved via a nested per-butterfly setTimeout.
 
   useEffect(() => {
-    const timer = setTimeout(() => setFlyAway(true), flyAwayAfterMs);
-    return () => clearTimeout(timer);
+    const outerTimer = setTimeout(() => {
+      allRuntimes.current.forEach((runtime) => {
+        if (!runtime.active) return;
+
+        const innerTimer = setTimeout(() => {
+          const group = groupRefs.current[runtime.config.id];
+          if (!group || !runtime.active) return;
+
+          runtime.flyAwayOrigin = group.position.clone();
+          runtime.flyAwayDestination = randomEscapeTarget(group.position);
+          runtime.flyAwayElapsed = 0;
+          runtime.currentPhase = "flyingAway";
+          runtime.phaseElapsed = 0;
+        }, runtime.config.flyAwayDelay * 1000); // ← per-butterfly stagger preserved
+
+        // Stash timer id on the runtime object so the cleanup below can reach it
+        (runtime as any)._flyAwayTimer = innerTimer;
+      });
+    }, flyAwayAfterMs);
+
+    return () => {
+      clearTimeout(outerTimer);
+      allRuntimes.current.forEach((runtime) => {
+        if ((runtime as any)._flyAwayTimer !== undefined) {
+          clearTimeout((runtime as any)._flyAwayTimer);
+        }
+      });
+    };
   }, [flyAwayAfterMs]);
 
-  const handleGone = (id: number) =>
-    setGoneIds((prev) => new Set(prev).add(id));
+  // ─── Single frame loop ────────────────────────────────────────────────────
+  // Replaces N independent useFrame subscriptions that lived in the old child
+  // components. Each butterfly still advances through its own phase at its own
+  // pace — per-butterfly config values (wave, wanderTarget, swarmSlot, etc.)
+  // are read from runtime.config on every iteration.
+
+  useFrame((_, delta) => {
+    for (let i = 0; i < allRuntimes.current.length; i++) {
+      const runtime = allRuntimes.current[i];
+      if (!runtime.active) continue;
+
+      const group = groupRefs.current[i];
+      if (!group) continue;
+
+      runtime.totalElapsed += delta;
+      runtime.phaseElapsed += delta;
+
+      const btn = buttonRefs.current[i];
+
+      switch (runtime.currentPhase) {
+        case "spawning": {
+          const done = tickSpawning({
+            group,
+            phaseElapsed: runtime.phaseElapsed,
+            spawnOrigin: runtime.spawnOrigin,
+            wanderTarget: runtime.config.wanderTarget, // per-butterfly
+            wave: runtime.config.wave, // per-butterfly
+            setSmoothedOpacity: (next) => applyOpacity(next, runtime, btn),
+          });
+          if (done) {
+            runtime.currentPhase = "wandering";
+            runtime.phaseElapsed = 0;
+          }
+          break;
+        }
+
+        case "wandering": {
+          const done = tickWandering({
+            group,
+            phaseElapsed: runtime.phaseElapsed,
+            wanderTarget: runtime.config.wanderTarget, // per-butterfly
+            wave: runtime.config.wave, // per-butterfly
+            setSmoothedOpacity: (next) => applyOpacity(next, runtime, btn),
+          });
+          if (done) {
+            runtime.currentPhase = "gathering";
+            runtime.phaseElapsed = 0;
+          }
+          break;
+        }
+
+        case "gathering": {
+          const done = tickGathering({
+            group,
+            phaseElapsed: runtime.phaseElapsed,
+            wave: runtime.config.wave, // per-butterfly
+          });
+          if (done) {
+            runtime.currentPhase = "swarming";
+            runtime.phaseElapsed = 0;
+          }
+          break;
+        }
+
+        case "swarming": {
+          tickSwarming({
+            group,
+            phaseElapsed: runtime.phaseElapsed,
+            totalElapsed: runtime.totalElapsed,
+            swarmSlot: runtime.config.swarmSlot, // per-butterfly
+            wave: runtime.config.wave, // per-butterfly
+            bobFrequency: runtime.config.bobFrequency, // per-butterfly
+            bobAmplitude: runtime.config.bobAmplitude, // per-butterfly
+          });
+          break;
+        }
+
+        case "flyingAway": {
+          if (!runtime.flyAwayOrigin || !runtime.flyAwayDestination) break;
+          runtime.flyAwayElapsed += delta;
+          tickFlyingAway({
+            group,
+            flyAwayElapsed: runtime.flyAwayElapsed,
+            flyAwayDuration: runtime.flyAwayDuration, // per-butterfly
+            flyAwayStart: runtime.flyAwayOrigin,
+            flyAwayTarget: runtime.flyAwayDestination,
+            wave: runtime.config.wave, // per-butterfly
+            setSmoothedOpacity: (next) => applyOpacity(next, runtime, btn),
+            onComplete: () => {
+              runtime.active = false;
+              // Only setState call in the whole loop — fires once per butterfly,
+              // only when it finishes flying away and its <group> can be removed.
+              setGoneIds((prev) => new Set(prev).add(runtime.config.id));
+            },
+          });
+          break;
+        }
+      }
+    }
+  });
 
   if (goneIds.size >= count) return null;
 
   return (
     <>
-      {butterflies
-        .filter((b) => !goneIds.has(b.id))
-        .map((b) => (
-          <DecorativeButterflyInstance
-            key={b.id}
-            data={b}
-            flyAway={flyAway}
-            onGone={handleGone}
-          />
+      {configs
+        .filter((cfg) => !goneIds.has(cfg.id))
+        .map((cfg, i) => (
+          <group
+            key={cfg.id}
+            ref={(el) => {
+              groupRefs.current[i] = el;
+            }}
+          >
+            <Butterfly
+              decorative
+              flapDuration={cfg.flapDuration}
+              buttonRef={
+                {
+                  current: buttonRefs.current[i],
+                } as React.RefObject<HTMLButtonElement | null>
+              }
+            />
+          </group>
         ))}
     </>
   );
