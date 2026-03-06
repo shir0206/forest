@@ -9,7 +9,7 @@ import Butterfly from "../../ui/Butterfly/Butterfly";
 
 const PHASE_DURATION = {
   spawn: 5,
-  wander: 5,
+  wander: 4,
   gather: 2,
 } as const;
 
@@ -25,9 +25,17 @@ const scratchWorldUp = new THREE.Vector3(0, 1, 0);
 const scratchRight = new THREE.Vector3();
 const scratchLerp = new THREE.Vector3();
 
-// ─── Types ───────────────────────────────────────────────────────────────────
+// ─── Phase constants and types ───────────────────────────────────────────────
 
-type Phase = "spawning" | "wandering" | "gathering" | "swarming" | "flyingAway";
+const PHASE = {
+  SPAWN: "spawn",
+  WANDER: "wander",
+  GATHER: "gather",
+  SWARM: "swarm",
+  FLY_AWAY: "flyAway",
+} as const;
+
+type Phase = (typeof PHASE)[keyof typeof PHASE];
 
 interface WaveParams {
   /** How wide the S-curve swings left/right */
@@ -379,7 +387,7 @@ function tickFlyingAway({
 function createButterflyRuntime(config: ButterflyConfig): ButterflyRuntime {
   return {
     config,
-    currentPhase: "spawning",
+    currentPhase: PHASE.SPAWN,
     phaseElapsed: 0,
     totalElapsed: 0,
     opacity: 0,
@@ -403,8 +411,8 @@ function createButterflyConfigs(count: number): ButterflyConfig[] {
       phaseOffset: Math.random() * Math.PI * 2,
     },
     flapDuration: {
-      left: 80 + Math.random() * 140,
-      right: 80 + Math.random() * 140,
+      left: 120 + Math.random() * 140,
+      right: 120 + Math.random() * 140,
     },
     flyAwayDelay: i * 0.14 + Math.random() * 0.2,
     wanderTarget: new THREE.Vector3(
@@ -498,7 +506,7 @@ export default function DecorativeButterflies({
           runtime.flyAwayOrigin = group.position.clone();
           runtime.flyAwayDestination = randomEscapeTarget(group.position);
           runtime.flyAwayElapsed = 0;
-          runtime.currentPhase = "flyingAway";
+          runtime.currentPhase = PHASE.FLY_AWAY;
           runtime.phaseElapsed = 0;
         }, runtime.config.flyAwayDelay * 1000); // ← per-butterfly stagger preserved
 
@@ -537,7 +545,7 @@ export default function DecorativeButterflies({
       const btn = buttonRefs.current[i];
 
       switch (runtime.currentPhase) {
-        case "spawning": {
+        case PHASE.SPAWN: {
           const done = tickSpawning({
             group,
             phaseElapsed: runtime.phaseElapsed,
@@ -547,13 +555,13 @@ export default function DecorativeButterflies({
             setSmoothedOpacity: (next) => applyOpacity(next, runtime, btn),
           });
           if (done) {
-            runtime.currentPhase = "wandering";
+            runtime.currentPhase = PHASE.WANDER;
             runtime.phaseElapsed = 0;
           }
           break;
         }
 
-        case "wandering": {
+        case PHASE.WANDER: {
           const done = tickWandering({
             group,
             phaseElapsed: runtime.phaseElapsed,
@@ -562,26 +570,26 @@ export default function DecorativeButterflies({
             setSmoothedOpacity: (next) => applyOpacity(next, runtime, btn),
           });
           if (done) {
-            runtime.currentPhase = "gathering";
+            runtime.currentPhase = PHASE.GATHER;
             runtime.phaseElapsed = 0;
           }
           break;
         }
 
-        case "gathering": {
+        case PHASE.GATHER: {
           const done = tickGathering({
             group,
             phaseElapsed: runtime.phaseElapsed,
             wave: runtime.config.wave, // per-butterfly
           });
           if (done) {
-            runtime.currentPhase = "swarming";
+            runtime.currentPhase = PHASE.SWARM;
             runtime.phaseElapsed = 0;
           }
           break;
         }
 
-        case "swarming": {
+        case PHASE.SWARM: {
           tickSwarming({
             group,
             phaseElapsed: runtime.phaseElapsed,
@@ -594,7 +602,7 @@ export default function DecorativeButterflies({
           break;
         }
 
-        case "flyingAway": {
+        case PHASE.FLY_AWAY: {
           if (!runtime.flyAwayOrigin || !runtime.flyAwayDestination) break;
           runtime.flyAwayElapsed += delta;
           tickFlyingAway({
