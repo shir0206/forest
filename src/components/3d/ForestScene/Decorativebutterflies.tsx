@@ -196,7 +196,8 @@ function tickSpawning({
   });
 
   group.position.copy(scratchLerp).add(sWaveDisplacement);
-  group.scale.setScalar(0.005 + easedProgress * 0.95);
+  group.scale.setScalar(0.005 + easedProgress);
+
   setSmoothedOpacity(easedProgress);
 
   return rawProgress >= 1;
@@ -620,6 +621,10 @@ export default function DecorativeButterflies({
             key={cfg.id}
             ref={(el) => {
               groupRefs.current[i] = el;
+              // Zero out scale immediately so the first rendered frame is
+              // invisible. useFrame runs after the first render, so without
+              // this the butterfly flashes at full size for one frame on mount.
+              if (el) el.scale.setScalar(0);
             }}
           >
             <Butterfly
@@ -627,7 +632,14 @@ export default function DecorativeButterflies({
               flapDuration={cfg.flapDuration}
               buttonRef={
                 {
-                  current: buttonRefs.current[i],
+                  get current() {
+                    return buttonRefs.current[i];
+                  },
+                  set current(el: HTMLButtonElement | null) {
+                    buttonRefs.current[i] = el;
+                    // Zero opacity immediately for the same reason as scale above
+                    if (el) el.style.opacity = "0";
+                  },
                 } as React.RefObject<HTMLButtonElement | null>
               }
             />
