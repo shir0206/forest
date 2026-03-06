@@ -339,8 +339,8 @@ function tickFlyingAway({
 
 function DecorativeButterflyInstance({ data, flyAway, onGone }: InstanceProps) {
   const groupRef = useRef<THREE.Group>(null!);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const [visible, setVisible] = useState(true);
-  const [opacity, setOpacity] = useState(0);
 
   const phase = useRef<Phase>("spawning");
   const totalElapsed = useRef(0);
@@ -357,8 +357,10 @@ function DecorativeButterflyInstance({ data, flyAway, onGone }: InstanceProps) {
   function setSmoothedOpacity(next: number) {
     const clamped = Math.max(0, Math.min(1, next));
     currentOpacity.current = clamped;
-    // Only trigger a React re-render when the change would be visible
-    if (Math.abs(clamped - opacity) > 0.04) setOpacity(clamped);
+    // Direct DOM manipulation instead of React state to avoid re-renders
+    if (buttonRef.current) {
+      buttonRef.current.style.opacity = String(clamped);
+    }
   }
 
   function advanceToPhase(nextPhase: Phase) {
@@ -461,7 +463,7 @@ function DecorativeButterflyInstance({ data, flyAway, onGone }: InstanceProps) {
       <Butterfly
         decorative
         flapDuration={data.flapDuration}
-        opacity={opacity}
+        buttonRef={buttonRef}
       />
     </group>
   );
