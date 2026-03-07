@@ -4,6 +4,8 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import Butterfly from "../../ui/Butterfly/Butterfly";
+import { useAppContext } from "../../../shared/contexts/AppContext";
+import { DeviceType } from "../../../types/app";
 
 // ─── Phase durations (seconds) ───────────────────────────────────────────────
 
@@ -109,6 +111,57 @@ interface ButterflyRuntime {
   active: boolean;
 }
 
+// ─── Viewport bounds ─────────────────────────────────────────────────────────
+
+/**
+ * World-space coordinate limits used to keep every animation phase
+ * inside the visible viewport.
+ *
+ * Desktop uses generous spread so the scene feels full and lively.
+ * Mobile tightens all ranges so butterflies stay within the narrow portrait
+ * frustum across every phase: spawn → wander → escape.
+ */
+interface ViewportBounds {
+  /** Half-width used for wander targets (x / z) */
+  wanderHalfXZ: number;
+  /** Y range [min, max] for wander targets */
+  wanderY: [number, number];
+  /** Distance range [min, max] for spawn origin (off-screen edge) */
+  spawnDist: [number, number];
+  /** Max x / z deviation during escape (keeps butterfly in-frustum until fade) */
+  escapeHalfXZ: number;
+  /** Y boost range [min, max] added during escape so butterfly exits upward */
+  escapeY: [number, number];
+  /** Total escape travel distance [min, max] */
+  escapeDist: [number, number];
+}
+
+const DESKTOP_BOUNDS: ViewportBounds = {
+  wanderHalfXZ: 1.25,
+  wanderY: [0.1, 0.9],
+  spawnDist: [4, 6],
+  escapeHalfXZ: 8,
+  escapeY: [2, 5],
+  escapeDist: [8, 13],
+};
+
+/**
+ * On mobile (portrait) the horizontal frustum is much narrower than desktop.
+ * Tighter x / z ranges ensure butterflies stay visible during wander, and
+ * the escape path climbs vertically instead of sweeping sideways so users
+ * can actually see the fly-away animation.
+ */
+const MOBILE_BOUNDS: ViewportBounds = {
+  wanderHalfXZ: 0.65,
+  wanderY: [0.1, 0.65],
+  spawnDist: [2, 4],
+  escapeHalfXZ: 0.9,
+  escapeY: [2.0, 3.5],
+  escapeDist: [2.5, 4.0],
+};
+
+const BOUNDS = { DESKTOP: DESKTOP_BOUNDS, MOBILE: MOBILE_BOUNDS };
+
 // ─── Math helpers ─────────────────────────────────────────────────────────────
 
 /** Maps t ∈ [0,1] onto a smooth S-curve (no sudden jumps at endpoints) */
@@ -145,10 +198,18 @@ function computeSWaveOffset({
     .setY(verticalOffset);
 }
 
-/** Picks a random point on a ring far outside the visible scene to spawn from */
-function randomSpawnOrigin(): THREE.Vector3 {
+/**
+ * Picks a spawn origin just outside the viewport edge so the butterfly
+ * flies *into* the scene from a direction the camera can see.
+ *
+ * Desktop: wide ring at 4–6 units — same as before.
+ * Mobile: tight ring at 1.4–2.2 units. Butterflies appear from just
+ * beyond each viewport edge rather than way off in the distance.
+ */
+function randomSpawnOrigin(bounds: ViewportBounds): THREE.Vector3 {
   const angle = Math.random() * Math.PI * 2;
-  const distanceFromCenter = 4 + Math.random() * 2;
+  const [minDist, maxDist] = bounds.spawnDist;
+  const distanceFromCenter = minDist + Math.random() * (maxDist - minDist);
   return new THREE.Vector3(
     Math.cos(angle) * distanceFromCenter,
     -0.5 + Math.random() * 1.0,
@@ -156,14 +217,35 @@ function randomSpawnOrigin(): THREE.Vector3 {
   );
 }
 
-/** Picks a random escape point well outside the scene for the fly-away phase */
-function randomEscapeTarget(fromPosition: THREE.Vector3): THREE.Vector3 {
+/**
+ * Picks an escape target for the fly-away phase.
+ *
+ * Desktop: wide random arc, same as before.
+ * Mobile: constrained x / z spread so the butterfly stays inside the
+ * horizontal frustum while it climbs upward and fades — the user sees
+ * the full exit animation rather than it vanishing sideways immediately.
+ */
+function randomEscapeTarget(
+  fromPosition: THREE.Vector3,
+  bounds: ViewportBounds
+): THREE.Vector3 {
+  const [minDist, maxDist] = bounds.escapeDist;
+  const escapeDistance = minDist + Math.random() * (maxDist - minDist);
   const escapeAngle = Math.random() * Math.PI * 2;
-  const escapeDistance = 8 + Math.random() * 5;
+
+  const [minY, maxY] = bounds.escapeY;
+  const yBoost = minY + Math.random() * (maxY - minY);
+
+  // On mobile the lateral spread is capped so the butterfly doesn't
+  // leave the frustum horizontally before it has faded out.
+  const lateralX = Math.cos(escapeAngle) * escapeDistance;
+  const lateralZ = Math.sin(escapeAngle) * escapeDistance;
+  const clamp = bounds.escapeHalfXZ;
+
   return new THREE.Vector3(
-    fromPosition.x + Math.cos(escapeAngle) * escapeDistance,
-    fromPosition.y + 2 + Math.random() * 3,
-    fromPosition.z + Math.sin(escapeAngle) * escapeDistance
+    fromPosition.x + Math.max(-clamp, Math.min(clamp, lateralX)),
+    fromPosition.y + yBoost,
+    fromPosition.z + Math.max(-clamp, Math.min(clamp, lateralZ))
   );
 }
 
@@ -384,14 +466,17 @@ function tickFlyingAway({
 
 // ─── Runtime factory ──────────────────────────────────────────────────────────
 
-function createButterflyRuntime(config: ButterflyConfig): ButterflyRuntime {
+function createButterflyRuntime(
+  config: ButterflyConfig,
+  bounds: ViewportBounds
+): ButterflyRuntime {
   return {
     config,
     currentPhase: PHASE.SPAWN,
     phaseElapsed: 0,
     totalElapsed: 0,
     opacity: 0,
-    spawnOrigin: randomSpawnOrigin(),
+    spawnOrigin: randomSpawnOrigin(bounds),
     flyAwayOrigin: null,
     flyAwayDestination: null,
     flyAwayElapsed: 0,
@@ -402,7 +487,10 @@ function createButterflyRuntime(config: ButterflyConfig): ButterflyRuntime {
 
 // ─── Config factory ───────────────────────────────────────────────────────────
 
-function createButterflyConfigs(count: number): ButterflyConfig[] {
+function createButterflyConfigs(
+  count: number,
+  bounds: ViewportBounds
+): ButterflyConfig[] {
   return Array.from({ length: count }, (_, i) => ({
     id: i,
     wave: {
@@ -416,9 +504,11 @@ function createButterflyConfigs(count: number): ButterflyConfig[] {
     },
     flyAwayDelay: i * 0.14 + Math.random() * 0.2,
     wanderTarget: new THREE.Vector3(
-      (Math.random() - 0.5) * 2.5,
-      0.1 + Math.random() * 0.8,
-      (Math.random() - 0.5) * 2.5
+      // Use bounds-derived half-extent so wander targets stay inside the frustum
+      (Math.random() - 0.5) * 2 * bounds.wanderHalfXZ,
+      bounds.wanderY[0] +
+        Math.random() * (bounds.wanderY[1] - bounds.wanderY[0]),
+      (Math.random() - 0.5) * 2 * bounds.wanderHalfXZ
     ),
     swarmSlot: {
       angleOffset: (i / count) * Math.PI * 2 + Math.random() * 0.4,
@@ -465,14 +555,32 @@ export default function DecorativeButterflies({
   count = 9,
   flyAwayAfterMs = 9000,
 }: DecorativeButterfliesProps) {
-  // Static per-butterfly config — created once, never changes
-  const configs = useMemo(() => createButterflyConfigs(count), [count]);
+  const appContext = useAppContext();
+
+  if (!appContext) {
+    console.error("Decorative Butterflies: AppContext not found");
+  }
+
+  const { device } = appContext;
+
+  // Resolve the correct coordinate bounds once so every factory function
+  // receives consistent limits for spawn origins, wander targets, and escape
+  // destinations.
+  const bounds = BOUNDS[device as DeviceType];
+
+  // Static per-butterfly config — created once, never changes.
+  // Bounds are baked in here so wanderTargets are already constrained.
+  const configs = useMemo(
+    () => createButterflyConfigs(count, bounds),
+    // bounds reference is stable per device type, so device is the real dep
+    [count, device]
+  );
 
   // All mutable per-butterfly animation data lives here.
   // A plain ref array — mutating fields inside the frame loop never triggers
   // a React re-render.
   const allRuntimes = useRef<ButterflyRuntime[]>(
-    configs.map(createButterflyRuntime)
+    configs.map((cfg) => createButterflyRuntime(cfg, bounds))
   );
 
   // groupRefs[i] → THREE.Group for configs[i], populated via ref callback in JSX
@@ -489,6 +597,11 @@ export default function DecorativeButterflies({
   // from the JSX tree.
   const [goneIds, setGoneIds] = useState<Set<number>>(new Set());
 
+  // Keep a stable ref to bounds so the fly-away useEffect closure always
+  // reads the current value without needing to be in its dependency array.
+  const boundsRef = useRef(bounds);
+  boundsRef.current = bounds;
+
   // ─── Fly-away trigger ─────────────────────────────────────────────────────
   // One outer timeout replaces the N useEffects that lived in the old
   // DecorativeButterflyInstance children. Each butterfly's individual stagger
@@ -504,7 +617,12 @@ export default function DecorativeButterflies({
           if (!group || !runtime.active) return;
 
           runtime.flyAwayOrigin = group.position.clone();
-          runtime.flyAwayDestination = randomEscapeTarget(group.position);
+          // Use bounds from ref so the escape target respects the current
+          // device's visible frustum (e.g. constrained lateral spread on mobile)
+          runtime.flyAwayDestination = randomEscapeTarget(
+            group.position,
+            boundsRef.current
+          );
           runtime.flyAwayElapsed = 0;
           runtime.currentPhase = PHASE.FLY_AWAY;
           runtime.phaseElapsed = 0;
