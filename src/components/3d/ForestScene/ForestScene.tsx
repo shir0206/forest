@@ -6,7 +6,11 @@ import Butterfly from "../../ui/Butterfly/Butterfly.tsx";
 import CameraControls from "../CameraControls/CameraControls.tsx";
 import CinematicEffects from "../CinematicEffects/CinematicEffects.tsx";
 import Loader from "../../../shared/components/Loader/Loader.tsx";
-import { SCENE_CONFIG, DEVICE_CONFIG } from "../../../config/3d";
+import {
+  SCENE_CONFIG,
+  DEVICE_CONFIG,
+  SCENE_ANIMATION_POSITIONS,
+} from "../../../config/3d";
 import Browser from "../../ui/Browser/Browser.tsx";
 import { useAppContext } from "../../../shared/contexts/AppContext";
 import { WINDOW_STATE, DeviceType } from "../../../types/app";
@@ -80,6 +84,10 @@ export default function ForestScene() {
             <DecorativeButterflies
               count={butterflyCount}
               flyAwayAfterMs={6500}
+              cameraPositions={SCENE_ANIMATION_POSITIONS}
+              cameraFov={SCENE_CONFIG.cameraFov}
+              cameraTransitionDurationMs={SCENE_CONFIG.cameraTransitionDuration}
+              leadSteps={2}
             />
           )}
           <Butterfly controlsRef={controlsRef} />

@@ -5,29 +5,35 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import Butterfly from "../../ui/Butterfly/Butterfly";
 import { useAppContext } from "../../../shared/contexts/AppContext";
-import { DeviceType } from "../../../types/app";
 
 // ─── Phase durations (seconds) ───────────────────────────────────────────────
-
+//
+// CRITICAL: spawn + wander must be comfortably below flyAwayAfterMs (9s default)
+// so that gather + swarm execute before fly-away fires.
+//
+//   spawn=3s  wander=2s  gather=2s  → total to swarm = 7s
+//   flyaway fires at 9s → 2s of visible swarm before scatter
+//
 const PHASE_DURATION = {
-  spawn: 5,
-  wander: 4,
-  gather: 2,
+  spawn: 6,
+  wander: 2,
+  gather: 1,
 } as const;
 
-// How quickly opacity fades in during spawn, in seconds.
-// Independent of PHASE_DURATION.spawn so position/scale can take longer.
-const OPACITY_FADE_IN_DURATION = PHASE_DURATION.spawn * 0.4;
+const OPACITY_FADE_IN_DURATION = PHASE_DURATION.spawn * 0.5;
 
-const SWARM_CENTER = new THREE.Vector3(0, 0.3, 0);
+// ─── Scratch vectors — never re-allocated per frame ──────────────────────────
 
-// Reusable scratch vectors — never re-allocated per frame
 const scratchTangent = new THREE.Vector3();
 const scratchWorldUp = new THREE.Vector3(0, 1, 0);
 const scratchRight = new THREE.Vector3();
 const scratchLerp = new THREE.Vector3();
+const scratchForward = new THREE.Vector3();
+const scratchCamRight = new THREE.Vector3();
+const scratchCamUp = new THREE.Vector3();
+const scratchCamWorldUp = new THREE.Vector3(0, 1, 0);
 
-// ─── Phase constants and types ───────────────────────────────────────────────
+// ─── Phase constants ─────────────────────────────────────────────────────────
 
 const PHASE = {
   SPAWN: "spawn",
@@ -39,122 +45,118 @@ const PHASE = {
 
 type Phase = (typeof PHASE)[keyof typeof PHASE];
 
+// ─── Interfaces ───────────────────────────────────────────────────────────────
+
 interface WaveParams {
-  /** How wide the S-curve swings left/right */
   amplitude: number;
-  /** How many full S-cycles occur over the travel distance */
   frequency: number;
-  /** Per-butterfly offset so no two butterflies move in lockstep */
   phaseOffset: number;
 }
 
 interface SwarmSlot {
-  /** Starting angle on the shared orbit ring so butterflies spread out evenly */
   angleOffset: number;
-  /** Distance from SWARM_CENTER while orbiting */
   orbitRadius: number;
-  /** Fixed height offset inside the swarm cloud */
   yOffset: number;
-  /** How fast (rad/s) the butterfly circles the swarm center */
   orbitSpeed: number;
 }
 
 interface ButterflyConfig {
   id: number;
   wave: WaveParams;
-  /** Wing-flap cycle time in ms, randomised per side for an organic feel */
   flapDuration: { left: number; right: number };
-  /** Seconds after flyAway fires before this individual starts leaving (stagger) */
   flyAwayDelay: number;
-  /** The personal hover point this butterfly orbits during the wander phase */
-  wanderTarget: THREE.Vector3;
   swarmSlot: SwarmSlot;
-  /** Vertical bob frequency (rad/s) while swarming */
   bobFrequency: number;
-  /** Vertical bob amplitude while swarming */
   bobAmplitude: number;
 }
 
 /**
- * Mutable per-butterfly animation runtime.
- * Lives in a plain ref array — never in React state — so frame-by-frame
- * mutations here never schedule a React re-render.
+ * All positions are pre-computed once at creation.
+ *
+ * "Race-ahead" means each phase targets the camera position N steps AHEAD
+ * of where the camera actually is when that phase runs.  The camera then
+ * "chases" the butterflies through the scene — butterflies arrive first,
+ * orbit briefly, and dart to the next stop just as the camera catches up.
  */
 interface ButterflyRuntime {
-  /** Static config set at creation — never mutated during animation */
   config: ButterflyConfig;
-
-  // ── Phase machine ──────────────────────────────────────────────────────────
-  // Each butterfly advances independently through its own phase sequence.
   currentPhase: Phase;
-  /** Seconds elapsed in the current phase — resets to 0 on each phase transition */
   phaseElapsed: number;
-  /** Seconds elapsed since this butterfly was created — never resets */
   totalElapsed: number;
-
-  // ── Opacity ────────────────────────────────────────────────────────────────
-  // Written directly to the DOM node via buttonRefs; never goes through setState.
   opacity: number;
+  scale: number;
 
-  // ── Spawning ───────────────────────────────────────────────────────────────
-  spawnOrigin: THREE.Vector3;
+  spawnOrigin: THREE.Vector3; // edge of frustum at initial camera pos
+  wanderTarget: THREE.Vector3; // frustum interior at cam pos + leadSteps
+  swarmCenter: THREE.Vector3; // frustum interior at cam pos + leadSteps (gather start)
 
-  // ── Flying away ────────────────────────────────────────────────────────────
-  // Populated only when the fly-away trigger fires for this individual.
   flyAwayOrigin: THREE.Vector3 | null;
-  flyAwayDestination: THREE.Vector3 | null;
+  flyAwayDestination: THREE.Vector3; // pre-computed from final camera pos
   flyAwayElapsed: number;
   flyAwayDuration: number;
 
-  // ── Lifecycle ──────────────────────────────────────────────────────────────
-  /** Flipped to false when fly-away completes; the frame loop skips it after that */
   active: boolean;
 }
 
 // ─── Viewport bounds ─────────────────────────────────────────────────────────
 
-/**
- * World-space coordinate limits used to keep every animation phase
- * inside the visible viewport.
- *
- * Desktop uses generous spread so the scene feels full and lively.
- * Mobile tightens all ranges so butterflies stay within the narrow portrait
- * frustum across every phase: spawn → wander → escape.
- */
 interface ViewportBounds {
-  /** Half-width used for wander targets (x / z) */
-  wanderHalfXZ: number;
-  /** Y range [min, max] for wander targets */
-  wanderY: [number, number];
-  /** Distance range [min, max] for spawn origin (off-screen edge) */
-  spawnDist: [number, number];
-  /** Max x / z deviation during escape (keeps butterfly in-frustum until fade) */
+  /**
+   * Spawn origins are placed at this depth multiplier past the scene centre.
+   * Values > 1 = further → smaller initial apparent size → dramatic fly-in.
+   */
+  spawnDepthScale: [number, number];
+  /** Fraction of frustum half-height to use as spawn ring radius. */
+  spawnEdgeFraction: [number, number];
+  /**
+   * Fraction of frustum half-height used as max wander spread.
+   * Must be large enough that:
+   *   halfH * wanderSpreadFraction > wanderOrbitRadius
+   * so that maxSpread > 0 and targets don't all collapse to one point.
+   */
+  wanderSpreadFraction: number;
+  /**
+   * Max wander orbit radius (world units).
+   * Keep below halfH * wanderSpreadFraction to avoid viewport exit.
+   */
+  wanderOrbitRadius: number;
+  /** Swarm orbit is tighter than wander — butterflies cluster visibly. */
+  swarmOrbitRadius: [number, number];
+  /**
+   * Depth spread around butterflyPos along the camera forward axis [min, max].
+   * Negative = closer to camera than butterflyPos, positive = further away.
+   * e.g. [-0.4, 0.6] distributes butterflies in a 1-unit band of depth,
+   * so some appear in front of the special butterfly and some behind it.
+   */
+  depthSpread: [number, number];
   escapeHalfXZ: number;
-  /** Y boost range [min, max] added during escape so butterfly exits upward */
   escapeY: [number, number];
-  /** Total escape travel distance [min, max] */
   escapeDist: [number, number];
 }
 
 const DESKTOP_BOUNDS: ViewportBounds = {
-  wanderHalfXZ: 1.25,
-  wanderY: [0.1, 0.9],
-  spawnDist: [4, 6],
+  spawnDepthScale: [1.8, 2.4],
+  spawnEdgeFraction: [0.7, 1.0],
+  wanderSpreadFraction: 0.55,
+  wanderOrbitRadius: 0.06,
+  swarmOrbitRadius: [0.06, 0.18],
+  depthSpread: [-0.4, 0.6], // butterflies span ~1 world unit in depth
   escapeHalfXZ: 8,
   escapeY: [2, 5],
   escapeDist: [8, 13],
 };
 
 /**
- * On mobile (portrait) the horizontal frustum is much narrower than desktop.
- * Tighter x / z ranges ensure butterflies stay visible during wander, and
- * the escape path climbs vertically instead of sweeping sideways so users
- * can actually see the fly-away animation.
+ * Mobile: narrower portrait frustum, tighter spread so butterflies stay
+ * in the vertical band the user can see.
  */
 const MOBILE_BOUNDS: ViewportBounds = {
-  wanderHalfXZ: 0.65,
-  wanderY: [0.1, 0.65],
-  spawnDist: [2, 4],
+  spawnDepthScale: [1.6, 2.0],
+  spawnEdgeFraction: [0.5, 0.8],
+  wanderSpreadFraction: 0.4,
+  wanderOrbitRadius: 0.04,
+  swarmOrbitRadius: [0.03, 0.08],
+  depthSpread: [-0.2, 0.35], // tighter depth band on mobile
   escapeHalfXZ: 0.9,
   escapeY: [2.0, 3.5],
   escapeDist: [2.5, 4.0],
@@ -162,18 +164,7 @@ const MOBILE_BOUNDS: ViewportBounds = {
 
 const BOUNDS = { DESKTOP: DESKTOP_BOUNDS, MOBILE: MOBILE_BOUNDS };
 
-// ─── Math helpers ─────────────────────────────────────────────────────────────
-
-/** Maps t ∈ [0,1] onto a smooth S-curve (no sudden jumps at endpoints) */
-function smoothStep(t: number): number {
-  return t * t * (3 - 2 * t);
-}
-
-/**
- * Returns a displacement vector perpendicular to `travelDirection` that traces
- * an S-wave. Enveloped by sin(πt) so the wave fades in and out at both ends,
- * giving every flight path a clean entry and exit.
- */
+// ─── Camera route helpers ─────────────────────────────────────────────────────
 function computeSWaveOffset({
   travelDirection,
   progress,
@@ -197,221 +188,319 @@ function computeSWaveOffset({
     .multiplyScalar(lateralOffset)
     .setY(verticalOffset);
 }
-
 /**
- * Picks a spawn origin just outside the viewport edge so the butterfly
- * flies *into* the scene from a direction the camera can see.
- *
- * Desktop: wide ring at 4–6 units — same as before.
- * Mobile: tight ring at 1.4–2.2 units. Butterflies appear from just
- * beyond each viewport edge rather than way off in the distance.
+ * Returns the camera position at `absoluteMs` milliseconds after mount,
+ * clamped to the last position once the tour completes.
  */
-function randomSpawnOrigin(bounds: ViewportBounds): THREE.Vector3 {
-  const angle = Math.random() * Math.PI * 2;
-  const [minDist, maxDist] = bounds.spawnDist;
-  const distanceFromCenter = minDist + Math.random() * (maxDist - minDist);
-  return new THREE.Vector3(
-    Math.cos(angle) * distanceFromCenter,
-    -0.5 + Math.random() * 1.0,
-    Math.sin(angle) * distanceFromCenter
+function getCameraPositionAtMs(
+  positions: readonly (readonly [number, number, number])[],
+  transitionMs: number,
+  absoluteMs: number
+): THREE.Vector3 {
+  if (positions.length === 0) return new THREE.Vector3();
+  const idx = Math.min(
+    Math.floor(absoluteMs / transitionMs),
+    positions.length - 1
   );
+  const p = positions[idx];
+  return new THREE.Vector3(p[0], p[1], p[2]);
 }
 
 /**
- * Picks an escape target for the fly-away phase.
- *
- * Desktop: wide random arc, same as before.
- * Mobile: constrained x / z spread so the butterfly stays inside the
- * horizontal frustum while it climbs upward and fades — the user sees
- * the full exit animation rather than it vanishing sideways immediately.
+ * Returns the camera position `leadSteps` stops AHEAD of where the camera
+ * will be at `absoluteMs`.  This is the core of the "race-ahead" effect:
+ * butterflies target a position the camera hasn't reached yet.
  */
-function randomEscapeTarget(
-  fromPosition: THREE.Vector3,
+function getLeadCameraPosition(
+  positions: readonly (readonly [number, number, number])[],
+  transitionMs: number,
+  absoluteMs: number,
+  leadSteps: number
+): THREE.Vector3 {
+  if (positions.length === 0) return new THREE.Vector3();
+  const currentIdx = Math.floor(absoluteMs / transitionMs);
+  const leadIdx = Math.min(currentIdx + leadSteps, positions.length - 1);
+  const p = positions[leadIdx];
+  return new THREE.Vector3(p[0], p[1], p[2]);
+}
+
+// ─── Scene-centre derivation ─────────────────────────────────────────────────
+
+/**
+ * Derives the scene centre purely from the camera route.
+ * No external reference point (butterflyPos or any other anchor) is needed.
+ *
+ * Because the camera orbits a fixed subject, the centroid of all positions
+ * points away from that subject — negating it recovers the subject location.
+ * For a symmetric sphere orbit this resolves to exactly (0,0,0).
+ * Moving or removing the special butterfly has zero effect on this value.
+ */
+function deriveSceneCenter(
+  positions: readonly (readonly [number, number, number])[]
+): THREE.Vector3 {
+  if (positions.length === 0) return new THREE.Vector3();
+  let sx = 0,
+    sy = 0,
+    sz = 0;
+  for (const p of positions) {
+    sx += p[0];
+    sy += p[1];
+    sz += p[2];
+  }
+  const n = positions.length;
+  const cx = sx / n,
+    cy = sy / n,
+    cz = sz / n;
+  const lenSq = cx * cx + cy * cy + cz * cz;
+  // symmetric orbit → centroid ≈ 0 → scene centre is origin
+  if (lenSq < 0.001) return new THREE.Vector3(0, 0, 0);
+  // asymmetric orbit → negate centroid to point toward scene anchor
+  const len = Math.sqrt(lenSq);
+  return new THREE.Vector3(
+    (-cx / len) * len,
+    (-cy / len) * len,
+    (-cz / len) * len
+  );
+}
+
+// ─── Camera-basis helpers ─────────────────────────────────────────────────────
+
+/**
+ * Builds right/up/forward basis into module-level scratch vectors.
+ * Callers must consume results before any other basis call.
+ */
+function buildCameraBasis(camPos: THREE.Vector3, lookAt: THREE.Vector3): void {
+  scratchForward.subVectors(lookAt, camPos).normalize();
+  scratchCamRight.crossVectors(scratchForward, scratchCamWorldUp).normalize();
+  scratchCamUp.crossVectors(scratchCamRight, scratchForward).normalize();
+}
+
+// ─── Per-phase target samplers ────────────────────────────────────────────────
+
+/**
+ * Spawn origin — outside the frustum, at greater depth.
+ * Double depth → half apparent size via perspective → butterfly grows as it
+ * approaches, combined with scale 0→1.
+ */
+function computeSpawnOrigin(
+  bounds: ViewportBounds,
+  camPos: THREE.Vector3,
+  lookAt: THREE.Vector3,
+  fovDeg: number
+): THREE.Vector3 {
+  buildCameraBasis(camPos, lookAt);
+
+  const depth = camPos.distanceTo(lookAt);
+  const [mn, mx] = bounds.spawnDepthScale;
+  const spawnD = depth * (mn + Math.random() * (mx - mn));
+  const halfH = spawnD * Math.tan((fovDeg / 2) * (Math.PI / 180));
+  const [eMin, eMax] = bounds.spawnEdgeFraction;
+  const radius = halfH * (eMin + Math.random() * (eMax - eMin));
+  const angle = Math.random() * Math.PI * 2;
+
+  return camPos
+    .clone()
+    .addScaledVector(scratchForward, spawnD)
+    .addScaledVector(scratchCamRight, Math.cos(angle) * radius)
+    .addScaledVector(scratchCamUp, Math.sin(angle) * radius);
+}
+
+/**
+ * Wander target — scattered inside the frustum of the LEAD camera position.
+ *
+ * maxSpread formula ensures maxSpread > 0:
+ *   maxSpread = halfH * wanderSpreadFraction - wanderOrbitRadius
+ *
+ * The "lead" camera position is N stops ahead of where the camera is when
+ * wander starts — butterflies orbit a location the camera hasn't reached yet.
+ */
+function computeWanderTarget(
+  bounds: ViewportBounds,
+  leadCamPos: THREE.Vector3,
+  lookAt: THREE.Vector3,
+  fovDeg: number
+): THREE.Vector3 {
+  buildCameraBasis(leadCamPos, lookAt);
+
+  const depth = leadCamPos.distanceTo(lookAt);
+  const halfH = depth * Math.tan((fovDeg / 2) * (Math.PI / 180));
+  const maxSpread = Math.max(
+    0.05,
+    halfH * bounds.wanderSpreadFraction - bounds.wanderOrbitRadius
+  );
+
+  const r = Math.random() * maxSpread;
+  const angle = Math.random() * Math.PI * 2;
+
+  // Depth offset along the camera forward axis — distributes butterflies
+  // in front of AND behind butterflyPos so they are not all coplanar.
+  const [dMin, dMax] = bounds.depthSpread;
+  const depthOffset = dMin + Math.random() * (dMax - dMin);
+
+  return lookAt
+    .clone()
+    .addScaledVector(scratchCamRight, Math.cos(angle) * r)
+    .addScaledVector(scratchCamUp, Math.sin(angle) * r)
+    .addScaledVector(scratchForward, depthOffset);
+}
+
+/**
+ * Swarm center — a point around the LEAD camera look-at, with depth variation.
+ * Each butterfly gets its own swarmCenter so the swarm has genuine 3-D depth:
+ * some butterflies orbit in front of butterflyPos, some behind it.
+ */
+function computeSwarmCenter(
+  leadCamPos: THREE.Vector3,
+  lookAt: THREE.Vector3,
   bounds: ViewportBounds
 ): THREE.Vector3 {
-  const [minDist, maxDist] = bounds.escapeDist;
-  const escapeDistance = minDist + Math.random() * (maxDist - minDist);
-  const escapeAngle = Math.random() * Math.PI * 2;
+  buildCameraBasis(leadCamPos, lookAt);
+  const jitter = 0.04;
+  const [dMin, dMax] = bounds.depthSpread;
+  const depthOffset = dMin + Math.random() * (dMax - dMin);
 
-  const [minY, maxY] = bounds.escapeY;
-  const yBoost = minY + Math.random() * (maxY - minY);
+  return lookAt
+    .clone()
+    .addScaledVector(scratchCamRight, (Math.random() - 0.5) * jitter)
+    .addScaledVector(scratchCamUp, (Math.random() - 0.5) * jitter)
+    .addScaledVector(scratchForward, depthOffset);
+}
 
-  // On mobile the lateral spread is capped so the butterfly doesn't
-  // leave the frustum horizontally before it has faded out.
-  const lateralX = Math.cos(escapeAngle) * escapeDistance;
-  const lateralZ = Math.sin(escapeAngle) * escapeDistance;
+/**
+ * Escape destination — built from the final camera position so the butterfly
+ * exits in a direction that's meaningful from the last scene stop.
+ */
+function computeEscapeTarget(
+  fromPos: THREE.Vector3,
+  finalCamPos: THREE.Vector3,
+  lookAt: THREE.Vector3,
+  bounds: ViewportBounds,
+  fovDeg: number
+): THREE.Vector3 {
+  buildCameraBasis(finalCamPos, lookAt);
+
+  const [mn, mx] = bounds.escapeDist;
+  const dist = mn + Math.random() * (mx - mn);
+  const angle = Math.random() * Math.PI * 2;
   const clamp = bounds.escapeHalfXZ;
+  const [yMn, yMx] = bounds.escapeY;
+  const depthBoost = yMn + Math.random() * (yMx - yMn);
 
-  return new THREE.Vector3(
-    fromPosition.x + Math.max(-clamp, Math.min(clamp, lateralX)),
-    fromPosition.y + yBoost,
-    fromPosition.z + Math.max(-clamp, Math.min(clamp, lateralZ))
-  );
+  return fromPos
+    .clone()
+    .addScaledVector(
+      scratchCamRight,
+      Math.max(-clamp, Math.min(clamp, Math.cos(angle) * dist))
+    )
+    .addScaledVector(
+      scratchCamUp,
+      Math.max(0, Math.min(clamp, Math.sin(angle) * dist)) // always exit upward
+    )
+    .addScaledVector(scratchForward, depthBoost);
+}
+
+// ─── Math helpers ─────────────────────────────────────────────────────────────
+
+function smoothStep(t: number): number {
+  return t * t * (3 - 2 * t);
 }
 
 // ─── Per-phase tick functions ─────────────────────────────────────────────────
 
-interface SpawnTickParams {
-  group: THREE.Group;
-  phaseElapsed: number;
-  spawnOrigin: THREE.Vector3;
-  wanderTarget: THREE.Vector3;
-  wave: WaveParams;
-  setSmoothedOpacity: (opacity: number) => void;
+function tickSpawning(
+  group: THREE.Group,
+  phaseElapsed: number,
+  spawnOrigin: THREE.Vector3,
+  wanderTarget: THREE.Vector3,
+  wave: WaveParams,
+  onOpacity: (v: number) => void,
+  onScale: (v: number) => void
+): boolean {
+  const t = Math.min(phaseElapsed / PHASE_DURATION.spawn, 1);
+  const et = smoothStep(t);
+
+  scratchLerp.lerpVectors(spawnOrigin, wanderTarget, et);
+  const dir = scratchTangent.subVectors(wanderTarget, spawnOrigin).normalize();
+  group.position
+    .copy(scratchLerp)
+    .add(computeSWaveOffset({ travelDirection: dir, progress: t, wave }));
+
+  onOpacity(smoothStep(Math.min(phaseElapsed / OPACITY_FADE_IN_DURATION, 1)));
+  onScale(et); // 0 → 1 over spawn duration
+
+  return t >= 1;
 }
 
-/**
- * Moves the butterfly from its off-screen spawn origin toward its personal
- * wander target. Grows from near-invisible (scale ≈ 0) to full size and fades
- * in. An S-wave is applied perpendicular to the travel direction so the entry
- * path looks alive rather than mechanical.
- * Returns `true` when the phase is complete.
- */
-function tickSpawning({
-  group,
-  phaseElapsed,
-  spawnOrigin,
-  wanderTarget,
-  wave,
-  setSmoothedOpacity,
-}: SpawnTickParams): boolean {
-  const rawProgress = Math.min(phaseElapsed / PHASE_DURATION.spawn, 1);
-  const easedProgress = smoothStep(rawProgress);
-
-  // Opacity reaches 1 after OPACITY_FADE_IN_DURATION seconds,
-  // independent of the full 5s spawn movement and scale animation.
-  const opacityProgress = Math.min(phaseElapsed / OPACITY_FADE_IN_DURATION, 1);
-  const easedOpacity = smoothStep(opacityProgress);
-
-  scratchLerp.lerpVectors(spawnOrigin, wanderTarget, easedProgress);
-
-  const travelDirection = scratchTangent
-    .subVectors(wanderTarget, spawnOrigin)
-    .normalize();
-  const sWaveDisplacement = computeSWaveOffset({
-    travelDirection,
-    progress: rawProgress,
-    wave,
-  });
-
-  group.position.copy(scratchLerp).add(sWaveDisplacement);
-  group.scale.setScalar(easedProgress);
-  setSmoothedOpacity(easedOpacity);
-
-  return rawProgress >= 1;
-}
-
-interface WanderTickParams {
-  group: THREE.Group;
-  phaseElapsed: number;
-  wanderTarget: THREE.Vector3;
-  wave: WaveParams;
-  setSmoothedOpacity: (opacity: number) => void;
-}
-
-/**
- * Keeps the butterfly lazily circling its personal wander target.
- * The orbit radius breathes slowly so the path never looks like a fixed loop.
- * Returns `true` when the phase is complete.
- */
-function tickWandering({
-  group,
-  phaseElapsed,
-  wanderTarget,
-  wave,
-  setSmoothedOpacity,
-}: WanderTickParams): boolean {
+function tickWandering(
+  group: THREE.Group,
+  phaseElapsed: number,
+  wanderTarget: THREE.Vector3,
+  wave: WaveParams,
+  orbitRadius: number,
+  onOpacity: (v: number) => void
+): boolean {
   const orbitAngle = phaseElapsed * 1.1 + wave.phaseOffset;
-  const breathingOrbitRadius =
-    0.28 + Math.sin(phaseElapsed * 0.6 + wave.phaseOffset) * 0.12;
+  const breathingR =
+    orbitRadius +
+    Math.sin(phaseElapsed * 0.6 + wave.phaseOffset) * orbitRadius * 0.35;
 
   group.position.set(
-    wanderTarget.x + Math.cos(orbitAngle) * breathingOrbitRadius,
+    wanderTarget.x + Math.cos(orbitAngle) * breathingR,
     wanderTarget.y +
       Math.sin(phaseElapsed * wave.frequency + wave.phaseOffset) *
         wave.amplitude *
         0.5,
-    wanderTarget.z + Math.sin(orbitAngle) * breathingOrbitRadius
+    wanderTarget.z + Math.sin(orbitAngle) * breathingR
   );
-  setSmoothedOpacity(1);
+  onOpacity(1);
 
   return phaseElapsed >= PHASE_DURATION.wander;
 }
 
-interface GatherTickParams {
-  group: THREE.Group;
-  phaseElapsed: number;
-  wave: WaveParams;
-}
+function tickGathering(
+  group: THREE.Group,
+  phaseElapsed: number,
+  swarmCenter: THREE.Vector3,
+  wave: WaveParams
+): boolean {
+  const t = Math.min(phaseElapsed / PHASE_DURATION.gather, 1);
+  const et = smoothStep(t);
 
-/**
- * Curves the butterfly toward SWARM_CENTER using a smooth-step lerp so it
- * doesn't just teleport. An S-wave flourish keeps the path feeling organic.
- * Returns `true` when the phase is complete.
- */
-function tickGathering({
-  group,
-  phaseElapsed,
-  wave,
-}: GatherTickParams): boolean {
-  const rawProgress = Math.min(phaseElapsed / PHASE_DURATION.gather, 1);
-  const easedProgress = smoothStep(rawProgress);
-
-  scratchLerp.lerpVectors(group.position, SWARM_CENTER, easedProgress);
-
-  const travelDirection = scratchTangent
-    .subVectors(SWARM_CENTER, group.position)
+  scratchLerp.lerpVectors(group.position, swarmCenter, et);
+  const dir = scratchTangent
+    .subVectors(swarmCenter, group.position)
     .normalize();
-  const sWaveDisplacement = computeSWaveOffset({
-    travelDirection,
-    progress: rawProgress,
-    wave,
-  });
+  group.position
+    .copy(scratchLerp)
+    .add(computeSWaveOffset({ travelDirection: dir, progress: t, wave }));
 
-  group.position.copy(scratchLerp).add(sWaveDisplacement);
-
-  return rawProgress >= 1;
+  return t >= 1;
 }
 
-interface SwarmTickParams {
-  group: THREE.Group;
-  phaseElapsed: number;
-  totalElapsed: number;
-  swarmSlot: SwarmSlot;
-  wave: WaveParams;
-  bobFrequency: number;
-  bobAmplitude: number;
-}
+function tickSwarming(
+  group: THREE.Group,
+  phaseElapsed: number,
+  totalElapsed: number,
+  swarmCenter: THREE.Vector3,
+  slot: SwarmSlot,
+  wave: WaveParams,
+  bobFreq: number,
+  bobAmp: number
+): void {
+  const angle = phaseElapsed * slot.orbitSpeed + slot.angleOffset;
 
-/**
- * Keeps the butterfly in a tight orbit around SWARM_CENTER.
- * A slow secondary drift (derived from the wave params) prevents the path
- * from looking perfectly circular.
- */
-function tickSwarming({
-  group,
-  phaseElapsed,
-  totalElapsed,
-  swarmSlot,
-  wave,
-  bobFrequency,
-  bobAmplitude,
-}: SwarmTickParams): void {
-  const { angleOffset, orbitRadius, yOffset, orbitSpeed } = swarmSlot;
-  const currentOrbitAngle = phaseElapsed * orbitSpeed + angleOffset;
-
-  group.position.x = SWARM_CENTER.x + Math.cos(currentOrbitAngle) * orbitRadius;
-  group.position.z = SWARM_CENTER.z + Math.sin(currentOrbitAngle) * orbitRadius;
+  group.position.x = swarmCenter.x + Math.cos(angle) * slot.orbitRadius;
+  group.position.z = swarmCenter.z + Math.sin(angle) * slot.orbitRadius;
   group.position.y =
-    SWARM_CENTER.y +
-    yOffset +
-    Math.sin(totalElapsed * bobFrequency + wave.phaseOffset) * bobAmplitude;
+    swarmCenter.y +
+    slot.yOffset +
+    Math.sin(totalElapsed * bobFreq + wave.phaseOffset) * bobAmp;
 
-  // Slow organic drift so the orbit doesn't look machine-perfect
-  const driftAmplitude = wave.amplitude * 0.2;
+  // subtle organic drift so orbit never looks machine-perfect
+  const driftAmp = wave.amplitude * 0.15;
   const driftAngle = totalElapsed * wave.frequency * 0.5 + wave.phaseOffset;
-  group.position.x += Math.sin(driftAngle) * driftAmplitude;
-  group.position.z += Math.cos(driftAngle) * driftAmplitude;
+  group.position.x += Math.sin(driftAngle) * driftAmp;
+  group.position.z += Math.cos(driftAngle) * driftAmp;
 }
 
 interface FlyAwayTickParams {
@@ -424,12 +513,6 @@ interface FlyAwayTickParams {
   setSmoothedOpacity: (opacity: number) => void;
   onComplete: () => void;
 }
-
-/**
- * Accelerates the butterfly toward its random escape target using a quadratic
- * ease-in so it feels like it's launching away. Boosts the S-wave amplitude for
- * a more dramatic exit, fades out as it goes, and calls `onComplete` when done.
- */
 function tickFlyingAway({
   group,
   flyAwayElapsed,
@@ -464,33 +547,135 @@ function tickFlyingAway({
   if (rawProgress >= 1) onComplete();
 }
 
-// ─── Runtime factory ──────────────────────────────────────────────────────────
+// ─── DOM helpers ─────────────────────────────────────────────────────────────
 
+function applyOpacity(
+  next: number,
+  runtime: ButterflyRuntime,
+  btn: HTMLButtonElement | null
+): void {
+  const v = Math.max(0, Math.min(1, next));
+  if (v === runtime.opacity) return;
+  runtime.opacity = v;
+  if (btn) btn.style.opacity = String(v);
+}
+
+/**
+ * Writes scale to both the THREE.Group and the button DOM node.
+ * CSS `scale` is the individual transform property — does not conflict with
+ * any `transform` the layout system uses for screen-space positioning.
+ */
+function applyScale(
+  next: number,
+  runtime: ButterflyRuntime,
+  group: THREE.Group,
+  btn: HTMLButtonElement | null
+): void {
+  const v = Math.max(0, Math.min(1, next));
+  if (v === runtime.scale) return;
+  runtime.scale = v;
+  group.scale.setScalar(v);
+  if (btn) btn.style.scale = String(v);
+}
+
+// ─── Runtime + config factories ───────────────────────────────────────────────
+
+/**
+ * Pre-computes all per-butterfly positions using the known camera route.
+ *
+ * "Lead steps" offset:
+ *   Each phase targets a camera position N stops ahead of where the camera
+ *   actually is when that phase starts.  This makes butterflies appear to
+ *   race ahead — they orbit a destination the camera hasn't reached yet,
+ *   and scatter again just as the camera arrives.
+ *
+ * Phase timing (absolute ms from mount):
+ *   wander  starts at  PHASE_DURATION.spawn * 1000
+ *   gather  starts at (PHASE_DURATION.spawn + PHASE_DURATION.wander) * 1000
+ */
 function createButterflyRuntime(
   config: ButterflyConfig,
-  bounds: ViewportBounds
+  bounds: ViewportBounds,
+  positions: readonly (readonly [number, number, number])[],
+  transitionMs: number,
+  fovDeg: number,
+  leadSteps: number
 ): ButterflyRuntime {
+  // Scene centre derived entirely from the camera route — no external anchor.
+  // Removing or moving butterflyPos has zero effect here.
+  const sceneCenter = deriveSceneCenter(positions);
+
+  const spawnStartMs = 0;
+  const wanderStartMs = PHASE_DURATION.spawn * 1000;
+  const gatherStartMs = (PHASE_DURATION.spawn + PHASE_DURATION.wander) * 1000;
+
+  const spawnCamPos = getCameraPositionAtMs(
+    positions,
+    transitionMs,
+    spawnStartMs
+  );
+  const wanderLeadPos = getLeadCameraPosition(
+    positions,
+    transitionMs,
+    wanderStartMs,
+    leadSteps
+  );
+  const gatherLeadPos = getLeadCameraPosition(
+    positions,
+    transitionMs,
+    gatherStartMs,
+    leadSteps
+  );
+  const finalCamPos = getCameraPositionAtMs(
+    positions,
+    transitionMs,
+    positions.length * transitionMs + 99999
+  );
+
+  const spawnOrigin = computeSpawnOrigin(
+    bounds,
+    spawnCamPos,
+    sceneCenter,
+    fovDeg
+  );
+  const wanderTarget = computeWanderTarget(
+    bounds,
+    wanderLeadPos,
+    sceneCenter,
+    fovDeg
+  );
+  const swarmCenter = computeSwarmCenter(gatherLeadPos, sceneCenter, bounds);
+  const flyAwayDest = computeEscapeTarget(
+    swarmCenter,
+    finalCamPos,
+    sceneCenter,
+    bounds,
+    fovDeg
+  );
+
   return {
     config,
     currentPhase: PHASE.SPAWN,
     phaseElapsed: 0,
     totalElapsed: 0,
     opacity: 0,
-    spawnOrigin: randomSpawnOrigin(bounds),
+    scale: 0,
+    spawnOrigin,
+    wanderTarget,
+    swarmCenter,
     flyAwayOrigin: null,
-    flyAwayDestination: null,
+    flyAwayDestination: flyAwayDest,
     flyAwayElapsed: 0,
     flyAwayDuration: 1.4 + Math.random() * 0.8,
     active: true,
   };
 }
 
-// ─── Config factory ───────────────────────────────────────────────────────────
-
 function createButterflyConfigs(
   count: number,
   bounds: ViewportBounds
 ): ButterflyConfig[] {
+  const [rMin, rMax] = bounds.swarmOrbitRadius;
   return Array.from({ length: count }, (_, i) => ({
     id: i,
     wave: {
@@ -503,50 +688,38 @@ function createButterflyConfigs(
       right: 120 + Math.random() * 140,
     },
     flyAwayDelay: i * 0.14 + Math.random() * 0.2,
-    wanderTarget: new THREE.Vector3(
-      // Use bounds-derived half-extent so wander targets stay inside the frustum
-      (Math.random() - 0.5) * 2 * bounds.wanderHalfXZ,
-      bounds.wanderY[0] +
-        Math.random() * (bounds.wanderY[1] - bounds.wanderY[0]),
-      (Math.random() - 0.5) * 2 * bounds.wanderHalfXZ
-    ),
     swarmSlot: {
       angleOffset: (i / count) * Math.PI * 2 + Math.random() * 0.4,
-      orbitRadius: 0.12 + Math.random() * 0.22,
-      yOffset: (Math.random() - 0.5) * 0.25,
+      orbitRadius: rMin + Math.random() * (rMax - rMin),
+      yOffset: (Math.random() - 0.5) * 0.08,
       orbitSpeed: 0.6 + Math.random() * 0.8,
     },
     bobFrequency: 1.5 + Math.random() * 2.0,
-    bobAmplitude: 0.03 + Math.random() * 0.06,
+    bobAmplitude: 0.02 + Math.random() * 0.03,
   }));
-}
-
-// ─── Opacity helper ───────────────────────────────────────────────────────────
-
-/**
- * Writes opacity directly to the button DOM node, bypassing React state.
- * Skips only identical values to avoid redundant DOM writes on frames where
- * opacity hasn't changed (e.g. during the fully-opaque swarming phase).
- * Every distinct value is written so fades are smooth and continuous.
- */
-function applyOpacity(
-  next: number,
-  runtime: ButterflyRuntime,
-  btn: HTMLButtonElement | null
-): void {
-  const clamped = Math.max(0, Math.min(1, next));
-  if (clamped === runtime.opacity) return;
-  runtime.opacity = clamped;
-  if (btn) btn.style.opacity = String(clamped);
 }
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
 interface DecorativeButterfliesProps {
-  /** How many decorative butterflies to spawn. Default: 9 */
   count?: number;
-  /** Milliseconds after mount before the swarm scatters. Default: 9000 */
   flyAwayAfterMs?: number;
+  /**
+   * SCENE_ANIMATION_POSITIONS — all camera stops in order.
+   * The scene centre is derived from these positions automatically;
+   * no external anchor point (butterflyPos or otherwise) is needed.
+   */
+  cameraPositions: readonly (readonly [number, number, number])[];
+  /** Vertical FOV in degrees (SCENE_CONFIG.cameraFov). Default: 60. */
+  cameraFov?: number;
+  /** Milliseconds per camera transition (SCENE_CONFIG.cameraTransitionDuration). Default: 1000. */
+  cameraTransitionDurationMs?: number;
+  /**
+   * How many camera stops ahead butterflies target during each phase.
+   * Higher values = more "racing ahead" of the camera.
+   * Default: 2 — butterflies are always 2 stops ahead of the camera.
+   */
+  leadSteps?: number;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -554,58 +727,58 @@ interface DecorativeButterfliesProps {
 export default function DecorativeButterflies({
   count = 9,
   flyAwayAfterMs = 9000,
+  cameraPositions,
+  cameraFov = 60,
+  cameraTransitionDurationMs = 1000,
+  leadSteps = 2,
 }: DecorativeButterfliesProps) {
   const appContext = useAppContext();
 
+  // Handle missing AppContext gracefully
   if (!appContext) {
-    console.error("Decorative Butterflies: AppContext not found");
+    console.error(
+      "Decorative Butterflies: AppContext not found, using default bounds"
+    );
+    // Return null or a fallback component when context is unavailable
+    return null;
   }
 
   const { device } = appContext;
 
-  // Resolve the correct coordinate bounds once so every factory function
-  // receives consistent limits for spawn origins, wander targets, and escape
-  // destinations.
-  const bounds = BOUNDS[device as DeviceType];
+  // Safely access bounds with proper type checking
+  const bounds = device === "MOBILE" ? BOUNDS.MOBILE : BOUNDS.DESKTOP;
 
-  // Static per-butterfly config — created once, never changes.
-  // Bounds are baked in here so wanderTargets are already constrained.
   const configs = useMemo(
     () => createButterflyConfigs(count, bounds),
-    // bounds reference is stable per device type, so device is the real dep
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [count, device]
   );
 
-  // All mutable per-butterfly animation data lives here.
-  // A plain ref array — mutating fields inside the frame loop never triggers
-  // a React re-render.
   const allRuntimes = useRef<ButterflyRuntime[]>(
-    configs.map((cfg) => createButterflyRuntime(cfg, bounds))
+    configs.map((cfg) =>
+      createButterflyRuntime(
+        cfg,
+        bounds,
+        cameraPositions,
+        cameraTransitionDurationMs,
+        cameraFov,
+        leadSteps
+      )
+    )
   );
 
-  // groupRefs[i] → THREE.Group for configs[i], populated via ref callback in JSX
   const groupRefs = useRef<(THREE.Group | null)[]>(Array(count).fill(null));
-
-  // buttonRefs[i] → <button> DOM node for configs[i].
-  // Opacity is written here directly, bypassing React state entirely.
   const buttonRefs = useRef<(HTMLButtonElement | null)[]>(
     Array(count).fill(null)
   );
 
-  // The only piece of React state in this component. Incremented once per
-  // butterfly at the very end of its fly-away, purely to remove its <group>
-  // from the JSX tree.
   const [goneIds, setGoneIds] = useState<Set<number>>(new Set());
 
-  // Keep a stable ref to bounds so the fly-away useEffect closure always
-  // reads the current value without needing to be in its dependency array.
   const boundsRef = useRef(bounds);
   boundsRef.current = bounds;
 
-  // ─── Fly-away trigger ─────────────────────────────────────────────────────
-  // One outer timeout replaces the N useEffects that lived in the old
-  // DecorativeButterflyInstance children. Each butterfly's individual stagger
-  // (config.flyAwayDelay) is preserved via a nested per-butterfly setTimeout.
+  // ─── Fly-away trigger ──────────────────────────────────────────────────────
+  // flyAwayDestination is pre-computed — the timeout only switches the phase.
 
   useEffect(() => {
     const outerTimer = setTimeout(() => {
@@ -617,18 +790,12 @@ export default function DecorativeButterflies({
           if (!group || !runtime.active) return;
 
           runtime.flyAwayOrigin = group.position.clone();
-          // Use bounds from ref so the escape target respects the current
-          // device's visible frustum (e.g. constrained lateral spread on mobile)
-          runtime.flyAwayDestination = randomEscapeTarget(
-            group.position,
-            boundsRef.current
-          );
+          // flyAwayDestination was pre-computed from the final camera position
           runtime.flyAwayElapsed = 0;
           runtime.currentPhase = PHASE.FLY_AWAY;
           runtime.phaseElapsed = 0;
-        }, runtime.config.flyAwayDelay * 1000); // ← per-butterfly stagger preserved
+        }, runtime.config.flyAwayDelay * 1000);
 
-        // Stash timer id on the runtime object so the cleanup below can reach it
         (runtime as any)._flyAwayTimer = innerTimer;
       });
     }, flyAwayAfterMs);
@@ -643,11 +810,7 @@ export default function DecorativeButterflies({
     };
   }, [flyAwayAfterMs]);
 
-  // ─── Single frame loop ────────────────────────────────────────────────────
-  // Replaces N independent useFrame subscriptions that lived in the old child
-  // components. Each butterfly still advances through its own phase at its own
-  // pace — per-butterfly config values (wave, wanderTarget, swarmSlot, etc.)
-  // are read from runtime.config on every iteration.
+  // ─── Single frame loop ─────────────────────────────────────────────────────
 
   useFrame((_, delta) => {
     for (let i = 0; i < allRuntimes.current.length; i++) {
@@ -661,18 +824,28 @@ export default function DecorativeButterflies({
       runtime.phaseElapsed += delta;
 
       const btn = buttonRefs.current[i];
+      const bds = boundsRef.current;
 
       switch (runtime.currentPhase) {
         case PHASE.SPAWN: {
-          const done = tickSpawning({
+          const done = tickSpawning(
             group,
-            phaseElapsed: runtime.phaseElapsed,
-            spawnOrigin: runtime.spawnOrigin,
-            wanderTarget: runtime.config.wanderTarget, // per-butterfly
-            wave: runtime.config.wave, // per-butterfly
-            setSmoothedOpacity: (next) => applyOpacity(next, runtime, btn),
-          });
+            runtime.phaseElapsed,
+            runtime.spawnOrigin,
+            runtime.wanderTarget,
+            runtime.config.wave,
+            (v) => applyOpacity(v, runtime, btn),
+            (v) => applyScale(v, runtime, group, btn)
+          );
           if (done) {
+            console.log(
+              "%cSPAWN phase ended",
+              "color: pink; font-weight: bold"
+            );
+            console.log(
+              "%cWANDER phase started",
+              "color: pink; font-weight: bold"
+            );
             runtime.currentPhase = PHASE.WANDER;
             runtime.phaseElapsed = 0;
           }
@@ -680,14 +853,23 @@ export default function DecorativeButterflies({
         }
 
         case PHASE.WANDER: {
-          const done = tickWandering({
+          const done = tickWandering(
             group,
-            phaseElapsed: runtime.phaseElapsed,
-            wanderTarget: runtime.config.wanderTarget, // per-butterfly
-            wave: runtime.config.wave, // per-butterfly
-            setSmoothedOpacity: (next) => applyOpacity(next, runtime, btn),
-          });
+            runtime.phaseElapsed,
+            runtime.wanderTarget,
+            runtime.config.wave,
+            bds.wanderOrbitRadius,
+            (v) => applyOpacity(v, runtime, btn)
+          );
           if (done) {
+            console.log(
+              "%cWANDER phase ended",
+              "color: pink; font-weight: bold"
+            );
+            console.log(
+              "%cGATHER phase started",
+              "color: pink; font-weight: bold"
+            );
             runtime.currentPhase = PHASE.GATHER;
             runtime.phaseElapsed = 0;
           }
@@ -695,12 +877,21 @@ export default function DecorativeButterflies({
         }
 
         case PHASE.GATHER: {
-          const done = tickGathering({
+          const done = tickGathering(
             group,
-            phaseElapsed: runtime.phaseElapsed,
-            wave: runtime.config.wave, // per-butterfly
-          });
+            runtime.phaseElapsed,
+            runtime.swarmCenter,
+            runtime.config.wave
+          );
           if (done) {
+            console.log(
+              "%cGATHER phase ended",
+              "color: pink; font-weight: bold"
+            );
+            console.log(
+              "%cSWARM phase started",
+              "color: pink; font-weight: bold"
+            );
             runtime.currentPhase = PHASE.SWARM;
             runtime.phaseElapsed = 0;
           }
@@ -708,21 +899,39 @@ export default function DecorativeButterflies({
         }
 
         case PHASE.SWARM: {
-          tickSwarming({
+          tickSwarming(
             group,
-            phaseElapsed: runtime.phaseElapsed,
-            totalElapsed: runtime.totalElapsed,
-            swarmSlot: runtime.config.swarmSlot, // per-butterfly
-            wave: runtime.config.wave, // per-butterfly
-            bobFrequency: runtime.config.bobFrequency, // per-butterfly
-            bobAmplitude: runtime.config.bobAmplitude, // per-butterfly
-          });
+            runtime.phaseElapsed,
+            runtime.totalElapsed,
+            runtime.swarmCenter,
+            runtime.config.swarmSlot,
+            runtime.config.wave,
+            runtime.config.bobFrequency,
+            runtime.config.bobAmplitude
+          );
           break;
         }
 
         case PHASE.FLY_AWAY: {
-          if (!runtime.flyAwayOrigin || !runtime.flyAwayDestination) break;
+          if (!runtime.flyAwayOrigin) break;
           runtime.flyAwayElapsed += delta;
+          // tickFlyingAway(
+          //   group,
+          //   runtime.flyAwayElapsed,
+          //   runtime.flyAwayDuration,
+          //   runtime.flyAwayOrigin,
+          //   runtime.flyAwayDestination,
+          //   runtime.config.wave,
+          //   (v) => applyOpacity(v, runtime, btn),
+          //   () => {
+          //     console.log(
+          //       "%cFLY_AWAY phase ended",
+          //       "color: pink; font-weight: bold"
+          //     );
+          //     runtime.active = false;
+          //     setGoneIds((prev) => new Set(prev).add(runtime.config.id));
+          //   }
+          // );
           tickFlyingAway({
             group,
             flyAwayElapsed: runtime.flyAwayElapsed,
@@ -755,9 +964,6 @@ export default function DecorativeButterflies({
             key={cfg.id}
             ref={(el) => {
               groupRefs.current[i] = el;
-              // Zero out scale immediately so the first rendered frame is
-              // invisible. useFrame runs after the first render, so without
-              // this the butterfly flashes at full size for one frame on mount.
               if (el) el.scale.setScalar(0);
             }}
           >
@@ -771,8 +977,10 @@ export default function DecorativeButterflies({
                   },
                   set current(el: HTMLButtonElement | null) {
                     buttonRefs.current[i] = el;
-                    // Zero opacity immediately for the same reason as scale above
-                    if (el) el.style.opacity = "0";
+                    if (el) {
+                      el.style.opacity = "0";
+                      el.style.scale = "0";
+                    }
                   },
                 } as React.RefObject<HTMLButtonElement | null>
               }

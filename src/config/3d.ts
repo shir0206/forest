@@ -11,7 +11,7 @@ export const DEVICE_CONFIG = {
   // Butterfly counts mapped to device types
   butterflyCount: {
     MOBILE: 3,
-    DESKTOP: 9,
+    DESKTOP: 6,
   },
 } as const;
 
