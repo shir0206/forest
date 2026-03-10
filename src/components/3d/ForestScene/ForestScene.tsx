@@ -85,6 +85,7 @@ export default function ForestScene() {
               count={butterflyCount}
               flyAwayAfterMs={6500}
               cameraPositions={SCENE_ANIMATION_POSITIONS}
+              spawnAnchor={[0.2, 0.2, 0.2]}
               cameraFov={SCENE_CONFIG.cameraFov}
               cameraTransitionDurationMs={SCENE_CONFIG.cameraTransitionDuration}
               leadSteps={2}
