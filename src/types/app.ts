@@ -1,6 +1,8 @@
 // Window State Types
 export type WindowState = "open" | "minimized" | "maximized" | "closed";
 export type Language = "en" | "he";
+export type DeviceType = "MOBILE" | "DESKTOP";
+
 export const WINDOW_STATE = {
   OPEN: "open" as WindowState,
   MINIMIZED: "minimized" as WindowState,
@@ -11,6 +13,11 @@ export const WINDOW_STATE = {
 export const LANGUAGE = {
   EN: "en" as Language,
   HE: "he" as Language,
+} as const;
+
+export const DEVICE_TYPE = {
+  MOBILE: "MOBILE" as DeviceType,
+  DESKTOP: "DESKTOP" as DeviceType,
 } as const;
 
 // Screen IDs
@@ -39,11 +46,13 @@ export interface AppState {
 // Context Types
 export interface AppContextType extends AppState {
   language: Language;
+  device: DeviceType;
   setRunIntro: (run: boolean) => void;
   setWindowState: (state: WindowState) => void;
   setVisibleScreens: (screens: Set<ScreenId>) => void;
   clearVisible: () => void;
   setLanguage: (lang: Language) => void;
+  setDevice: (device: DeviceType) => void;
 }
 
 // Import TextStructure for the context

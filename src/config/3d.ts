@@ -1,5 +1,28 @@
 import { PositionThreeD } from "../types/3d";
 
+// Device configuration
+export const DEVICE_CONFIG = {
+  // Configurable device type strings
+  DEVICE_TYPES: {
+    MOBILE: "MOBILE",
+    DESKTOP: "DESKTOP",
+  },
+
+  // Butterfly counts mapped to device types
+  butterflyCount: {
+    MOBILE: 3,
+    DESKTOP: 6,
+  },
+} as const;
+
+// Device detection utility
+export function detectDevice(): "MOBILE" | "DESKTOP" {
+  return /iPhone|iPad|Android/i.test(navigator.userAgent) ||
+    window.innerWidth < 768
+    ? DEVICE_CONFIG.DEVICE_TYPES.MOBILE
+    : DEVICE_CONFIG.DEVICE_TYPES.DESKTOP;
+}
+
 // Camera animation positions for the scene tour
 export const SCENE_ANIMATION_POSITIONS: PositionThreeD[] = [
   [-0.9, -0.4, -0.25], // forest

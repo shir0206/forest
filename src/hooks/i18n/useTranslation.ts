@@ -14,8 +14,6 @@ export function useTranslation() {
 
   if (!context) {
     console.error("useTranslation: context not found");
-  } else {
-    console.warn("ALL GOOD WITH CONTEXT");
   }
 
   const defaultLanguage = LANGUAGE.EN;

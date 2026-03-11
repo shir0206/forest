@@ -28,8 +28,8 @@ type ButterflyProps = {
   decorative?: boolean;
   /** Per-wing flap duration in ms. Only used when decorative=true. */
   flapDuration?: { left: number; right: number };
-  /** 0–1 opacity for decorative mode (fade in/out). Default: 1 */
-  opacity?: number;
+  /** Optional ref to the button element for direct DOM manipulation (used for opacity in decorative mode) */
+  buttonRef?: React.RefObject<HTMLButtonElement | null>;
 };
 
 export function Wing({ style }: { style?: React.CSSProperties }) {
@@ -55,7 +55,7 @@ export default function Butterfly({
   controlsRef,
   decorative = false,
   flapDuration,
-  opacity = 1,
+  buttonRef,
 }: ButterflyProps) {
   const { windowState, setWindowState, runIntro } = useAppContext();
 
@@ -146,11 +146,11 @@ export default function Butterfly({
       scale={[0.005, 0.005, 0.005]}
     >
       <button
+        ref={buttonRef}
         className={`butterfly-button looking-${lookingDirection} ${
           paused ? "pause-animation" : ""
         }${decorative ? " decorative" : ""}
         ${runIntro ? " disable-click" : ""}`}
-        style={{ opacity }}
         onClick={handleClick}
         aria-label="Interactive butterfly - click to learn more about the developer"
         aria-hidden="true"

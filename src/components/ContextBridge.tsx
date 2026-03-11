@@ -13,13 +13,6 @@ interface ContextBridgeProps {
 export function ContextBridge({ children, contextValue }: ContextBridgeProps) {
   // If context value is provided as props, use it
   if (contextValue) {
-    console.log("ContextBridge: Using provided context value", {
-      runIntro: contextValue.runIntro,
-      windowState: contextValue.windowState,
-      visibleScreens: Array.from(contextValue.visibleScreens),
-      language: contextValue.language,
-    });
-
     return (
       <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>
     );

@@ -12,7 +12,10 @@ import {
   WINDOW_STATE,
   Language,
   LANGUAGE,
+  DeviceType,
+  DEVICE_TYPE,
 } from "../../types/app";
+import { detectDevice } from "../../config/3d";
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
 
@@ -51,6 +54,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     new Set()
   );
   const [language, setLanguageState] = useState<Language>(LANGUAGE.EN);
+  const [device, setDeviceState] = useState<DeviceType>(detectDevice);
 
   const setRunIntro = useCallback((run: boolean) => {
     setRunIntroState(run);
@@ -77,28 +81,36 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     setLanguageState(lang);
   }, []);
 
+  const setDevice = useCallback((device: DeviceType) => {
+    setDeviceState(device);
+  }, []);
+
   const contextValue = useMemo(
     () => ({
       runIntro,
       windowState,
       visibleScreens,
       language,
+      device,
       setRunIntro,
       setWindowState,
       setVisibleScreens,
       clearVisible,
       setLanguage,
+      setDevice,
     }),
     [
       runIntro,
       windowState,
       visibleScreens,
       language,
+      device,
       setRunIntro,
       setWindowState,
       setVisibleScreens,
       clearVisible,
       setLanguage,
+      setDevice,
     ]
   );
 
