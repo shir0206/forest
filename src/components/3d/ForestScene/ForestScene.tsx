@@ -1,7 +1,6 @@
 "use client";
 import React, { Suspense, useCallback, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
-import { Environment } from "@react-three/drei";
 import Butterfly from "../../ui/Butterfly/Butterfly.tsx";
 import CameraControls from "../CameraControls/CameraControls.tsx";
 import CinematicEffects from "../CinematicEffects/CinematicEffects.tsx";
@@ -68,7 +67,7 @@ export default function ForestScene() {
   return (
     <div className="w-full h-openInfoscreen bg-black">
       <Canvas
-        style={{ width: "100vw", height: "100vh", filter: "blur(0px)" }}
+        style={{ width: "100vw", height: "100vh" }}
         camera={{
           position: SCENE_CONFIG.initCameraPos,
           fov: SCENE_CONFIG.cameraFov,

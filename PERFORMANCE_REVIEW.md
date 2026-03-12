@@ -61,20 +61,20 @@ Recommended architectural change:
 Concrete steps:
 
 1. **Create a sprite-based decorative butterfly component**, e.g. `SpriteButterfly.tsx` in your 3D components:
-   - Load a butterfly texture once (PNG/WebP).
-   - Render a `sprite` (or plane) with `THREE.SpriteMaterial` / `MeshBasicMaterial`:
-     - `transparent = true`
-     - `depthWrite = false`
-     - `depthTest = true`
-   - Expose a ref to the underlying mesh/sprite so `DecorativeButterflies` can set position/scale/opacity directly.
+  - Load a butterfly texture once (PNG/WebP).
+  - Render a `sprite` (or plane) with `THREE.SpriteMaterial` / `MeshBasicMaterial`:
+    - `transparent = true`
+    - `depthWrite = false`
+    - `depthTest = true`
+  - Expose a ref to the underlying mesh/sprite so `DecorativeButterflies` can set position/scale/opacity directly.
 2. **In `Decorativebutterflies.tsx`, replace `<Butterfly decorative ... />` with the sprite-based component**, and:
-   - Remove `buttonRefs` and the `buttonRef` prop.
-   - Remove DOM-specific writes in `applyOpacity` and `applyScale`:
-     - Keep `group.scale.setScalar(v)` to drive 3D scale.
-     - For opacity, set `material.opacity = v` on the sprite/mesh material instead of `btn.style.opacity`.
+  - Remove `buttonRefs` and the `buttonRef` prop.
+  - Remove DOM-specific writes in `applyOpacity` and `applyScale`:
+    - Keep `group.scale.setScalar(v)` to drive 3D scale.
+    - For opacity, set `material.opacity = v` on the sprite/mesh material instead of `btn.style.opacity`.
 3. Optionally simulate wing flapping on the GPU:
-   - Either via a simple `sin`-based vertex offset in a custom shader.
-   - Or by swapping between 2–3 pre-baked textures (open/closed) based on `totalElapsed` in the `useFrame` loop.
+  - Either via a simple `sin`-based vertex offset in a custom shader.
+  - Or by swapping between 2–3 pre-baked textures (open/closed) based on `totalElapsed` in the `useFrame` loop.
 
 Result:
 
@@ -87,7 +87,7 @@ Result:
 In `ForestScene.tsx`, `butterflyCount` is derived from `DEVICE_CONFIG.butterflyCount[device]`. To improve robustness:
 
 - Ensure **mobile/tablet counts are significantly lower** (e.g. 3–5 instead of 9).
-- Consider a **`reducedMotion` / `lowPerfDevice`** flag in `AppContext` based on:
+- Consider a `**reducedMotion` / `lowPerfDevice`** flag in `AppContext` based on:
   - `prefers-reduced-motion` media query.
   - OR a simple “low power mode” toggle in UI.
 
@@ -237,28 +237,28 @@ You load an HDR background via:
 ### 5.1. Highest-Impact Changes (Do These First)
 
 1. **Remove decorative butterfly DOM coupling**
-   - Replace HTML-based `Butterfly` for decorative instances with sprite/mesh-based 3D butterflies.
-   - Remove `buttonRefs` and DOM style writes (`btn.style.opacity`, `btn.style.scale`) from `Decorativebutterflies.tsx`.
+  - Replace HTML-based `Butterfly` for decorative instances with sprite/mesh-based 3D butterflies.
+  - Remove `buttonRefs` and DOM style writes (`btn.style.opacity`, `btn.style.scale`) from `Decorativebutterflies.tsx`.
 2. **Reduce decorative butterfly count on mobile / low-power**
-   - Lower `DEVICE_CONFIG.butterflyCount` for mobile/tablet.
-   - Optionally add `reducedMotion` and skip heavy swarm behavior.
+  - Lower `DEVICE_CONFIG.butterflyCount` for mobile/tablet.
+  - Optionally add `reducedMotion` and skip heavy swarm behavior.
 3. **Trim per-frame logging**
-   - Remove `console.log` calls from `Decorativebutterflies` and `CameraControls` runtime paths.
+  - Remove `console.log` calls from `Decorativebutterflies` and `CameraControls` runtime paths.
 
 ### 5.2. Medium-Impact Improvements
 
-4. **Defer heavy browser content during intro**
-   - While `runIntro` is true, render only a simplified browser shell.
-   - Mount full `SCREENS` content after intro completes.
-5. **CSS simplification**
-   - Reduce `box-shadow`, `filter`, `backdrop-filter`, and other expensive styles in `browser.scss` and section styles, especially for mobile.
+1. **Defer heavy browser content during intro**
+  - While `runIntro` is true, render only a simplified browser shell.
+  - Mount full `SCREENS` content after intro completes.
+2. **CSS simplification**
+  - Reduce `box-shadow`, `filter`, `backdrop-filter`, and other expensive styles in `browser.scss` and section styles, especially for mobile.
 
 ### 5.3. Nice-to-Have Optimizations
 
-6. **Background HDR optimization**
-   - Use a smaller, optimized environment texture for mobile.
-7. **Performance profiling hooks**
-   - Integrate `stats.js` or React Profiler in dev to validate that frame times are stable after each change.
+1. **Background HDR optimization**
+  - Use a smaller, optimized environment texture for mobile.
+2. **Performance profiling hooks**
+  - Integrate `stats.js` or React Profiler in dev to validate that frame times are stable after each change.
 
 ---
 
@@ -271,4 +271,3 @@ After implementing the high-impact changes (sprite-based decorative butterflies,
 - Reduced main-thread contention between Three.js and DOM work.
 
 The medium-impact improvements around the browser overlay and CSS will further smooth interactions as the user scrolls and navigates through content, making the overall experience feel lighter and more responsive.
-
