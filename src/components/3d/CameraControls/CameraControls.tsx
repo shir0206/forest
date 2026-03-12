@@ -19,21 +19,6 @@ export default function CameraControls({ controlsRef }: CameraControlsProps) {
   useDynamicFov(controlsRef);
   const { animateSequence } = useCameraAnimation(controlsRef);
 
-  // Log camera position & FOV on change
-  useEffect(() => {
-    const controls = controlsRef.current;
-    if (!controls) return;
-
-    const handleChange = () => {
-      console.log("📍 position:", camera.position.toArray());
-      // @ts-ignore
-      console.log("🎥 fov:", camera.fov.toFixed(2));
-    };
-
-    controls.addEventListener("change", handleChange);
-    return () => controls.removeEventListener("change", handleChange);
-  }, [camera]);
-
   // Intro animation
   useEffect(() => {
     if (!runIntro) return;

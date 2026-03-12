@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext } from "react";
 import { AppContext } from "../shared/contexts/AppContext";
 
 interface ContextBridgeProps {
@@ -22,13 +22,6 @@ export function ContextBridge({ children, contextValue }: ContextBridgeProps) {
   const currentContext = useContext(AppContext);
 
   if (currentContext) {
-    console.log("ContextBridge: Using current context", {
-      runIntro: currentContext.runIntro,
-      windowState: currentContext.windowState,
-      visibleScreens: Array.from(currentContext.visibleScreens),
-      language: currentContext.language,
-    });
-
     return (
       <AppContext.Provider value={currentContext}>
         {children}
@@ -38,18 +31,4 @@ export function ContextBridge({ children, contextValue }: ContextBridgeProps) {
 
   console.error("ContextBridge: No context available");
   return <>{children}</>;
-}
-
-/**
- * Hook to access the enhanced context with better error handling
- */
-export function useEnhancedAppContext() {
-  const context = useContext(AppContext);
-
-  if (!context) {
-    console.error("useEnhancedAppContext: context not found");
-    return null;
-  }
-
-  return context;
 }

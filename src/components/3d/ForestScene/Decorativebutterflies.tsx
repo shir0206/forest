@@ -372,24 +372,6 @@ function smoothStep(t: number): number {
   return t * t * (3 - 2 * t);
 }
 
-function computeSWaveOffset0(
-  travelDirection: THREE.Vector3,
-  progress: number,
-  wave: WaveParams,
-  amplitudeScale = 1
-): THREE.Vector3 {
-  scratchTangent.copy(travelDirection).normalize();
-  scratchRight.crossVectors(scratchTangent, scratchWorldUp).normalize();
-
-  const envelope = Math.sin(progress * Math.PI);
-  const angle = progress * Math.PI * 2 * wave.frequency + wave.phaseOffset;
-  const lateral = Math.sin(angle) * wave.amplitude * envelope * amplitudeScale;
-  const vertical =
-    Math.cos(angle) * wave.amplitude * 0.4 * envelope * amplitudeScale;
-
-  return scratchRight.clone().multiplyScalar(lateral).setY(vertical);
-}
-
 // ─── Per-phase tick functions ─────────────────────────────────────────────────
 
 function tickSpawning(
@@ -552,24 +534,6 @@ function tickFlyingAway({
  * The exit is now a clean quadratic-ease-in lerp with pure opacity fade.
  * Clean, readable, and predictable on both desktop and mobile.
  */
-function tickFlyingAway0(
-  group: THREE.Group,
-  flyAwayElapsed: number,
-  duration: number,
-  start: THREE.Vector3,
-  target: THREE.Vector3,
-  onOpacity: (v: number) => void,
-  onComplete: () => void
-): void {
-  const t = Math.min(flyAwayElapsed / duration, 1);
-  const et = t * t; // quadratic ease-in → accelerates away
-
-  group.position.lerpVectors(start, target, et);
-  onOpacity(1 - et);
-
-  if (t >= 1) onComplete();
-}
-
 // ─── DOM helpers ─────────────────────────────────────────────────────────────
 
 function applyOpacity(
@@ -624,11 +588,6 @@ function createButterflyRuntime(
     transitionMs,
     gatherStartMs,
     leadSteps
-  );
-  const finalCamPos = getCameraPositionAtMs(
-    positions,
-    transitionMs,
-    positions.length * transitionMs + 99999
   );
 
   // Spawn: ring around butterflyPos (FIX 1)
@@ -830,7 +789,6 @@ export default function DecorativeButterflies({
 
       switch (runtime.currentPhase) {
         case PHASE.SPAWN: {
-          console.log(`[Butterfly ${runtime.config.id}] Starting SPAWN phase`);
           const done = tickSpawning(
             group,
             runtime.phaseElapsed,
@@ -847,12 +805,10 @@ export default function DecorativeButterflies({
             runtime.currentPhase = PHASE.WANDER;
             runtime.phaseElapsed = 0;
           }
-          console.log(`[Butterfly ${runtime.config.id}] Completed SPAWN phase`);
           break;
         }
 
         case PHASE.WANDER: {
-          console.log(`[Butterfly ${runtime.config.id}] Starting WANDER phase`);
           const done = tickWandering(
             group,
             runtime.phaseElapsed,
@@ -866,14 +822,10 @@ export default function DecorativeButterflies({
             runtime.currentPhase = PHASE.GATHER;
             runtime.phaseElapsed = 0;
           }
-          console.log(
-            `[Butterfly ${runtime.config.id}] Completed WANDER phase`
-          );
           break;
         }
 
         case PHASE.GATHER: {
-          console.log(`[Butterfly ${runtime.config.id}] Starting GATHER phase`);
           const done = tickGathering(
             group,
             runtime.phaseElapsed,
@@ -884,14 +836,10 @@ export default function DecorativeButterflies({
             runtime.currentPhase = PHASE.SWARM;
             runtime.phaseElapsed = 0;
           }
-          console.log(
-            `[Butterfly ${runtime.config.id}] Completed GATHER phase`
-          );
           break;
         }
 
         case PHASE.SWARM: {
-          console.log(`[Butterfly ${runtime.config.id}] Starting SWARM phase`);
           tickSwarming(
             group,
             runtime.phaseElapsed,
@@ -902,14 +850,10 @@ export default function DecorativeButterflies({
             runtime.config.bobFrequency,
             runtime.config.bobAmplitude
           );
-          console.log(`[Butterfly ${runtime.config.id}] Completed SWARM phase`);
           break;
         }
 
         case PHASE.FLY_AWAY: {
-          console.log(
-            `[Butterfly ${runtime.config.id}] Starting FLY_AWAY phase`
-          );
           if (!runtime.flyAwayOrigin) break;
           runtime.flyAwayElapsed += delta;
           tickFlyingAway({
@@ -927,9 +871,6 @@ export default function DecorativeButterflies({
               setGoneIds((prev) => new Set(prev).add(runtime.config.id));
             },
           });
-          console.log(
-            `[Butterfly ${runtime.config.id}] Completed FLY_AWAY phase`
-          );
           break;
         }
       }

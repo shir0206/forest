@@ -6,7 +6,6 @@ import { useScrollNavigation } from "../../../hooks/navigation/useScrollNavigati
 import { SCREEN_IDS } from "../../../types/app";
 
 interface OverviewProps {
-  isVisible: boolean;
   containerRef?: React.RefObject<HTMLDivElement | null>;
 }
 
