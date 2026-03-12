@@ -44,22 +44,6 @@ export const SCENE_CONFIG = {
   clickDistanceThreshold: 0.5,
 } as const;
 
-// Camera configuration
-export const CAMERA_CONFIG = {
-  near: 0.1,
-  far: 100,
-  fov: 45,
-  aspect: 1,
-  position: SCENE_CONFIG.initCameraPos,
-} as const;
-
-// Animation timing
-export const ANIMATION_TIMING = {
-  introDuration: 3000,
-  screenTransition: 500,
-  cameraMove: 1000,
-} as const;
-
 export const CAMERA_ANIMATION_PRESETS = {
   /**
    * Straight line motion with no arc

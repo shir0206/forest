@@ -64,7 +64,6 @@ const Navigation: React.FC<NavigationProps> = ({ containerRef }) => {
             </button>
           ))}
         </div>
-
         <div className="navigation-actions">
           <LanguageSwitcher />
         </div>
