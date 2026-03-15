@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import Butterfly from "../../ui/Butterfly/Butterfly";
+import ButterflyWebGL from "../../ui/Butterfly/ButterflyWebGL";
 import { useAppContext } from "../../../shared/contexts/AppContext";
 import { DeviceType } from "../../../types/app";
 
@@ -534,30 +534,28 @@ function tickFlyingAway({
  * The exit is now a clean quadratic-ease-in lerp with pure opacity fade.
  * Clean, readable, and predictable on both desktop and mobile.
  */
-// ─── DOM helpers ─────────────────────────────────────────────────────────────
+// ─── Apply helpers ───────────────────────────────────────────────────────────
 
 function applyOpacity(
   next: number,
   runtime: ButterflyRuntime,
-  btn: HTMLButtonElement | null
+  opacityRef: React.MutableRefObject<number>
 ): void {
   const v = Math.max(0, Math.min(1, next));
   if (v === runtime.opacity) return;
   runtime.opacity = v;
-  if (btn) btn.style.opacity = String(v);
+  opacityRef.current = v;
 }
 
 function applyScale(
   next: number,
   runtime: ButterflyRuntime,
-  group: THREE.Group,
-  btn: HTMLButtonElement | null
+  group: THREE.Group
 ): void {
   const v = Math.max(0, Math.min(2, next)); // allow above 1 for visualScale
   if (v === runtime.scale) return;
   runtime.scale = v;
   group.scale.setScalar(v);
-  if (btn) btn.style.scale = String(v);
 }
 
 // ─── Runtime + config factories ───────────────────────────────────────────────
@@ -727,8 +725,8 @@ export default function DecorativeButterflies({
   );
 
   const groupRefs = useRef<(THREE.Group | null)[]>(Array(count).fill(null));
-  const buttonRefs = useRef<(HTMLButtonElement | null)[]>(
-    Array(count).fill(null)
+  const opacityRefs = useRef<React.MutableRefObject<number>[]>(
+    configs.map(() => ({ current: 0 }))
   );
 
   const [goneIds, setGoneIds] = useState<Set<number>>(new Set());
@@ -784,7 +782,7 @@ export default function DecorativeButterflies({
       runtime.totalElapsed += delta;
       runtime.phaseElapsed += delta;
 
-      const btn = buttonRefs.current[i];
+      const opRef = opacityRefs.current[i];
       const bds = boundsRef.current;
 
       switch (runtime.currentPhase) {
@@ -796,12 +794,12 @@ export default function DecorativeButterflies({
             runtime.wanderTarget,
             runtime.config.wave,
             runtime.config.visualScale,
-            (v) => applyOpacity(v, runtime, btn),
-            (v) => applyScale(v, runtime, group, btn)
+            (v) => applyOpacity(v, runtime, opRef),
+            (v) => applyScale(v, runtime, group)
           );
           if (done) {
             // Lock scale at visualScale permanently — never changes again
-            applyScale(runtime.config.visualScale, runtime, group, btn);
+            applyScale(runtime.config.visualScale, runtime, group);
             runtime.currentPhase = PHASE.WANDER;
             runtime.phaseElapsed = 0;
           }
@@ -816,7 +814,7 @@ export default function DecorativeButterflies({
             runtime.config.wave,
             bds.wanderOrbitRadius,
             runtime.wanderYRange,
-            (v) => applyOpacity(v, runtime, btn)
+            (v) => applyOpacity(v, runtime, opRef)
           );
           if (done) {
             runtime.currentPhase = PHASE.GATHER;
@@ -863,7 +861,7 @@ export default function DecorativeButterflies({
             flyAwayStart: runtime.flyAwayOrigin,
             flyAwayTarget: runtime.flyAwayDestination,
             wave: runtime.config.wave, // per-butterfly
-            setSmoothedOpacity: (next) => applyOpacity(next, runtime, btn),
+            setSmoothedOpacity: (next) => applyOpacity(next, runtime, opRef),
             onComplete: () => {
               runtime.active = false;
               // Only setState call in the whole loop — fires once per butterfly,
@@ -883,31 +881,20 @@ export default function DecorativeButterflies({
     <>
       {configs
         .filter((cfg) => !goneIds.has(cfg.id))
-        .map((cfg, i) => (
+        .map((cfg) => (
           <group
             key={cfg.id}
             ref={(el) => {
-              groupRefs.current[i] = el;
+              groupRefs.current[cfg.id] = el;
               if (el) el.scale.setScalar(0);
             }}
           >
-            <Butterfly
-              decorative
-              flapDuration={cfg.flapDuration}
-              buttonRef={
-                {
-                  get current() {
-                    return buttonRefs.current[i];
-                  },
-                  set current(el: HTMLButtonElement | null) {
-                    buttonRefs.current[i] = el;
-                    if (el) {
-                      el.style.opacity = "0";
-                      el.style.scale = "0";
-                    }
-                  },
-                } as React.RefObject<HTMLButtonElement | null>
+            <ButterflyWebGL
+              flapDurationMs={
+                (cfg.flapDuration.left + cfg.flapDuration.right) / 2
               }
+              opacityRef={opacityRefs.current[cfg.id]}
+              timeOffset={cfg.wave.phaseOffset}
             />
           </group>
         ))}
