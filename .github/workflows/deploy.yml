@@ -4,6 +4,22 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to deploy"
+        required: true
+        default: "main"
+        type: choice
+        options:
+          - main
+          - develop
+          - feature-branch
+          - custom
+      custom_branch:
+        description: "Custom branch name (use when selecting 'custom')"
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -11,15 +27,40 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Determine branch to deploy
+        run: |
+          if [[ "${{ github.event.inputs.branch }}" == "custom" ]]; then
+            BRANCH="${{ github.event.inputs.custom_branch }}"
+            echo "BRANCH_TO_DEPLOY=$BRANCH" >> $GITHUB_ENV
+          else
+            BRANCH="${{ github.event.inputs.branch || github.ref }}"
+            echo "BRANCH_TO_DEPLOY=$BRANCH" >> $GITHUB_ENV
+          fi
+          echo "Deploying branch: $BRANCH"
+
+      - name: Validate branch exists
+        run: |
+          if [[ "${{ github.event.inputs.branch }}" == "custom" && -z "${{ github.event.inputs.custom_branch }}" ]]; then
+            echo "Error: Custom branch name is required when selecting 'custom'"
+            exit 1
+          fi
+          if ! git ls-remote --heads origin "$BRANCH" | grep -q "$BRANCH"; then
+            echo "Error: Branch '$BRANCH' does not exist"
+            exit 1
+          fi
+          echo "Branch '$BRANCH' exists and is valid"
+
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BRANCH_TO_DEPLOY }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
