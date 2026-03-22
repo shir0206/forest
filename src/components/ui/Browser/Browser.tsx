@@ -52,6 +52,7 @@ export default function Browser() {
             }`}
             ref={contentRef}
           >
+            {" "}
             {!runIntro && (
               <>
                 <Navigation containerRef={contentRef} />

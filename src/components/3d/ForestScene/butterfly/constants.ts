@@ -1,5 +1,14 @@
 import * as THREE from "three";
 
+// 🦋 DEBUG — remove this block when done
+export const DEBUG_BUTTERFLIES =
+  typeof window !== 'undefined' &&
+  new URLSearchParams(window.location.search).has('debugButterflies');
+
+// ─── Animation time scale (permanent) ────────────────────────────────────────
+// 0.5 = half speed, 2.0 = double speed. Set back to 1.0 for production.
+export const ANIMATION_TIME_SCALE = 1.0;
+
 // ─── Conversion ──────────────────────────────────────────────────────────────
 
 export const DEG2RAD = THREE.MathUtils.DEG2RAD;
@@ -28,7 +37,7 @@ export const DIMS = {
 	// Body intentionally thinner than raw CSS proportions (20×110px → 0.10×0.55).
 	// In WebGL true 3D, rotateY(100°) doesn't foreshorten like CSS perspective,
 	// so we keep the body small so it reads as a thin line between wings.
-	body: { radius: 0.06, halfHeight: 0.4 },
+	body: { radius: 0.10, halfHeight: 0.4 },
 } as const;
 
 // ─── Colors ──────────────────────────────────────────────────────────────────
@@ -63,8 +72,8 @@ export const BORDER_OPACITY = 0.71;
 export const UPPER_BIT_ROTZ = 40 * DEG2RAD;
 export const LOWER_BIT_ROTZ = -40 * DEG2RAD;
 
-/** Body rotation around Y — CSS `rotateY(100deg)` */
-export const BODY_ROTY = 100 * DEG2RAD;
+/** Body rotation around Y — reduced from CSS 100° to 0° for true 3D capsule look */
+export const BODY_ROTY = 0 * DEG2RAD;
 
 // ─── Flap animation range (radians) ─────────────────────────────────────────
 
