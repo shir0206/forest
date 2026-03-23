@@ -21,7 +21,7 @@ export default function Browser() {
     console.error("Browser: AppContext not found");
   }
 
-  const { windowState, visibleScreens, language } = appContext;
+  const { windowState, visibleScreens, language, runIntro } = appContext;
 
   const { ref: contentRef, ready } = useHtmlReady<HTMLDivElement>();
   const { setScreenRef } = useScreenVisibility(contentRef, ready);
@@ -52,17 +52,22 @@ export default function Browser() {
             }`}
             ref={contentRef}
           >
-            <Navigation containerRef={contentRef} />
-            {SCREENS.map(({ id, Screen }) => (
-              <WebsiteSection
-                key={id}
-                id={id}
-                isVisible={visibleScreens.has(id)}
-                Screen={Screen}
-                setRef={setScreenRef(id)}
-                containerRef={contentRef}
-              />
-            ))}
+            {" "}
+            {!runIntro && (
+              <>
+                <Navigation containerRef={contentRef} />
+                {SCREENS.map(({ id, Screen }) => (
+                  <WebsiteSection
+                    key={id}
+                    id={id}
+                    isVisible={visibleScreens.has(id)}
+                    Screen={Screen}
+                    setRef={setScreenRef(id)}
+                    containerRef={contentRef}
+                  />
+                ))}
+              </>
+            )}
           </div>
         </div>
       </ContextBridge>

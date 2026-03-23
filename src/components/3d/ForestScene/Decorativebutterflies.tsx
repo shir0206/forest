@@ -3,25 +3,13 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import Butterfly from "../../ui/Butterfly/Butterfly";
+import ButterflyWebGL from "./butterfly/ButterflyWebGL";
+import { DEBUG_BUTTERFLIES } from "./butterfly/constants"; // 🦋 DEBUG
+import { ANIMATION_TIME_SCALE } from "./butterfly/constants";
 import { useAppContext } from "../../../shared/contexts/AppContext";
 import { DeviceType } from "../../../types/app";
 
 // ─── Phase durations (seconds) ───────────────────────────────────────────────
-//
-//  Consumer sets these via PHASE_DURATION — kept as constants so the timing
-//  relationship with flyAwayAfterMs is obvious at a glance.
-//
-//  With the defaults below and flyAwayAfterMs=9000:
-//    0s–4s   spawn
-//    4s–8s   wander
-//    8s–12s  gather   ← flyAway fires at 9s, 1s into gather — fine, see note below
-//    12s+    swarm    ← reached only if flyAwayAfterMs > 12000
-//
-//  When flyAway fires mid-gather, tickFlyingAway captures group.position at
-//  that instant as flyAwayOrigin and transitions smoothly from there.  No chaos
-//  because the S-wave has been removed from the exit path (see tickFlyingAway).
-//
 const PHASE_DURATION = {
   spawn: 4,
   wander: 4,
@@ -342,11 +330,6 @@ function computeSwarmCenter(
 
 /**
  * Escape target — world-space only, no camera basis.
- *
- * FIX 3 (partial): escape direction is a simple world-space radial+upward
- * vector so the destination is always predictable and clean regardless of
- * camera orientation. The S-wave has been removed from tickFlyingAway so
- * the actual exit path is a smooth lerp with no lateral bouncing.
  */
 function computeEscapeTarget(
   fromPos: THREE.Vector3,
@@ -413,17 +396,21 @@ function tickWandering(
   wanderYRange: number,
   onOpacity: (v: number) => void
 ): boolean {
+  const EASE_IN_DURATION = 0.6;
+  const easeScale = smoothStep(Math.min(phaseElapsed / EASE_IN_DURATION, 1));
+
   const orbitAngle = phaseElapsed * 1.1 + wave.phaseOffset;
   const breathingR =
-    orbitRadius +
-    Math.sin(phaseElapsed * 0.6 + wave.phaseOffset) * orbitRadius * 0.35;
+    (orbitRadius +
+      Math.sin(phaseElapsed * 0.6 + wave.phaseOffset) * orbitRadius * 0.35) *
+    easeScale;
 
   group.position.set(
     wanderTarget.x + Math.cos(orbitAngle) * breathingR,
-    // FIX 2: use wanderYRange (frustum-derived) instead of wave.amplitude * 0.5
-    // so butterflies spread across the full vertical extent of the screen
     wanderTarget.y +
-      Math.sin(phaseElapsed * wave.frequency + wave.phaseOffset) * wanderYRange,
+      Math.sin(phaseElapsed * wave.frequency + wave.phaseOffset) *
+        wanderYRange *
+        easeScale,
     wanderTarget.z + Math.sin(orbitAngle) * breathingR
   );
   onOpacity(1);
@@ -501,9 +488,11 @@ function tickFlyingAway({
   onComplete,
 }: FlyAwayTickParams): void {
   const rawProgress = Math.min(flyAwayElapsed / flyAwayDuration, 1);
-  const easedProgress = rawProgress * rawProgress; // quadratic ease-in → accelerates away
+  const easedProgress = rawProgress * rawProgress;
 
   group.position.lerpVectors(flyAwayStart, flyAwayTarget, easedProgress);
+
+  //////////////
 
   const travelDirection = scratchTangent
     .subVectors(flyAwayTarget, flyAwayStart)
@@ -518,46 +507,34 @@ function tickFlyingAway({
     wave: dramaticExitWave,
   });
   group.position.add(sWaveDisplacement);
-
+  //////////////
   setSmoothedOpacity(1 - easedProgress);
 
   if (rawProgress >= 1) onComplete();
 }
-/**
- * FIX 3: S-wave completely removed from fly-away.
- *
- * Root cause of the "bouncing chaos": the S-wave lateral offset at 1.4x
- * amplitude on a short duration (1.4–2.2s) created swings proportionally
- * as large as the travel distance itself — butterflies appeared to ricochet
- * rather than fly away.
- *
- * The exit is now a clean quadratic-ease-in lerp with pure opacity fade.
- * Clean, readable, and predictable on both desktop and mobile.
- */
-// ─── DOM helpers ─────────────────────────────────────────────────────────────
+
+// ─── Apply helpers ───────────────────────────────────────────────────────────
 
 function applyOpacity(
   next: number,
   runtime: ButterflyRuntime,
-  btn: HTMLButtonElement | null
+  opacityRef: React.MutableRefObject<number>
 ): void {
   const v = Math.max(0, Math.min(1, next));
   if (v === runtime.opacity) return;
   runtime.opacity = v;
-  if (btn) btn.style.opacity = String(v);
+  opacityRef.current = v;
 }
 
 function applyScale(
   next: number,
   runtime: ButterflyRuntime,
-  group: THREE.Group,
-  btn: HTMLButtonElement | null
+  group: THREE.Group
 ): void {
-  const v = Math.max(0, Math.min(2, next)); // allow above 1 for visualScale
+  const v = Math.max(0, Math.min(2, next));
   if (v === runtime.scale) return;
   runtime.scale = v;
   group.scale.setScalar(v);
-  if (btn) btn.style.scale = String(v);
 }
 
 // ─── Runtime + config factories ───────────────────────────────────────────────
@@ -590,14 +567,12 @@ function createButterflyRuntime(
     leadSteps
   );
 
-  // Spawn: ring around butterflyPos (FIX 1)
   const spawnOrigin = computeSpawnOrigin(
     bounds,
     spawnCamPos,
     spawnAnchor,
     fovDeg
   );
-  // Wander/swarm: relative to scene centre derived from camera route
   const wanderTarget = computeWanderTarget(
     bounds,
     wanderLeadPos,
@@ -607,7 +582,6 @@ function createButterflyRuntime(
   const swarmCenter = computeSwarmCenter(gatherLeadPos, sceneCenter, bounds);
   const flyAwayDest = computeEscapeTarget(swarmCenter, bounds);
 
-  // Calculate wanderYRange based on frustum height and bounds configuration
   const depth = wanderLeadPos.distanceTo(sceneCenter);
   const halfH = depth * Math.tan((fovDeg / 2) * (Math.PI / 180));
   const wanderYRange = halfH * bounds.wanderYFraction;
@@ -626,7 +600,7 @@ function createButterflyRuntime(
     flyAwayOrigin: null,
     flyAwayDestination: flyAwayDest,
     flyAwayElapsed: 0,
-    flyAwayDuration: 1.4 + Math.random() * 0.8,
+    flyAwayDuration: (1.4 + Math.random() * 0.8) / ANIMATION_TIME_SCALE,
     active: true,
   };
 }
@@ -644,8 +618,8 @@ function createButterflyConfigs(
       phaseOffset: Math.random() * Math.PI * 2,
     },
     flapDuration: {
-      left: 120 + Math.random() * 140,
-      right: 120 + Math.random() * 140,
+      left: 200,
+      right: 200,
     },
     flyAwayDelay: i * 0.14 + Math.random() * 0.2,
     swarmSlot: {
@@ -656,7 +630,6 @@ function createButterflyConfigs(
     },
     bobFrequency: 1.5 + Math.random() * 2.0,
     bobAmplitude: 0.02 + Math.random() * 0.03,
-    // FIX 2: each butterfly has its own permanent size (0.55–1.0)
     visualScale: 0.55 + Math.random() * 0.45,
   }));
 }
@@ -686,7 +659,7 @@ interface DecorativeButterfliesProps {
 
 export default function DecorativeButterflies({
   count = 9,
-  flyAwayAfterMs = 9000,
+  flyAwayAfterMs = 9000 / ANIMATION_TIME_SCALE,
   cameraPositions,
   spawnAnchor,
   cameraFov = 60,
@@ -727,8 +700,8 @@ export default function DecorativeButterflies({
   );
 
   const groupRefs = useRef<(THREE.Group | null)[]>(Array(count).fill(null));
-  const buttonRefs = useRef<(HTMLButtonElement | null)[]>(
-    Array(count).fill(null)
+  const opacityRefs = useRef<React.MutableRefObject<number>[]>(
+    configs.map(() => ({ current: 0 }))
   );
 
   const [goneIds, setGoneIds] = useState<Set<number>>(new Set());
@@ -737,12 +710,9 @@ export default function DecorativeButterflies({
   boundsRef.current = bounds;
 
   // ─── Fly-away trigger ──────────────────────────────────────────────────────
-  // flyAwayDestination is pre-computed — the timeout only switches the phase.
-  // flyAwayOrigin captures group.position at the moment the timer fires,
-  // which may be mid-gather. That's fine — tickFlyingAway starts from wherever
-  // the butterfly currently is and exits cleanly via straight lerp.
 
   useEffect(() => {
+    if (DEBUG_BUTTERFLIES) return; // 🦋 DEBUG
     const outerTimer = setTimeout(() => {
       allRuntimes.current.forEach((runtime) => {
         if (!runtime.active) return;
@@ -773,7 +743,21 @@ export default function DecorativeButterflies({
 
   // ─── Single frame loop ─────────────────────────────────────────────────────
 
-  useFrame((_, delta) => {
+  useFrame(({ camera }, delta) => {
+    // 🦋 DEBUG — freeze phase, place in visible row
+    if (DEBUG_BUTTERFLIES) {
+      for (let i = 0; i < allRuntimes.current.length; i++) {
+        const group = groupRefs.current[i];
+        if (!group) continue;
+        const spacing = 0.4;
+        const totalWidth = (count - 1) * spacing;
+        group.position.set(-totalWidth / 2 + i * spacing, 0, -2);
+        group.scale.setScalar(allRuntimes.current[i].config.visualScale);
+        opacityRefs.current[i].current = 1;
+      }
+      return;
+    }
+
     for (let i = 0; i < allRuntimes.current.length; i++) {
       const runtime = allRuntimes.current[i];
       if (!runtime.active) continue;
@@ -784,7 +768,7 @@ export default function DecorativeButterflies({
       runtime.totalElapsed += delta;
       runtime.phaseElapsed += delta;
 
-      const btn = buttonRefs.current[i];
+      const opRef = opacityRefs.current[i];
       const bds = boundsRef.current;
 
       switch (runtime.currentPhase) {
@@ -796,12 +780,11 @@ export default function DecorativeButterflies({
             runtime.wanderTarget,
             runtime.config.wave,
             runtime.config.visualScale,
-            (v) => applyOpacity(v, runtime, btn),
-            (v) => applyScale(v, runtime, group, btn)
+            (v) => applyOpacity(v, runtime, opRef),
+            (v) => applyScale(v, runtime, group)
           );
           if (done) {
-            // Lock scale at visualScale permanently — never changes again
-            applyScale(runtime.config.visualScale, runtime, group, btn);
+            applyScale(runtime.config.visualScale, runtime, group);
             runtime.currentPhase = PHASE.WANDER;
             runtime.phaseElapsed = 0;
           }
@@ -816,7 +799,7 @@ export default function DecorativeButterflies({
             runtime.config.wave,
             bds.wanderOrbitRadius,
             runtime.wanderYRange,
-            (v) => applyOpacity(v, runtime, btn)
+            (v) => applyOpacity(v, runtime, opRef)
           );
           if (done) {
             runtime.currentPhase = PHASE.GATHER;
@@ -859,21 +842,22 @@ export default function DecorativeButterflies({
           tickFlyingAway({
             group,
             flyAwayElapsed: runtime.flyAwayElapsed,
-            flyAwayDuration: runtime.flyAwayDuration, // per-butterfly
+            flyAwayDuration: runtime.flyAwayDuration,
             flyAwayStart: runtime.flyAwayOrigin,
             flyAwayTarget: runtime.flyAwayDestination,
-            wave: runtime.config.wave, // per-butterfly
-            setSmoothedOpacity: (next) => applyOpacity(next, runtime, btn),
+            wave: runtime.config.wave,
+            setSmoothedOpacity: (next) => applyOpacity(next, runtime, opRef),
             onComplete: () => {
               runtime.active = false;
-              // Only setState call in the whole loop — fires once per butterfly,
-              // only when it finishes flying away and its <group> can be removed.
               setGoneIds((prev) => new Set(prev).add(runtime.config.id));
             },
           });
           break;
         }
       }
+
+      // ── Billboard: always face the camera ────────────────────────────────
+      group.quaternion.copy(camera.quaternion);
     }
   });
 
@@ -883,31 +867,23 @@ export default function DecorativeButterflies({
     <>
       {configs
         .filter((cfg) => !goneIds.has(cfg.id))
-        .map((cfg, i) => (
+        .map((cfg) => (
           <group
             key={cfg.id}
             ref={(el) => {
-              groupRefs.current[i] = el;
+              groupRefs.current[cfg.id] = el;
               if (el) el.scale.setScalar(0);
             }}
           >
-            <Butterfly
-              decorative
-              flapDuration={cfg.flapDuration}
-              buttonRef={
-                {
-                  get current() {
-                    return buttonRefs.current[i];
-                  },
-                  set current(el: HTMLButtonElement | null) {
-                    buttonRefs.current[i] = el;
-                    if (el) {
-                      el.style.opacity = "0";
-                      el.style.scale = "0";
-                    }
-                  },
-                } as React.RefObject<HTMLButtonElement | null>
+            <ButterflyWebGL
+              flapDurationMs={
+                (cfg.flapDuration.left + cfg.flapDuration.right) / 2
               }
+              opacityRef={opacityRefs.current[cfg.id]}
+              timeOffset={cfg.wave.phaseOffset}
+              flipPetals={false}
+              mirrorX={false}
+              useDecorativePose
             />
           </group>
         ))}
