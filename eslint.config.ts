@@ -9,7 +9,7 @@ import typescriptParser from "@typescript-eslint/parser";
 export default [
   js.configs.recommended,
   {
-    files: ["*/.{ts,tsx,js,jsx}"],
+    files: ["**/*.{ts,tsx,js,jsx}"],
     ignores: [
       "node_modules",
       "build",

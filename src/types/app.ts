@@ -56,7 +56,6 @@ export interface AppContextType extends AppState {
 }
 
 // Import TextStructure for the context
-import type { TextStructure } from "../i18n/types";
 
 // Animation Types
 export interface AnimationConfig {
