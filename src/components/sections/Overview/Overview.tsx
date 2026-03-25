@@ -1,5 +1,7 @@
 import React from "react";
+
 import "./overview.scss";
+
 import { ReactComponent as Branch } from "../../../assets/images/branch.svg";
 import { useTranslation } from "../../../hooks/i18n/useTranslation";
 import { useScrollNavigation } from "../../../hooks/navigation/useScrollNavigation";

@@ -1,6 +1,8 @@
-import { useThree, useLoader } from "@react-three/fiber";
 import { useEffect } from "react";
+import { useLoader, useThree } from "@react-three/fiber";
+
 import * as THREE from "three";
+
 import { SCENE_CONFIG } from "../../../config/3d";
 
 export default function Background() {

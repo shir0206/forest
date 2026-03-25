@@ -1672,7 +1672,7 @@ var PinchEngine = class extends Engine {
 	}
 	bind(bindFunction) {
 		const device = this.config.device;
-		if (!!device) {
+		if (device) {
 			bindFunction(device, "start", this[device + "Start"].bind(this));
 			bindFunction(device, "change", this[device + "Move"].bind(this));
 			bindFunction(device, "end", this[device + "End"].bind(this));
@@ -45407,7 +45407,7 @@ var TrailTextureImpl = class {
 			const dd = dx * dx + dy * dy;
 			const force = Math.max(this.minForce, Math.min(dd * 1e4, 1));
 			this.force = smoothAverage(force, this.force, this.smoothing);
-			if (!!this.interpolate) {
+			if (this.interpolate) {
 				const lines = Math.ceil(dd / Math.pow(this.radius * .5 / this.interpolate, 2));
 				if (lines > 1) for (let i$3 = 1; i$3 < lines; i$3++) this.trail.push({
 					x: last.x - dx / lines * i$3,

@@ -1,21 +1,21 @@
 import React, {
   createContext,
-  useContext,
-  useState,
   useCallback,
+  useContext,
   useMemo,
+  useState,
 } from "react";
+
+import { detectDevice } from "../../config/3d";
 import {
   AppContextType,
-  WindowState,
+  DeviceType,
+  LANGUAGE,
+  Language,
   ScreenId,
   WINDOW_STATE,
-  Language,
-  LANGUAGE,
-  DeviceType,
-  DEVICE_TYPE,
+  WindowState,
 } from "../../types/app";
-import { detectDevice } from "../../config/3d";
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
 

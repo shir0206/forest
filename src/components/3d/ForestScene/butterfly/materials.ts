@@ -1,11 +1,12 @@
 import * as THREE from "three";
+
 import {
-	WING_GRADIENT_COLORS,
-	WING_STOP_ALPHAS,
-	BODY_COLOR_TOP,
-	BODY_COLOR_BOTTOM,
-	BORDER_COLOR,
-	BORDER_OPACITY,
+  BODY_COLOR_BOTTOM,
+  BODY_COLOR_TOP,
+  BORDER_COLOR,
+  BORDER_OPACITY,
+  WING_GRADIENT_COLORS,
+  WING_STOP_ALPHAS,
 } from "./constants";
 
 // ─── GLSL ────────────────────────────────────────────────────────────────────
@@ -81,19 +82,19 @@ const bodyFragmentShader = /* glsl */ `
 // ─── Shared uniform blocks ──────────────────────────────────────────────────
 
 function wingUniforms() {
-	return {
-		uColor1: { value: WING_GRADIENT_COLORS[0] },
-		uColor2: { value: WING_GRADIENT_COLORS[1] },
-		uColor3: { value: WING_GRADIENT_COLORS[2] },
-		uColor4: { value: WING_GRADIENT_COLORS[3] },
-		uColor5: { value: WING_GRADIENT_COLORS[4] },
-		uAlpha1: { value: WING_STOP_ALPHAS[0] },
-		uAlpha2: { value: WING_STOP_ALPHAS[1] },
-		uAlpha3: { value: WING_STOP_ALPHAS[2] },
-		uAlpha4: { value: WING_STOP_ALPHAS[3] },
-		uAlpha5: { value: WING_STOP_ALPHAS[4] },
-		uOpacity: { value: 0.85 },
-	};
+  return {
+    uColor1: { value: WING_GRADIENT_COLORS[0] },
+    uColor2: { value: WING_GRADIENT_COLORS[1] },
+    uColor3: { value: WING_GRADIENT_COLORS[2] },
+    uColor4: { value: WING_GRADIENT_COLORS[3] },
+    uColor5: { value: WING_GRADIENT_COLORS[4] },
+    uAlpha1: { value: WING_STOP_ALPHAS[0] },
+    uAlpha2: { value: WING_STOP_ALPHAS[1] },
+    uAlpha3: { value: WING_STOP_ALPHAS[2] },
+    uAlpha4: { value: WING_STOP_ALPHAS[3] },
+    uAlpha5: { value: WING_STOP_ALPHAS[4] },
+    uOpacity: { value: 0.85 },
+  };
 }
 
 // ─── Cached material instances ──────────────────────────────────────────────
@@ -103,44 +104,44 @@ let _body: THREE.ShaderMaterial | null = null;
 let _border: THREE.LineBasicMaterial | null = null;
 
 export function getWingOuterMaterial(): THREE.ShaderMaterial {
-	if (!_wingOuter) {
-		_wingOuter = new THREE.ShaderMaterial({
-			vertexShader: wingVertexShader,
-			fragmentShader: wingFragmentShader,
-			uniforms: wingUniforms(),
-			transparent: true,
-			side: THREE.DoubleSide,
-			depthWrite: false,
-		});
-	}
-	return _wingOuter;
+  if (!_wingOuter) {
+    _wingOuter = new THREE.ShaderMaterial({
+      vertexShader: wingVertexShader,
+      fragmentShader: wingFragmentShader,
+      uniforms: wingUniforms(),
+      transparent: true,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+    });
+  }
+  return _wingOuter;
 }
 
 export function getBodyMaterial(): THREE.ShaderMaterial {
-	if (!_body) {
-		_body = new THREE.ShaderMaterial({
-			vertexShader: bodyVertexShader,
-			fragmentShader: bodyFragmentShader,
-			uniforms: {
-				uColorTop: { value: BODY_COLOR_TOP },
-				uColorBottom: { value: BODY_COLOR_BOTTOM },
-				uOpacity: { value: 1.0 },
-			},
-			transparent: true,
-			side: THREE.DoubleSide,
-			depthWrite: false,
-		});
-	}
-	return _body;
+  if (!_body) {
+    _body = new THREE.ShaderMaterial({
+      vertexShader: bodyVertexShader,
+      fragmentShader: bodyFragmentShader,
+      uniforms: {
+        uColorTop: { value: BODY_COLOR_TOP },
+        uColorBottom: { value: BODY_COLOR_BOTTOM },
+        uOpacity: { value: 1.0 },
+      },
+      transparent: true,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+    });
+  }
+  return _body;
 }
 
 export function getBorderMaterial(): THREE.LineBasicMaterial {
-	if (!_border) {
-		_border = new THREE.LineBasicMaterial({
-			color: BORDER_COLOR,
-			transparent: true,
-			opacity: BORDER_OPACITY,
-		});
-	}
-	return _border;
+  if (!_border) {
+    _border = new THREE.LineBasicMaterial({
+      color: BORDER_COLOR,
+      transparent: true,
+      opacity: BORDER_OPACITY,
+    });
+  }
+  return _border;
 }

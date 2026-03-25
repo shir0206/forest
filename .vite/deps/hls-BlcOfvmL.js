@@ -24668,7 +24668,7 @@ var GapController = class extends TaskLoop {
 		if (!this.moved && this.stalled !== null && fragmentTracker) {
 			if (!(bufferInfo.len > 0) && !nextStart) return;
 			const startJump = Math.max(nextStart, bufferInfo.start || 0) - currentTime;
-			const maxStartGapJump = !!(levelDetails != null && levelDetails.live) ? levelDetails.targetduration * 2 : MAX_START_GAP_JUMP;
+			const maxStartGapJump = levelDetails != null && levelDetails.live ? levelDetails.targetduration * 2 : MAX_START_GAP_JUMP;
 			const appended = appendedFragAtPosition(currentTime, fragmentTracker);
 			if (startJump > 0 && (startJump <= maxStartGapJump || appended)) {
 				if (!media.paused) this._trySkipBufferHole(appended);
@@ -25008,7 +25008,7 @@ var ID3TrackController = class {
 	}
 	onMediaDetaching(event, data) {
 		this.media = null;
-		if (!!data.transferMedia) return;
+		if (data.transferMedia) return;
 		if (this.id3Track) {
 			if (this.removeCues) clearCurrentCues(this.id3Track, this.onEventCueEnter);
 			this.id3Track = null;
@@ -26089,7 +26089,7 @@ var StreamController = class extends BaseStreamController {
 		this.videoBuffer = null;
 		this.fragPlaying = null;
 		super.onMediaDetaching(event, data);
-		if (!!data.transferMedia) return;
+		if (data.transferMedia) return;
 		this._hasEnoughToStart = false;
 	}
 	onManifestLoading() {

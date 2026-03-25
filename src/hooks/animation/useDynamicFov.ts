@@ -1,9 +1,12 @@
-import { useEffect, useState, RefObject } from "react";
+import { RefObject, useEffect, useState } from "react";
 import { useThree } from "@react-three/fiber";
-import { OrbitControls } from "three-stdlib";
-import * as THREE from "three";
 
-export default function useDynamicFov(controlsRef: RefObject<OrbitControls>) {
+import * as THREE from "three";
+import { OrbitControls } from "three-stdlib";
+
+export default function useDynamicFov(
+  controlsRef: RefObject<OrbitControls | null>
+) {
   const { camera } = useThree();
   const [lastDistance, setLastDistance] = useState<number | null>(null);
 

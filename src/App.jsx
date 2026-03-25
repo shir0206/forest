@@ -1,5 +1,5 @@
-import { AppProvider } from "./shared/contexts/AppContext";
 import ForestScene from "./components/3d/ForestScene/ForestScene";
+import { AppProvider } from "./shared/contexts/AppContext";
 
 function App() {
   return (

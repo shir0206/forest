@@ -1,9 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
+
+import "./languageSwitcher.scss";
+
 import { useTranslation } from "../../../hooks/i18n/useTranslation";
 import { useAppContext } from "../../../shared/contexts/AppContext";
 import { LANGUAGE, Language } from "../../../types/app";
 import { Icon } from "../Icon/Icon";
-import "./languageSwitcher.scss";
 
 interface LanguageSwitcherProps {
   onLanguageChange?: (langCode: Language) => void;

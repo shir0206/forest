@@ -7,8 +7,8 @@ export const APP_CONFIG = {
 } as const;
 
 // Screen configuration
-import Overview from "../components/sections/Overview/Overview";
 import AboutMe from "../components/sections/AboutMe/AboutMe";
+import Overview from "../components/sections/Overview/Overview";
 import Service from "../components/sections/Service/Service";
 import Contact from "../components/ui/Contact/Contact";
 

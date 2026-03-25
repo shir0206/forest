@@ -1,18 +1,20 @@
 "use client";
 import React, { Suspense, useCallback, useRef } from "react";
+import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
+
+import {
+  DEVICE_CONFIG,
+  SCENE_ANIMATION_POSITIONS,
+  SCENE_CONFIG,
+} from "../../../config/3d";
+import Loader from "../../../shared/components/Loader/Loader.tsx";
+import { useAppContext } from "../../../shared/contexts/AppContext";
+import { DeviceType, WINDOW_STATE } from "../../../types/app";
+import Browser from "../../ui/Browser/Browser.tsx";
 import Butterfly from "../../ui/Butterfly/Butterfly.tsx";
 import CameraControls from "../CameraControls/CameraControls.tsx";
 import CinematicEffects from "../CinematicEffects/CinematicEffects.tsx";
-import Loader from "../../../shared/components/Loader/Loader.tsx";
-import {
-  SCENE_CONFIG,
-  DEVICE_CONFIG,
-  SCENE_ANIMATION_POSITIONS,
-} from "../../../config/3d";
-import Browser from "../../ui/Browser/Browser.tsx";
-import { useAppContext } from "../../../shared/contexts/AppContext";
-import { WINDOW_STATE, DeviceType } from "../../../types/app";
 import Background from "./Background.tsx";
 import DecorativeButterflies from "./Decorativebutterflies.tsx";
 
@@ -46,7 +48,10 @@ const getCameraAspect = (): number => {
  */
 export default function ForestScene() {
   const appContext = useAppContext();
-  const controlsRef = useRef(null);
+
+  const controlsRef = useRef<React.ComponentRef<typeof OrbitControls> | null>(
+    null
+  );
 
   // Handle case where context is undefined
   if (!appContext) {

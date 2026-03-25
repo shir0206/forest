@@ -1,7 +1,9 @@
 import React from "react";
+
 import "./aboutMe.scss";
-import imagePath from "../../../assets/images/shirzabolotny.png?url";
+
 import { ReactComponent as Circle } from "../../../assets/images/circle.svg";
+import imagePath from "../../../assets/images/shirzabolotny.png?url";
 import { useTranslation } from "../../../hooks/i18n/useTranslation";
 
 interface AboutMeProps {
@@ -9,7 +11,7 @@ interface AboutMeProps {
   containerRef?: React.RefObject<HTMLDivElement | null>;
 }
 
-const AboutMe: React.FC<AboutMeProps> = ({ containerRef }) => {
+const AboutMe: React.FC<AboutMeProps> = () => {
   const { t } = useTranslation();
 
   return (

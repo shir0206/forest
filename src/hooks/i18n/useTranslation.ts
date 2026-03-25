@@ -1,7 +1,8 @@
 import { useContext } from "react";
-import { useEnhancedAppContext } from "../../shared/contexts/AppContext";
+
 import { getText } from "../../i18n";
 import type { TextStructure } from "../../i18n/types";
+import { useEnhancedAppContext } from "../../shared/contexts/AppContext";
 import { LANGUAGE } from "../../types/app";
 
 const translations: Record<string, TextStructure> = {

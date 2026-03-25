@@ -1,5 +1,3 @@
-import type { Language } from "./app";
-
 export interface TextStructure {
   browser: {
     windowControls: {

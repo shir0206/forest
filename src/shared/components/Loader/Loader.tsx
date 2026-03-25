@@ -1,5 +1,5 @@
-import React from "react";
 import { Html, useProgress } from "@react-three/drei";
+
 import "./loader.scss";
 
 export default function Loader() {
