@@ -1,4 +1,5 @@
 import * as THREE from "three";
+
 import { DIMS } from "./constants";
 
 // ─── Wing petal shape ────────────────────────────────────────────────────────

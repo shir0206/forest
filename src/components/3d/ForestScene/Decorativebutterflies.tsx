@@ -1,13 +1,14 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
+
 import * as THREE from "three";
-import ButterflyWebGL from "./butterfly/ButterflyWebGL";
-import { DEBUG_BUTTERFLIES } from "./butterfly/constants"; // 🦋 DEBUG
-import { ANIMATION_TIME_SCALE } from "./butterfly/constants";
+
 import { useAppContext } from "../../../shared/contexts/AppContext";
 import { DeviceType } from "../../../types/app";
+import ButterflyWebGL from "./butterfly/ButterflyWebGL";
+import { ANIMATION_TIME_SCALE } from "./butterfly/constants";
 
 // ─── Phase durations (seconds) ───────────────────────────────────────────────
 const PHASE_DURATION = {
@@ -97,6 +98,7 @@ interface ButterflyRuntime {
   flyAwayDuration: number;
 
   active: boolean;
+  flyAwayTimer?: number;
 }
 
 // ─── Viewport bounds ─────────────────────────────────────────────────────────
@@ -675,13 +677,11 @@ export default function DecorativeButterflies({
 
   const spawnAnchorVec = useMemo(
     () => new THREE.Vector3(spawnAnchor[0], spawnAnchor[1], spawnAnchor[2]),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [spawnAnchor[0], spawnAnchor[1], spawnAnchor[2]]
   );
 
   const configs = useMemo(
     () => createButterflyConfigs(count, bounds),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [count, device]
   );
 
@@ -712,7 +712,6 @@ export default function DecorativeButterflies({
   // ─── Fly-away trigger ──────────────────────────────────────────────────────
 
   useEffect(() => {
-    if (DEBUG_BUTTERFLIES) return; // 🦋 DEBUG
     const outerTimer = setTimeout(() => {
       allRuntimes.current.forEach((runtime) => {
         if (!runtime.active) return;
@@ -727,15 +726,15 @@ export default function DecorativeButterflies({
           runtime.phaseElapsed = 0;
         }, runtime.config.flyAwayDelay * 1000);
 
-        (runtime as any)._flyAwayTimer = innerTimer;
+        runtime.flyAwayTimer = innerTimer;
       });
     }, flyAwayAfterMs);
 
     return () => {
       clearTimeout(outerTimer);
       allRuntimes.current.forEach((runtime) => {
-        if ((runtime as any)._flyAwayTimer !== undefined) {
-          clearTimeout((runtime as any)._flyAwayTimer);
+        if (runtime.flyAwayTimer !== undefined) {
+          clearTimeout(runtime.flyAwayTimer);
         }
       });
     };
@@ -744,20 +743,6 @@ export default function DecorativeButterflies({
   // ─── Single frame loop ─────────────────────────────────────────────────────
 
   useFrame(({ camera }, delta) => {
-    // 🦋 DEBUG — freeze phase, place in visible row
-    if (DEBUG_BUTTERFLIES) {
-      for (let i = 0; i < allRuntimes.current.length; i++) {
-        const group = groupRefs.current[i];
-        if (!group) continue;
-        const spacing = 0.4;
-        const totalWidth = (count - 1) * spacing;
-        group.position.set(-totalWidth / 2 + i * spacing, 0, -2);
-        group.scale.setScalar(allRuntimes.current[i].config.visualScale);
-        opacityRefs.current[i].current = 1;
-      }
-      return;
-    }
-
     for (let i = 0; i < allRuntimes.current.length; i++) {
       const runtime = allRuntimes.current[i];
       if (!runtime.active) continue;

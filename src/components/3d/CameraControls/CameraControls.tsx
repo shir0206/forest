@@ -1,33 +1,31 @@
 "use client";
 import { useEffect } from "react";
-import { useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import useDynamicFov from "../../../hooks/animation/useDynamicFov";
-import useCameraAnimation from "../../../hooks/animation/useCameraAnimation";
+
 import { SCENE_ANIMATION_POSITIONS } from "../../../config/3d";
+import useCameraAnimation from "../../../hooks/animation/useCameraAnimation";
+import useDynamicFov from "../../../hooks/animation/useDynamicFov";
 import { useAppContext } from "../../../shared/contexts/AppContext";
 import { WINDOW_STATE } from "../../../types/app";
 
 type CameraControlsProps = {
-  controlsRef: React.RefObject<any>;
+  controlsRef: React.RefObject<React.ComponentRef<typeof OrbitControls> | null>;
 };
 
 export default function CameraControls({ controlsRef }: CameraControlsProps) {
-  const { camera } = useThree();
   const { windowState, runIntro, setRunIntro } = useAppContext();
 
   useDynamicFov(controlsRef);
   const { animateSequence } = useCameraAnimation(controlsRef);
 
-  // Intro animation
   useEffect(() => {
     if (!runIntro) return;
 
     animateSequence({
       positions: SCENE_ANIMATION_POSITIONS,
-      duration: 10, // ← total seconds for the whole journey (was per-segment before)
+      duration: 10,
       ease: "power2.inOut",
-      tension: 0.8, // ← 0 = loose/swoopy, 1 = tight
+      tension: 0.8,
       onComplete: () => {
         setRunIntro(false);
       },

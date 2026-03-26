@@ -1,9 +1,11 @@
 import React, { useContext } from "react";
+
 import { AppContext } from "../shared/contexts/AppContext";
+import { AppContextType } from "../types/app";
 
 interface ContextBridgeProps {
   children: React.ReactNode;
-  contextValue?: any; // Pass the context value as props
+  contextValue?: AppContextType; // Pass the context value as props
 }
 
 /**

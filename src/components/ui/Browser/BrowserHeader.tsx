@@ -1,16 +1,17 @@
 import React, { useCallback } from "react";
-import { Icon } from "../../../shared/components/Icon/Icon";
-import { useTranslation } from "../../../hooks/i18n/useTranslation";
-import "./browser.scss";
-import { WINDOW_STATE } from "../../../types/app";
-import { useEnhancedAppContext } from "../../../shared/contexts/AppContext";
 
-export const BrowserHeader: React.FC = ({}) => {
+import "./browser.scss";
+
+import { useTranslation } from "../../../hooks/i18n/useTranslation";
+import { Icon } from "../../../shared/components/Icon/Icon";
+import { useEnhancedAppContext } from "../../../shared/contexts/AppContext";
+import { WINDOW_STATE } from "../../../types/app";
+
+export const BrowserHeader: React.FC = () => {
   const appContext = useEnhancedAppContext();
 
   if (!appContext) {
     console.error("BrowserHeader: AppContext not found");
-    //  return null;
   }
   //@ts-ignore
 

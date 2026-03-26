@@ -1,20 +1,21 @@
 import React from "react";
+
 import { ReactComponent as CloseIcon } from "../../../assets/icons/browser/close.svg";
 import { ReactComponent as MaximizeIcon } from "../../../assets/icons/browser/maximize.svg";
 import { ReactComponent as MinimizeIcon } from "../../../assets/icons/browser/minimize.svg";
+import { ReactComponent as CalendarIcon } from "../../../assets/icons/contact/calendar.svg";
 import { ReactComponent as LinkedinIcon } from "../../../assets/icons/contact/linkedin.svg";
 import { ReactComponent as MailIcon } from "../../../assets/icons/contact/mail.svg";
-import { ReactComponent as CalendarIcon } from "../../../assets/icons/contact/calendar.svg";
 import { ReactComponent as WhatsappIcon } from "../../../assets/icons/contact/whatsapp.svg";
-import { ReactComponent as StructureIcon } from "../../../assets/icons/service/structure.svg";
+import { ReactComponent as CheckIcon } from "../../../assets/icons/language/check.svg";
+import { ReactComponent as ChevronDownIcon } from "../../../assets/icons/language/chevron.svg";
+import { ReactComponent as GlobeIcon } from "../../../assets/icons/language/globe.svg";
+import { ReactComponent as ChecklistIcon } from "../../../assets/icons/service/checklist.svg";
 import { ReactComponent as CodeIcon } from "../../../assets/icons/service/code.svg";
 import { ReactComponent as DialogIcon } from "../../../assets/icons/service/dialog.svg";
 import { ReactComponent as MonitorsIcon } from "../../../assets/icons/service/monitors.svg";
+import { ReactComponent as StructureIcon } from "../../../assets/icons/service/structure.svg";
 import { ReactComponent as TestIcon } from "../../../assets/icons/service/test.svg";
-import { ReactComponent as ChecklistIcon } from "../../../assets/icons/service/checklist.svg";
-import { ReactComponent as ChevronDownIcon } from "../../../assets/icons/language/chevron.svg";
-import { ReactComponent as GlobeIcon } from "../../../assets/icons/language/globe.svg";
-import { ReactComponent as CheckIcon } from "../../../assets/icons/language/check.svg";
 
 const icons = {
   close: CloseIcon,

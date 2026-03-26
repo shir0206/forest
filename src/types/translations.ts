@@ -1,5 +1,3 @@
-import type { Language } from "./app";
-
 export interface TextStructure {
   browser: {
     windowControls: {
@@ -9,6 +7,12 @@ export interface TextStructure {
     };
     title: string;
   };
+  navigation: {
+    overview: string;
+    about: string;
+    service: string;
+    contact: string;
+  };
   overview: {
     name: string;
     subtitle: string;
@@ -17,8 +21,10 @@ export interface TextStructure {
       design: string;
       userExperience: string;
     };
+    hook: string;
     quote: string;
     cta: string;
+    link: string;
   };
   aboutMe: {
     title: string;

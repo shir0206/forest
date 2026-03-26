@@ -1,7 +1,10 @@
-import { useRef, useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { useThree } from "@react-three/fiber";
-import * as THREE from "three";
+
 import gsap from "gsap";
+import * as THREE from "three";
+import { OrbitControls } from "three-stdlib";
+
 import { CAMERA_ANIMATION_PRESETS } from "../../config/3d";
 
 export type CameraAnimationConfig = {
@@ -66,7 +69,9 @@ export interface CameraRelativePosition {
  * Custom hook for animating camera position with GSAP
  * Handles both single animations and sequences
  */
-export default function useCameraAnimation(controlsRef: React.RefObject<any>) {
+export default function useCameraAnimation(
+  controlsRef: React.RefObject<OrbitControls | null>
+) {
   const { camera } = useThree();
   const animationRef = useRef<gsap.core.Timeline | gsap.core.Tween | null>(
     null

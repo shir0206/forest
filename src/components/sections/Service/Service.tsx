@@ -1,7 +1,9 @@
 import React from "react";
-import { Icon, IconName } from "../../../shared/components/Icon/Icon";
+
 import "./service.css";
+
 import { useTranslation } from "../../../hooks/i18n/useTranslation";
+import { Icon, IconName } from "../../../shared/components/Icon/Icon";
 
 interface ServiceCard {
   title: string;
@@ -14,7 +16,7 @@ interface ServiceProps {
   containerRef?: React.RefObject<HTMLDivElement | null>;
 }
 
-const Service: React.FC<ServiceProps> = ({ containerRef }) => {
+const Service: React.FC<ServiceProps> = () => {
   const { t } = useTranslation();
 
   const serviceData: ServiceCard[] = [

@@ -1,16 +1,16 @@
 ("use client");
 import { useEffect, useRef } from "react";
 import { DepthOfField, EffectComposer } from "@react-three/postprocessing";
-import { useThree } from "@react-three/fiber";
+
 import gsap from "gsap";
+import { DepthOfFieldEffect } from "postprocessing";
 
 type Props = {
   isAboutOpen: boolean;
 };
 
 export default function CinematicEffects({ isAboutOpen }: Props) {
-  const dofRef = useRef<any>(null);
-  const { camera } = useThree();
+  const dofRef = useRef<DepthOfFieldEffect>(null);
 
   useEffect(() => {
     if (!dofRef.current) return;
@@ -27,9 +27,9 @@ export default function CinematicEffects({ isAboutOpen }: Props) {
     <EffectComposer>
       <DepthOfField
         ref={dofRef}
-        focusDistance={0.02} // lock focus
-        focalLength={0.01} // animated via GSAP
-        bokehScale={0} // animated via GSAP
+        focusDistance={0.02}
+        focalLength={0.01}
+        bokehScale={0}
         height={480}
       />
     </EffectComposer>

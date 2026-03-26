@@ -1,5 +1,7 @@
 import React from "react";
+
 import "./overview.scss";
+
 import { ReactComponent as Branch } from "../../../assets/images/branch.svg";
 import { useTranslation } from "../../../hooks/i18n/useTranslation";
 import { useScrollNavigation } from "../../../hooks/navigation/useScrollNavigation";
@@ -12,7 +14,6 @@ interface OverviewProps {
 const Overview: React.FC<OverviewProps> = ({ containerRef }) => {
   const { t } = useTranslation();
 
-  // Use the scroll navigation hook
   const { scrollToSection } = useScrollNavigation({
     containerRef: containerRef || { current: null },
   });

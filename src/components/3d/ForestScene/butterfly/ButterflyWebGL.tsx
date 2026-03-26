@@ -1,41 +1,42 @@
 "use client";
 
-import React, { useRef, useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
+
 import * as THREE from "three";
+
+import { easeFlap, flapPingPong, interpolateFlightPath } from "./animation";
 import {
-  DEG2RAD,
-  UPPER_BIT_ROTZ,
-  LOWER_BIT_ROTZ,
-  BODY_ROTY,
-  FLAP,
-  BUTTERFLY_BASE_SCALE,
-  BORDER_OPACITY,
-  INNER_Z_OFFSET,
-  WING_INNER_OPACITY,
-  DEBUG_BUTTERFLIES, // 🦋 DEBUG
+  getLowerBorderGeometry,
+  getLowerInnerBorderGeometry,
+  getUpperBorderGeometry,
+  getUpperInnerBorderGeometry,
+} from "./borderGeometry";
+import {
   ANIMATION_TIME_SCALE,
+  BODY_ROTY,
+  BORDER_OPACITY,
+  BUTTERFLY_BASE_SCALE,
+  DEG2RAD,
+  FLAP,
+  INNER_Z_OFFSET,
+  LOWER_BIT_ROTZ,
+  UPPER_BIT_ROTZ,
+  WING_INNER_OPACITY,
 } from "./constants";
 import {
-  getUpperOuterGeometry,
-  getUpperInnerGeometry,
-  getLowerOuterGeometry,
-  getLowerInnerGeometry,
-  getBodyGeometry,
   BODY_SCALE,
+  getBodyGeometry,
+  getLowerInnerGeometry,
+  getLowerOuterGeometry,
+  getUpperInnerGeometry,
+  getUpperOuterGeometry,
 } from "./geometry";
 import {
-  getWingOuterMaterial,
   getBodyMaterial,
   getBorderMaterial,
+  getWingOuterMaterial,
 } from "./materials";
-import {
-  getUpperBorderGeometry,
-  getLowerBorderGeometry,
-  getUpperInnerBorderGeometry,
-  getLowerInnerBorderGeometry,
-} from "./borderGeometry";
-import { easeFlap, flapPingPong, interpolateFlightPath } from "./animation";
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
@@ -124,46 +125,9 @@ export default function ButterflyWebGL({
   // Performance optimizations for low-end devices
   const animationSteps = lowPerformanceMode ? 12 : 24;
 
-  // 🦋 DEBUG — tweak from console: window.__butterflyPose.rx = 45
-  const debugPoseRef = useRef({ rx: 68, ry: 55, rz: -30 });
-  if (DEBUG_BUTTERFLIES && useDecorativePose) {
-    (window as any).__butterflyPose = debugPoseRef.current;
-  }
-
   // ─── Per-frame animation ──────────────────────────────────────────────────
 
   useFrame(() => {
-    // 🦋 DEBUG — freeze animation, show static pose for tuning
-    if (DEBUG_BUTTERFLIES) {
-      // Clear flight-path transform
-      if (rootRef.current) {
-        rootRef.current.rotation.set(0, 0, 0);
-        rootRef.current.scale.setScalar(BUTTERFLY_BASE_SCALE);
-      }
-      // Drive pose from debugPoseRef (reads every frame → console changes apply live)
-      const poseGroup = rootRef.current?.children[0];
-      if (poseGroup) {
-        poseGroup.rotation.set(
-          debugPoseRef.current.rx * DEG2RAD,
-          debugPoseRef.current.ry * DEG2RAD,
-          debugPoseRef.current.rz * DEG2RAD
-        );
-      }
-      // Wings at rest (mid-flap)
-      if (leftFlapRef.current) leftFlapRef.current.rotation.y = FLAP.left.to;
-      if (rightFlapRef.current) rightFlapRef.current.rotation.y = FLAP.right.to;
-      // Opacity passthrough
-      const op = opacityRef.current;
-      if (op !== lastOpacity.current) {
-        lastOpacity.current = op;
-        wingMat.uniforms.uOpacity.value = op * 0.85;
-        wingInnerMat.uniforms.uOpacity.value = op * WING_INNER_OPACITY;
-        bodyMat.uniforms.uOpacity.value = op;
-        borderMat.opacity = op * BORDER_OPACITY;
-      }
-      return; // skip all animation
-    }
-
     const elapsed =
       ((performance.now() / 1000 + timeOffset) * ANIMATION_TIME_SCALE) % 1000;
 

@@ -1,8 +1,4 @@
 /**
- * Utility functions for calendar-related operations
- */
-
-/**
  * Formats a date string for Google Calendar
  */
 export const formatCalendarDate = (date: Date): string => {
@@ -56,7 +52,7 @@ export const createCalendarEvent = (options: {
     guests = [],
   } = options;
 
-  const { start, end } = getNextAvailableTime();
+  const { start } = getNextAvailableTime();
 
   return {
     action: "TEMPLATE",

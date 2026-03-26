@@ -9158,7 +9158,7 @@ function useBridge() {
 	const fiber = c();
 	const ContextBridge = x();
 	return import_react.useMemo(() => ({ children }) => {
-		const Root = !!i(fiber, true, (node) => node.type === import_react.StrictMode) ? import_react.StrictMode : import_react.Fragment;
+		const Root = i(fiber, true, (node) => node.type === import_react.StrictMode) ? import_react.StrictMode : import_react.Fragment;
 		return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ContextBridge, { children }) });
 	}, [fiber, ContextBridge]);
 }

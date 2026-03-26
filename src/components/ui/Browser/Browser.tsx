@@ -1,17 +1,20 @@
 import { useMemo } from "react";
 import { Html } from "@react-three/drei";
+
 import * as THREE from "three";
+
 import "./browser.scss";
-import { useHtmlReady } from "../../../hooks/ui/useHtmlReady";
-import { useScreenVisibility } from "../../../hooks/navigation/useScreenVisibility";
-import { SCREENS } from "../../../config/app";
-import WebsiteSection from "../WebsiteScreen/WebsiteScreen.tsx";
-import { useAppContext } from "../../../shared/contexts/AppContext";
-import { ContextBridge } from "../../ContextBridge";
-import { BrowserHeader } from "./BrowserHeader";
-import Navigation from "../Navigation/Navigation";
-import { LANGUAGE } from "../../../types/app.ts";
+
 import { SCENE_CONFIG } from "../../../config/3d";
+import { SCREENS } from "../../../config/app";
+import { useScreenVisibility } from "../../../hooks/navigation/useScreenVisibility";
+import { useHtmlReady } from "../../../hooks/ui/useHtmlReady";
+import { useAppContext } from "../../../shared/contexts/AppContext";
+import { LANGUAGE } from "../../../types/app.ts";
+import { ContextBridge } from "../../ContextBridge";
+import Navigation from "../Navigation/Navigation";
+import WebsiteSection from "../WebsiteScreen/WebsiteScreen.tsx";
+import { BrowserHeader } from "./BrowserHeader";
 
 export default function Browser() {
   const appContext = useAppContext();
@@ -52,7 +55,6 @@ export default function Browser() {
             }`}
             ref={contentRef}
           >
-            {" "}
             {!runIntro && (
               <>
                 <Navigation containerRef={contentRef} />

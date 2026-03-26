@@ -1,4 +1,5 @@
 import React from "react";
+
 import { SectionComponent } from "../../../types/app";
 
 interface WebsiteSectionProps {
