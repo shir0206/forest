@@ -71,9 +71,6 @@ export const MOVING_DIRECTION = {
   RIGHT: "right" as MovingDirection,
 } as const;
 
-// Additional types from legacy helper/types.ts
-export type PositionThreeD = [number, number, number];
-
 export interface WhatsAppConfig {
   phoneNumber: string;
   text: string;

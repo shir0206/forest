@@ -1,4 +1,4 @@
-export type PositionThreeD = [number, number, number];
+import { PositionThreeD } from "../shared/types/primitives";
 
 export interface CameraConfig {
   near: number;

@@ -1,4 +1,4 @@
-import { PositionThreeD } from "../types/3d";
+import { PositionThreeD } from "../shared/types/primitives";
 
 // Device configuration
 export const DEVICE_CONFIG = {
