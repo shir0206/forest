@@ -3,10 +3,10 @@ import { useEffect } from "react";
 import { OrbitControls } from "@react-three/drei";
 
 import { SCENE_ANIMATION_POSITIONS } from "../../../config/3d";
+import { WINDOW_STATE } from "../../../domains/browser/types";
 import useCameraAnimation from "../../../hooks/animation/useCameraAnimation";
 import useDynamicFov from "../../../hooks/animation/useDynamicFov";
 import { useAppContext } from "../../../shared/contexts/AppContext";
-import { WINDOW_STATE } from "../../../types/app";
 
 type CameraControlsProps = {
   controlsRef: React.RefObject<React.ComponentRef<typeof OrbitControls> | null>;

@@ -1,23 +1,4 @@
-import { PositionThreeD } from "../shared/types/primitives";
-
-export interface CameraConfig {
-  near: number;
-  far: number;
-  fov: number;
-  aspect: number;
-  position: PositionThreeD;
-}
-
-export interface SceneConfig {
-  backgroundFile: string;
-  initCameraPos: PositionThreeD;
-  butterflyPos: PositionThreeD;
-  animationDuration: number;
-  cameraTransitionDuration: number;
-}
-
-export interface AnimationTiming {
-  introDuration: number;
-  screenTransition: number;
-  cameraMove: number;
-}
+// This file has been redistributed to domain-specific type files:
+// - CameraConfig, AnimationTiming, MovingDirection, CameraAnimationConfig, CameraAnimationSequenceConfig → src/domains/camera/types.ts
+// - SceneConfig → src/domains/scene/types.ts
+// - PositionThreeD → src/shared/types/primitives.ts

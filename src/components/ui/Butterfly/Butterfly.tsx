@@ -14,10 +14,13 @@ import {
   SCENE_ANIMATION_POSITIONS,
   SCENE_CONFIG,
 } from "../../../config/3d";
+import { WINDOW_STATE } from "../../../domains/browser/types";
+import {
+  MOVING_DIRECTION,
+  MovingDirection,
+} from "../../../domains/camera/types";
 import useCameraAnimation from "../../../hooks/animation/useCameraAnimation";
 import { useAppContext } from "../../../shared/contexts/AppContext";
-import { MOVING_DIRECTION, MovingDirection } from "../../../types/app";
-import { WINDOW_STATE } from "../../../types/app";
 
 type ButterflyProps = {
   controlsRef?: React.RefObject<OrbitControls | null>;
