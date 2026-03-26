@@ -67,8 +67,7 @@ export function interpolateFlightPath(elapsedSec: number): FlightPathState {
   const segLen = b.t - a.t;
   const local = segLen > 0 ? (t - a.t) / segLen : 0;
   // Smooth the interpolation between keyframes
-  const s = local * local * (3 - 2 * local); // smoothstep
-
+  const s = local * local * (3 - 2 * local);
   return {
     rx: lerp(a.rx, b.rx, s) * DEG2RAD,
     ry: lerp(a.ry, b.ry, s) * DEG2RAD,
