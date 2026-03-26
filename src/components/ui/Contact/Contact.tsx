@@ -36,7 +36,7 @@ interface ContactProps {
   containerRef?: React.RefObject<HTMLDivElement | null>;
 }
 
-export const Contact: React.FC<ContactProps> = ({ containerRef }) => {
+export const Contact: React.FC<ContactProps> = () => {
   const { t } = useTranslation();
 
   // Generate contact links by combining configuration with translations

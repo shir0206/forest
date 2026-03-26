@@ -14,7 +14,6 @@ interface OverviewProps {
 const Overview: React.FC<OverviewProps> = ({ containerRef }) => {
   const { t } = useTranslation();
 
-  // Use the scroll navigation hook
   const { scrollToSection } = useScrollNavigation({
     containerRef: containerRef || { current: null },
   });

@@ -16,7 +16,7 @@ interface ServiceProps {
   containerRef?: React.RefObject<HTMLDivElement | null>;
 }
 
-const Service: React.FC<ServiceProps> = ({ containerRef }) => {
+const Service: React.FC<ServiceProps> = () => {
   const { t } = useTranslation();
 
   const serviceData: ServiceCard[] = [
