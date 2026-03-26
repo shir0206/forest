@@ -34,7 +34,7 @@
 - [x] Update i18n types
 - [x] Clean up original type files
 - [x] Fix explicit string types (DEVICE_TYPE.MOBILE, MOVING_DIRECTION.LEFT/RIGHT)
-- [ ] Update remaining import statements across the codebase (16 files remaining)
+- [ ] Update remaining import statements across the codebase (15 files remaining)
 - [ ] Validate all type imports
 
 ### Phase 3 Tasks (Pre-planned)

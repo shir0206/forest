@@ -1,4 +1,4 @@
-import { Language } from "@/i18n/types";
+import { Language } from "../../i18n/types";
 
 import { WindowState } from "../browser/types";
 
