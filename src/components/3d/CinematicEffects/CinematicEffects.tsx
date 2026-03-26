@@ -3,13 +3,14 @@ import { useEffect, useRef } from "react";
 import { DepthOfField, EffectComposer } from "@react-three/postprocessing";
 
 import gsap from "gsap";
+import { DepthOfFieldEffect } from "postprocessing";
 
 type Props = {
   isAboutOpen: boolean;
 };
 
 export default function CinematicEffects({ isAboutOpen }: Props) {
-  const dofRef = useRef<any>(null);
+  const dofRef = useRef<DepthOfFieldEffect>(null);
 
   useEffect(() => {
     if (!dofRef.current) return;

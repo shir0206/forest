@@ -41,7 +41,7 @@ export const Contact: React.FC<ContactProps> = () => {
 
   // Generate contact links by combining configuration with translations
   // TypeScript workaround: cast to any to bypass type checking until cache is cleared
-  const contactLinks = generateContactLinks(t.contact.links as any);
+  const contactLinks = generateContactLinks(t.contact.links);
 
   return (
     <div className="contact-container">

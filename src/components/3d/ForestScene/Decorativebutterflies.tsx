@@ -98,6 +98,7 @@ interface ButterflyRuntime {
   flyAwayDuration: number;
 
   active: boolean;
+  flyAwayTimer?: number;
 }
 
 // ─── Viewport bounds ─────────────────────────────────────────────────────────
@@ -676,13 +677,11 @@ export default function DecorativeButterflies({
 
   const spawnAnchorVec = useMemo(
     () => new THREE.Vector3(spawnAnchor[0], spawnAnchor[1], spawnAnchor[2]),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [spawnAnchor[0], spawnAnchor[1], spawnAnchor[2]]
   );
 
   const configs = useMemo(
     () => createButterflyConfigs(count, bounds),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [count, device]
   );
 
@@ -727,15 +726,15 @@ export default function DecorativeButterflies({
           runtime.phaseElapsed = 0;
         }, runtime.config.flyAwayDelay * 1000);
 
-        (runtime as any)._flyAwayTimer = innerTimer;
+        runtime.flyAwayTimer = innerTimer;
       });
     }, flyAwayAfterMs);
 
     return () => {
       clearTimeout(outerTimer);
       allRuntimes.current.forEach((runtime) => {
-        if ((runtime as any)._flyAwayTimer !== undefined) {
-          clearTimeout((runtime as any)._flyAwayTimer);
+        if (runtime.flyAwayTimer !== undefined) {
+          clearTimeout(runtime.flyAwayTimer);
         }
       });
     };

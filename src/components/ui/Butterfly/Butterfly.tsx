@@ -5,6 +5,7 @@ import { Html } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 
 import * as THREE from "three";
+import { OrbitControls } from "three-stdlib";
 
 import "./butterfly.scss";
 
@@ -19,7 +20,7 @@ import { MOVING_DIRECTION, MovingDirection } from "../../../types/app";
 import { WINDOW_STATE } from "../../../types/app";
 
 type ButterflyProps = {
-  controlsRef?: React.RefObject<any>;
+  controlsRef?: React.RefObject<OrbitControls | null>;
 };
 
 export function Wing({ style }: { style?: React.CSSProperties }) {
@@ -46,7 +47,7 @@ export default function Butterfly({ controlsRef }: ButterflyProps) {
 
   const { camera } = useThree();
   const { animateToPosition, getCameraRelativePosition } = useCameraAnimation(
-    controlsRef as React.RefObject<any>
+    controlsRef ?? { current: null }
   );
   const [lookingDirection, setLookingDirection] = useState<MovingDirection>(
     MOVING_DIRECTION.RIGHT
