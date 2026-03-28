@@ -3,8 +3,8 @@ import { useEffect } from "react";
 import { OrbitControls } from "@react-three/drei";
 
 import { BROWSER_MODE } from "../../../domains/browser/types";
+import { useCameraAnimation } from "../../../domains/camera";
 import { SCENE_ANIMATION_POSITIONS } from "../../../domains/camera/config/presets";
-import useCameraAnimation from "../../../domains/camera/hooks/useCameraAnimation";
 import useDynamicFov from "../../../hooks/animation/useDynamicFov";
 import { useAppContext } from "../../../shared/contexts/AppContext";
 
