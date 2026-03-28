@@ -9,17 +9,15 @@ import { OrbitControls } from "three-stdlib";
 
 import "./butterfly.scss";
 
-import {
-  CAMERA_ANIMATION_PRESETS,
-  SCENE_ANIMATION_POSITIONS,
-  SCENE_CONFIG,
-} from "../../../config/3d";
-import { WINDOW_STATE } from "../../../domains/browser/types";
+import { BROWSER_MODE } from "../../../domains/browser/types";
+import { SCENE_ANIMATION_POSITIONS } from "../../../domains/camera/config/presets";
+import { CAMERA_ANIMATION_PRESETS } from "../../../domains/camera/config/presets";
+import useCameraAnimation from "../../../domains/camera/hooks/useCameraAnimation";
 import {
   MOVING_DIRECTION,
   MovingDirection,
 } from "../../../domains/camera/types";
-import useCameraAnimation from "../../../hooks/animation/useCameraAnimation";
+import { SCENE_CONFIG } from "../../../domains/scene/config/scene";
 import { useAppContext } from "../../../shared/contexts/AppContext";
 
 type ButterflyProps = {
@@ -46,7 +44,7 @@ function Sparkles({ count = 6 }: { count?: number }) {
 }
 
 export default function Butterfly({ controlsRef }: ButterflyProps) {
-  const { windowState, setWindowState, runIntro } = useAppContext();
+  const { browserMode, setBrowserMode, runIntro } = useAppContext();
 
   const { camera } = useThree();
   const { animateToPosition, getCameraRelativePosition } = useCameraAnimation(
@@ -59,7 +57,7 @@ export default function Butterfly({ controlsRef }: ButterflyProps) {
   const position = SCENE_CONFIG.butterflyPos;
   const clickDistanceThreshold = SCENE_CONFIG.clickDistanceThreshold;
 
-  const paused = windowState !== WINDOW_STATE.CLOSED;
+  const paused = browserMode !== BROWSER_MODE.CLOSED;
 
   const htmlPosition = useMemo(
     () => new THREE.Vector3(...position),
@@ -95,11 +93,11 @@ export default function Butterfly({ controlsRef }: ButterflyProps) {
         ease: CAMERA_ANIMATION_PRESETS.smoothArc.ease,
         arcHeight: CAMERA_ANIMATION_PRESETS.smoothArc.arcHeight,
         onComplete: () => {
-          setWindowState(WINDOW_STATE.OPEN);
+          setBrowserMode(BROWSER_MODE.OPEN);
         },
       });
     } else {
-      setWindowState(WINDOW_STATE.OPEN);
+      setBrowserMode(BROWSER_MODE.OPEN);
     }
   }
 

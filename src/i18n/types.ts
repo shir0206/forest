@@ -1,8 +1,8 @@
-export type Language = "en" | "he";
+export type LanguageType = "en" | "he";
 
 export const LANGUAGE = {
-  EN: "en" as Language,
-  HE: "he" as Language,
+  EN: "en" as LanguageType,
+  HE: "he" as LanguageType,
 } as const;
 
 export interface TextStructure {

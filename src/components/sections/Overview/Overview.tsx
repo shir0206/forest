@@ -3,9 +3,9 @@ import React from "react";
 import "./overview.scss";
 
 import { ReactComponent as Branch } from "../../../assets/images/branch.svg";
+import { SCREEN_IDS } from "../../../domains/browser/types";
 import { useTranslation } from "../../../hooks/i18n/useTranslation";
 import { useScrollNavigation } from "../../../hooks/navigation/useScrollNavigation";
-import { SCREEN_IDS } from "../../../types/app";
 
 interface OverviewProps {
   containerRef?: React.RefObject<HTMLDivElement | null>;

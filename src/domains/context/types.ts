@@ -1,26 +1,21 @@
-import { Language } from "../../i18n/types";
-
-import { WindowState } from "../browser/types";
-
-export type DeviceType = "mobile" | "tablet" | "desktop";
-
-export const DEVICE_TYPE = {
-  MOBILE: "mobile" as DeviceType,
-  TABLET: "tablet" as DeviceType,
-  DESKTOP: "desktop" as DeviceType,
-} as const;
+import { LanguageType } from "../../i18n/types";
+import { BrowserModeType, ScreenIdType } from "../browser/types";
+import { DeviceType } from "../device";
 
 export interface AppState {
-  windowState: WindowState;
-  language: Language;
+  browserMode: BrowserModeType;
+  language: LanguageType;
   device: DeviceType;
 }
 
 export interface AppContextType extends AppState {
-  language: Language;
-  setWindowState: (windowState: WindowState) => void;
-  setLanguage: (language: Language) => void;
+  language: LanguageType;
+  setBrowserMode: (browserMode: BrowserModeType) => void;
+  setLanguage: (language: LanguageType) => void;
   setDevice: (device: DeviceType) => void;
   runIntro: boolean;
   setRunIntro: (runIntro: boolean) => void;
+  visibleScreenIds: Set<ScreenIdType>;
+  setVisibleScreenIds: (screens: Set<ScreenIdType>) => void;
+  clearVisible: () => void;
 }

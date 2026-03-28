@@ -1,7 +1,7 @@
 import { getText } from "../../i18n";
+import type { TextStructure } from "../../i18n/types";
+import { LANGUAGE } from "../../i18n/types";
 import { useEnhancedAppContext } from "../../shared/contexts/AppContext";
-import { LANGUAGE } from "../../types/app";
-import type { TextStructure } from "../../types/translations";
 
 const translations: Record<string, TextStructure> = {
   en: getText("en"),

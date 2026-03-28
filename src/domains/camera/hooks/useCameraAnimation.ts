@@ -5,7 +5,7 @@ import gsap from "gsap";
 import * as THREE from "three";
 import { OrbitControls } from "three-stdlib";
 
-import { CAMERA_ANIMATION_PRESETS } from "../../domains/camera/config/presets";
+import { CAMERA_ANIMATION_PRESETS } from "../config/presets";
 
 export type CameraAnimationConfig = {
   targetPosition: THREE.Vector3 | [number, number, number];

@@ -2,14 +2,14 @@ import React, { useRef } from "react";
 
 import "./navigation.scss";
 
+import { SCREEN_IDS, ScreenIdType } from "../../../domains/browser/types";
 import { useTranslation } from "../../../hooks/i18n/useTranslation";
 import { useScrollNavigation } from "../../../hooks/navigation/useScrollNavigation";
 import LanguageSwitcher from "../../../shared/components/LanguageSwitcher/LanguageSwitcher";
 import { useAppContext } from "../../../shared/contexts/AppContext";
-import { SCREEN_IDS } from "../../../types/app";
 
 interface NavigationItem {
-  id: string;
+  id: ScreenIdType;
   label: string;
 }
 
@@ -31,7 +31,7 @@ const Navigation: React.FC<NavigationProps> = ({ containerRef }) => {
   const navigationItems: NavigationItem[] = [
     { id: SCREEN_IDS.OVERVIEW, label: t.navigation.overview },
     { id: SCREEN_IDS.ABOUT, label: t.navigation.about },
-    { id: SCREEN_IDS.SEVICE, label: t.navigation.service },
+    { id: SCREEN_IDS.SERVICE, label: t.navigation.service },
     { id: SCREEN_IDS.CONTACT, label: t.navigation.contact },
   ];
 
@@ -42,8 +42,8 @@ const Navigation: React.FC<NavigationProps> = ({ containerRef }) => {
     containerRef,
   });
 
-  const handleSectionClick = (sectionId: string) => {
-    scrollToSection(sectionId);
+  const handleSectionClick = (screenId: ScreenIdType) => {
+    scrollToSection(screenId);
   };
 
   return (

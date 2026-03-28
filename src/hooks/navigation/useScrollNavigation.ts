@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { SCREEN_IDS } from "../../types/app";
+import { SCREEN_IDS, ScreenIdType } from "../../domains/browser/types";
 
 export interface UseScrollNavigationProps {
   containerRef: React.RefObject<HTMLElement | null>;
@@ -10,7 +10,7 @@ export interface UseScrollNavigationProps {
 export interface UseScrollNavigationReturn {
   activeSection: string;
   isScrolled: boolean;
-  scrollToSection: (sectionId: string) => void;
+  scrollToSection: (sectionId: ScreenIdType) => void;
 }
 
 export const useScrollNavigation = ({
@@ -18,7 +18,7 @@ export const useScrollNavigation = ({
   sectionIds = [
     SCREEN_IDS.OVERVIEW,
     SCREEN_IDS.ABOUT,
-    SCREEN_IDS.SEVICE,
+    SCREEN_IDS.SERVICE,
     SCREEN_IDS.CONTACT,
   ],
 }: UseScrollNavigationProps): UseScrollNavigationReturn => {

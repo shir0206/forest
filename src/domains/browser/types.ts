@@ -1,16 +1,23 @@
-export type WindowState = "open" | "minimized" | "maximized" | "closed";
+export const BROWSER_MODE = {
+  OPEN: "open",
+  MINIMIZED: "minimized",
+  MAXIMIZED: "maximized",
+  CLOSED: "closed",
+} as const;
 
-export const WINDOW_STATE = {
-  OPEN: "open" as WindowState,
-  MINIMIZED: "minimized" as WindowState,
-  MAXIMIZED: "maximized" as WindowState,
-  CLOSED: "closed" as WindowState,
-};
+export type BrowserModeType = (typeof BROWSER_MODE)[keyof typeof BROWSER_MODE];
 
-export type ScreenId = "overview" | "aboutMe" | "service" | "contact";
+export const SCREEN_IDS = {
+  OVERVIEW: "overview",
+  ABOUT: "about",
+  SERVICE: "service",
+  CONTACT: "contact",
+} as const;
+
+export type ScreenIdType = (typeof SCREEN_IDS)[keyof typeof SCREEN_IDS];
 
 export interface ScreenConfig {
-  id: ScreenId;
+  id: ScreenIdType;
   title: string;
   component: React.ComponentType;
 }

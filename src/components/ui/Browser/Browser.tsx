@@ -5,12 +5,12 @@ import * as THREE from "three";
 
 import "./browser.scss";
 
-import { SCENE_CONFIG } from "../../../config/3d";
-import { SCREENS } from "../../../config/app";
-import { useScreenVisibility } from "../../../hooks/navigation/useScreenVisibility";
-import { useHtmlReady } from "../../../hooks/ui/useHtmlReady";
+import { SCREENS } from "../../../domains/browser/config/screens";
+import { useHtmlReady } from "../../../domains/browser/hooks/useHtmlReady";
+import { useScreenVisibility } from "../../../domains/navigation/hooks/useScreenVisibility";
+import { SCENE_CONFIG } from "../../../domains/scene/config/scene";
+import { LANGUAGE } from "../../../i18n/types";
 import { useAppContext } from "../../../shared/contexts/AppContext";
-import { LANGUAGE } from "../../../types/app.ts";
 import { ContextBridge } from "../../ContextBridge";
 import Navigation from "../Navigation/Navigation";
 import WebsiteSection from "../WebsiteScreen/WebsiteScreen.tsx";
@@ -24,7 +24,7 @@ export default function Browser() {
     console.error("Browser: AppContext not found");
   }
 
-  const { windowState, visibleScreens, language, runIntro } = appContext;
+  const { browserMode, visibleScreenIds, language, runIntro } = appContext;
 
   const { ref: contentRef, ready } = useHtmlReady<HTMLDivElement>();
   const { setScreenRef } = useScreenVisibility(contentRef, ready);
@@ -44,7 +44,7 @@ export default function Browser() {
     >
       <ContextBridge contextValue={appContext}>
         <div
-          className={`browser-container ${windowState}`}
+          className={`browser-container ${browserMode}`}
           onClick={(e) => e.stopPropagation()}
         >
           <BrowserHeader />
@@ -62,7 +62,7 @@ export default function Browser() {
                   <WebsiteSection
                     key={id}
                     id={id}
-                    isVisible={visibleScreens.has(id)}
+                    isVisible={visibleScreenIds.has(id)}
                     Screen={Screen}
                     setRef={setScreenRef(id)}
                     containerRef={contentRef}

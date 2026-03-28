@@ -3,12 +3,12 @@ import React, { useEffect, useRef, useState } from "react";
 import "./languageSwitcher.scss";
 
 import { useTranslation } from "../../../hooks/i18n/useTranslation";
+import { LANGUAGE, LanguageType } from "../../../i18n/types";
 import { useAppContext } from "../../../shared/contexts/AppContext";
-import { LANGUAGE, Language } from "../../../types/app";
 import { Icon } from "../Icon/Icon";
 
 interface LanguageSwitcherProps {
-  onLanguageChange?: (langCode: Language) => void;
+  onLanguageChange?: (langCode: LanguageType) => void;
 }
 
 const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
@@ -64,7 +64,7 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
     setIsOpen(!isOpen);
   };
 
-  const selectLanguage = (lang: Language) => {
+  const selectLanguage = (lang: LanguageType) => {
     setLanguage(lang);
     setIsOpen(false);
     if (onLanguageChange) {
@@ -79,7 +79,10 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
     }
   };
 
-  const handleOptionKeyDown = (event: React.KeyboardEvent, lang: Language) => {
+  const handleOptionKeyDown = (
+    event: React.KeyboardEvent,
+    lang: LanguageType
+  ) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       selectLanguage(lang);

@@ -2,9 +2,9 @@
 import { useEffect } from "react";
 import { OrbitControls } from "@react-three/drei";
 
-import { SCENE_ANIMATION_POSITIONS } from "../../../config/3d";
-import { WINDOW_STATE } from "../../../domains/browser/types";
-import useCameraAnimation from "../../../hooks/animation/useCameraAnimation";
+import { BROWSER_MODE } from "../../../domains/browser/types";
+import { SCENE_ANIMATION_POSITIONS } from "../../../domains/camera/config/presets";
+import useCameraAnimation from "../../../domains/camera/hooks/useCameraAnimation";
 import useDynamicFov from "../../../hooks/animation/useDynamicFov";
 import { useAppContext } from "../../../shared/contexts/AppContext";
 
@@ -13,7 +13,7 @@ type CameraControlsProps = {
 };
 
 export default function CameraControls({ controlsRef }: CameraControlsProps) {
-  const { windowState, runIntro, setRunIntro } = useAppContext();
+  const { browserMode, runIntro, setRunIntro } = useAppContext();
 
   useDynamicFov(controlsRef);
   const { animateSequence } = useCameraAnimation(controlsRef);
@@ -39,10 +39,10 @@ export default function CameraControls({ controlsRef }: CameraControlsProps) {
       rotateSpeed={0.8}
       minDistance={1}
       maxDistance={20}
-      enabled={windowState === WINDOW_STATE.CLOSED}
-      enableRotate={windowState === WINDOW_STATE.CLOSED}
-      enableZoom={windowState === WINDOW_STATE.CLOSED}
-      enablePan={windowState === WINDOW_STATE.CLOSED}
+      enabled={browserMode === BROWSER_MODE.CLOSED}
+      enableRotate={browserMode === BROWSER_MODE.CLOSED}
+      enableZoom={browserMode === BROWSER_MODE.CLOSED}
+      enablePan={browserMode === BROWSER_MODE.CLOSED}
     />
   );
 }

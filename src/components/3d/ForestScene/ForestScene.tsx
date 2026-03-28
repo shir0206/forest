@@ -3,14 +3,12 @@ import React, { Suspense, useCallback, useRef } from "react";
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 
-import {
-  DEVICE_CONFIG,
-  SCENE_ANIMATION_POSITIONS,
-  SCENE_CONFIG,
-} from "../../../config/3d";
+import { BROWSER_MODE, BrowserModeType } from "../../../domains/browser/types";
+import { SCENE_ANIMATION_POSITIONS } from "../../../domains/camera/config/presets";
+import { DEVICE_CONFIG } from "../../../domains/device/config";
+import { SCENE_CONFIG } from "../../../domains/scene/config/scene";
 import Loader from "../../../shared/components/Loader/Loader.tsx";
 import { useAppContext } from "../../../shared/contexts/AppContext";
-import { DeviceType, WINDOW_STATE } from "../../../types/app";
 import Browser from "../../ui/Browser/Browser.tsx";
 import Butterfly from "../../ui/Butterfly/Butterfly.tsx";
 import CameraControls from "../CameraControls/CameraControls.tsx";
@@ -22,15 +20,13 @@ import DecorativeButterflies from "./Decorativebutterflies.tsx";
  * Handles canvas click events to close the browser window
  */
 const createCanvasClickHandler = (
-  windowState: (typeof WINDOW_STATE)[keyof typeof WINDOW_STATE],
-  setWindowState: (
-    state: (typeof WINDOW_STATE)[keyof typeof WINDOW_STATE]
-  ) => void
+  browserMode: BrowserModeType,
+  setBrowserMode: (state: BrowserModeType) => void
 ) => {
   return (event: React.MouseEvent) => {
     event.stopPropagation();
-    if (windowState !== WINDOW_STATE.CLOSED) {
-      setWindowState(WINDOW_STATE.CLOSED);
+    if (browserMode !== BROWSER_MODE.CLOSED) {
+      setBrowserMode(BROWSER_MODE.CLOSED);
     }
   };
 };
@@ -59,15 +55,15 @@ export default function ForestScene() {
     return null;
   }
 
-  const { runIntro, windowState, setWindowState, device } = appContext;
+  const { runIntro, browserMode, setBrowserMode, device } = appContext;
 
   const handleCanvasClick = useCallback(
-    createCanvasClickHandler(windowState, setWindowState),
-    [windowState, setWindowState]
+    createCanvasClickHandler(browserMode, setBrowserMode),
+    [browserMode, setBrowserMode]
   );
 
   // Get butterfly count based on device type
-  const butterflyCount = DEVICE_CONFIG.butterflyCount[device as DeviceType];
+  const butterflyCount = DEVICE_CONFIG.butterflyCount[device];
 
   return (
     <div className="w-full h-openInfoscreen bg-black">
@@ -83,7 +79,7 @@ export default function ForestScene() {
         <Suspense fallback={<Loader />}>
           <Background />
           <CameraControls controlsRef={controlsRef} />
-          <CinematicEffects isAboutOpen={windowState !== "closed"} />
+          <CinematicEffects isAboutOpen={browserMode !== BROWSER_MODE.CLOSED} />
           {runIntro && (
             <DecorativeButterflies
               count={butterflyCount}

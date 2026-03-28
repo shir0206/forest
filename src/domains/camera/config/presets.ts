@@ -1,27 +1,4 @@
-import { PositionThreeD } from "../shared/types/primitives";
-
-// Device configuration
-export const DEVICE_CONFIG = {
-  // Configurable device type strings
-  DEVICE_TYPES: {
-    MOBILE: "MOBILE",
-    DESKTOP: "DESKTOP",
-  },
-
-  // Butterfly counts mapped to device types
-  butterflyCount: {
-    MOBILE: 5,
-    DESKTOP: 8,
-  },
-} as const;
-
-// Device detection utility
-export function detectDevice(): "MOBILE" | "DESKTOP" {
-  return /iPhone|iPad|Android/i.test(navigator.userAgent) ||
-    window.innerWidth < 768
-    ? DEVICE_CONFIG.DEVICE_TYPES.MOBILE
-    : DEVICE_CONFIG.DEVICE_TYPES.DESKTOP;
-}
+import { PositionThreeD } from "../../../shared/types/primitives";
 
 // Camera animation positions for the scene tour
 export const SCENE_ANIMATION_POSITIONS: PositionThreeD[] = [
@@ -32,17 +9,6 @@ export const SCENE_ANIMATION_POSITIONS: PositionThreeD[] = [
   [0.9077, 0.2216, 0.3564], // vally
   [0.3057, 0.1594, 0.9387], // workspace
 ] as const;
-
-// 3D Scene Configuration
-export const SCENE_CONFIG = {
-  backgroundFile: "hdri/background.webp",
-  initCameraPos: SCENE_ANIMATION_POSITIONS[0],
-  butterflyPos: [-0.17, -0.08, -0.52] as PositionThreeD,
-  animationDuration: 1000,
-  cameraTransitionDuration: 1000,
-  cameraFov: 60,
-  clickDistanceThreshold: 0.5,
-} as const;
 
 export const CAMERA_ANIMATION_PRESETS = {
   /**

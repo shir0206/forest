@@ -1,28 +1,17 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
-import { SCREENS } from "../../domains/browser/config/screens";
+import { SCREEN_IDS, ScreenIdType } from "@/domains/browser/types";
 
-/**
- * Configuration interface for screen visibility detection
- */
 export interface ScreenVisibilityConfig {
-  /** Threshold for considering a screen visible (0-1) */
   threshold: number;
-  /** Whether to use passive scroll listeners */
   passive: boolean;
 }
 
-/**
- * Default configuration for screen visibility
- */
 const DEFAULT_CONFIG: ScreenVisibilityConfig = {
   threshold: 0.3,
   passive: true,
 };
 
-/**
- * Calculates the visibility ratio of an element within a container
- */
 const calculateVisibilityRatio = (
   elementRect: DOMRect,
   containerRect: DOMRect
@@ -34,9 +23,6 @@ const calculateVisibilityRatio = (
   return visibleHeight / elementRect.height;
 };
 
-/**
- * Checks if an element is within the container bounds
- */
 const isElementInContainer = (
   elementRect: DOMRect,
   containerRect: DOMRect
@@ -47,13 +33,10 @@ const isElementInContainer = (
   );
 };
 
-/**
- * Handles scroll events to update visible screens
- */
 const createScrollHandler = (
   container: HTMLDivElement,
   screenRefs: React.MutableRefObject<Map<string, HTMLDivElement>>,
-  markVisible: (id: string) => void,
+  markVisible: (id: ScreenIdType) => void,
   threshold: number
 ) => {
   return () => {
@@ -67,16 +50,13 @@ const createScrollHandler = (
         const ratio = calculateVisibilityRatio(rect, containerRect);
 
         if (ratio >= threshold) {
-          markVisible(id);
+          markVisible(id as ScreenIdType);
         }
       }
     });
   };
 };
 
-/**
- * Hook for managing screen visibility detection
- */
 export function useScreenVisibility(
   contentRef: React.RefObject<HTMLDivElement | null>,
   ready: boolean,
@@ -84,13 +64,13 @@ export function useScreenVisibility(
 ) {
   const mergedConfig = { ...DEFAULT_CONFIG, ...config };
 
-  const [visibleScreens, setVisibleScreens] = useState<Set<string>>(
-    () => new Set([SCREENS[0].id])
+  const [visibleScreens, setVisibleScreens] = useState<Set<ScreenIdType>>(
+    () => new Set([SCREEN_IDS.OVERVIEW])
   );
 
   const screenRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
-  const markVisible = useCallback((id: string) => {
+  const markVisible = useCallback((id: ScreenIdType) => {
     setVisibleScreens((prev) => {
       if (prev.has(id)) return prev;
       return new Set(prev).add(id);
@@ -127,7 +107,7 @@ export function useScreenVisibility(
       passive: mergedConfig.passive,
     });
 
-    handleScroll(); // Initial check
+    handleScroll();
 
     return () => container.removeEventListener("scroll", handleScroll);
   }, [ready, markVisible, mergedConfig, contentRef]);

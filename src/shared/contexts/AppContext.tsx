@@ -6,16 +6,14 @@ import React, {
   useState,
 } from "react";
 
-import { detectDevice } from "../../config/3d";
 import {
-  AppContextType,
-  DeviceType,
-  LANGUAGE,
-  Language,
-  ScreenId,
-  WINDOW_STATE,
-  WindowState,
-} from "../../types/app";
+  BROWSER_MODE,
+  BrowserModeType,
+  ScreenIdType,
+} from "../../domains/browser/types";
+import { AppContextType } from "../../domains/context/types";
+import { detectDevice, DeviceType } from "../../domains/device";
+import { LANGUAGE, LanguageType } from "../../i18n/types";
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
 
@@ -47,37 +45,37 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [runIntro, setRunIntroState] = useState<boolean>(true);
-  const [windowState, setWindowStateState] = useState<WindowState>(
-    WINDOW_STATE.CLOSED
+  const [browserMode, setBrowserModeState] = useState<BrowserModeType>(
+    BROWSER_MODE.CLOSED
   );
-  const [visibleScreens, setVisibleScreensState] = useState<Set<ScreenId>>(
-    new Set()
-  );
-  const [language, setLanguageState] = useState<Language>(LANGUAGE.EN);
-  const [device, setDeviceState] = useState<DeviceType>(detectDevice);
+  const [visibleScreenIds, setVisibleScreenIdsState] = useState<
+    Set<ScreenIdType>
+  >(new Set());
+  const [language, setLanguageState] = useState<LanguageType>(LANGUAGE.EN);
+  const [device, setDeviceState] = useState<DeviceType>(detectDevice());
 
   const setRunIntro = useCallback((run: boolean) => {
     setRunIntroState(run);
   }, []);
 
-  const setWindowState = useCallback(
-    (state: WindowState | ((prev: WindowState) => WindowState)) => {
-      setWindowStateState(
-        typeof state === "function" ? state(windowState) : state
+  const setBrowserMode = useCallback(
+    (state: BrowserModeType | ((prev: BrowserModeType) => BrowserModeType)) => {
+      setBrowserModeState(
+        typeof state === "function" ? state(browserMode) : state
       );
     },
-    [windowState]
+    [browserMode]
   );
 
-  const setVisibleScreens = useCallback((screens: Set<ScreenId>) => {
-    setVisibleScreensState(screens);
+  const setVisibleScreenIds = useCallback((screens: Set<ScreenIdType>) => {
+    setVisibleScreenIdsState(screens);
   }, []);
 
   const clearVisible = useCallback(() => {
-    setVisibleScreensState(new Set());
+    setVisibleScreenIdsState(new Set());
   }, []);
 
-  const setLanguage = useCallback((lang: Language) => {
+  const setLanguage = useCallback((lang: LanguageType) => {
     setLanguageState(lang);
   }, []);
 
@@ -88,26 +86,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   const contextValue = useMemo(
     () => ({
       runIntro,
-      windowState,
-      visibleScreens,
+      browserMode,
+      visibleScreenIds,
       language,
       device,
       setRunIntro,
-      setWindowState,
-      setVisibleScreens,
+      setBrowserMode,
+      setVisibleScreenIds,
       clearVisible,
       setLanguage,
       setDevice,
     }),
     [
       runIntro,
-      windowState,
-      visibleScreens,
+      browserMode,
+      visibleScreenIds,
       language,
       device,
       setRunIntro,
-      setWindowState,
-      setVisibleScreens,
+      setBrowserMode,
+      setVisibleScreenIds,
       clearVisible,
       setLanguage,
       setDevice,

@@ -2,10 +2,10 @@ import React, { useCallback } from "react";
 
 import "./browser.scss";
 
+import { BROWSER_MODE } from "../../../domains/browser/types";
 import { useTranslation } from "../../../hooks/i18n/useTranslation";
 import { Icon } from "../../../shared/components/Icon/Icon";
 import { useEnhancedAppContext } from "../../../shared/contexts/AppContext";
-import { WINDOW_STATE } from "../../../types/app";
 
 export const BrowserHeader: React.FC = () => {
   const appContext = useEnhancedAppContext();
@@ -15,28 +15,28 @@ export const BrowserHeader: React.FC = () => {
   }
   //@ts-ignore
 
-  const { windowState, setWindowState, clearVisible } = appContext;
+  const { windowState, setBrowserMode, clearVisible } = appContext;
   const { t } = useTranslation();
   const handleClose = useCallback(() => {
     clearVisible();
-    setWindowState(WINDOW_STATE.CLOSED);
-  }, [clearVisible, setWindowState]);
+    setBrowserMode(BROWSER_MODE.CLOSED);
+  }, [clearVisible, setBrowserMode]);
 
   const handleMinimize = useCallback(() => {
-    setWindowState(
-      windowState === WINDOW_STATE.MINIMIZED
-        ? WINDOW_STATE.OPEN
-        : WINDOW_STATE.MINIMIZED
+    setBrowserMode(
+      windowState === BROWSER_MODE.MINIMIZED
+        ? BROWSER_MODE.OPEN
+        : BROWSER_MODE.MINIMIZED
     );
-  }, [setWindowState, windowState]);
+  }, [setBrowserMode, windowState]);
 
   const handleMaximize = useCallback(() => {
-    setWindowState(
-      windowState === WINDOW_STATE.MAXIMIZED
-        ? WINDOW_STATE.OPEN
-        : WINDOW_STATE.MAXIMIZED
+    setBrowserMode(
+      windowState === BROWSER_MODE.MAXIMIZED
+        ? BROWSER_MODE.OPEN
+        : BROWSER_MODE.MAXIMIZED
     );
-  }, [setWindowState, windowState]);
+  }, [setBrowserMode, windowState]);
 
   return (
     <div className="browser-header">

@@ -5,7 +5,6 @@ import { useFrame } from "@react-three/fiber";
 
 import * as THREE from "three";
 
-import { DEVICE_TYPE } from "../../../domains/context/types";
 import { useAppContext } from "../../../shared/contexts/AppContext";
 import ButterflyWebGL from "./butterfly/ButterflyWebGL";
 import { ANIMATION_TIME_SCALE } from "./butterfly/constants";
@@ -669,11 +668,13 @@ export default function DecorativeButterflies({
   leadSteps = 2,
 }: DecorativeButterfliesProps) {
   const appContext = useAppContext();
-  if (!appContext)
+  if (!appContext) {
     console.error("Decorative Butterflies: AppContext not found");
+    return null;
+  }
   const { device } = appContext;
 
-  const bounds = BOUNDS[device === DEVICE_TYPE.MOBILE ? "MOBILE" : "DESKTOP"];
+  const bounds = BOUNDS[device.toUpperCase() as keyof typeof BOUNDS];
 
   const spawnAnchorVec = useMemo(
     () => new THREE.Vector3(spawnAnchor[0], spawnAnchor[1], spawnAnchor[2]),
