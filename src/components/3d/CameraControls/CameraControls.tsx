@@ -5,7 +5,7 @@ import { OrbitControls } from "@react-three/drei";
 import { BROWSER_MODE } from "../../../domains/browser/types";
 import { SCENE_ANIMATION_POSITIONS } from "../../../domains/camera/config/presets";
 import { useCameraAnimation } from "../../../domains/camera/hooks/useCameraAnimation";
-import useDynamicFov from "../../../hooks/animation/useDynamicFov";
+import useDynamicFov from "../../../domains/camera/hooks/useDynamicFov";
 import { useAppContext } from "../../../shared/contexts/AppContext";
 
 type CameraControlsProps = {

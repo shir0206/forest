@@ -3,7 +3,7 @@ import React, { useCallback } from "react";
 import "./browser.scss";
 
 import { BROWSER_MODE } from "../../../domains/browser/types";
-import { useTranslation } from "../../../hooks/i18n/useTranslation";
+import { useTranslation } from "../../../domains/context/hooks/useTranslation";
 import { Icon } from "../../../shared/components/Icon/Icon";
 import { useEnhancedAppContext } from "../../../shared/contexts/AppContext";
 

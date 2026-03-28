@@ -1,11 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 
 import "./languageSwitcher.scss";
 
-import { useTranslation } from "../../../hooks/i18n/useTranslation";
+import { useTranslation } from "../../../domains/context/hooks/useTranslation";
 import { LANGUAGE, LanguageType } from "../../../i18n/types";
 import { useAppContext } from "../../../shared/contexts/AppContext";
 import { Icon } from "../Icon/Icon";
+import { useLanguageDropdown } from "../../../domains/navigation/components/LanguageSwitcher/useLanguageDropdown";
 
 interface LanguageSwitcherProps {
   onLanguageChange?: (langCode: LanguageType) => void;
@@ -16,9 +17,6 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
 }) => {
   const { language } = useTranslation();
   const appContext = useAppContext();
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
 
   if (!appContext) {
     console.error("LanguageSwitcher: AppContext not found");
@@ -27,67 +25,22 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
 
   const { setLanguage } = appContext;
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node) &&
-        buttonRef.current &&
-        !buttonRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
+  const {
+    isOpen,
+    toggleDropdown,
+    selectLanguage,
+    dropdownRef,
+    buttonRef,
+    handleButtonKeyDown,
+    handleOptionKeyDown,
+  } = useLanguageDropdown({
+    onLanguageChange: (langCode: string) => {
+      setLanguage(langCode as LanguageType);
+      if (onLanguageChange) {
+        onLanguageChange(langCode as LanguageType);
       }
-    };
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-      return () =>
-        document.removeEventListener("mousedown", handleClickOutside);
-    }
-  }, [isOpen]);
-
-  // Handle keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && isOpen) {
-        setIsOpen(false);
-        buttonRef.current?.focus();
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen]);
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const selectLanguage = (lang: LanguageType) => {
-    setLanguage(lang);
-    setIsOpen(false);
-    if (onLanguageChange) {
-      onLanguageChange(lang);
-    }
-  };
-
-  const handleButtonKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      toggleDropdown();
-    }
-  };
-
-  const handleOptionKeyDown = (
-    event: React.KeyboardEvent,
-    lang: LanguageType
-  ) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      selectLanguage(lang);
-    }
-  };
+    },
+  });
 
   return (
     <div

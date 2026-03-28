@@ -4,7 +4,7 @@ import "./navigation.scss";
 
 import { SCREEN_IDS, ScreenIdType } from "../../../domains/browser/types";
 import { useScrollNavigation } from "../../../domains/navigation/hooks/useScrollNavigation";
-import { useTranslation } from "../../../hooks/i18n/useTranslation";
+import { useTranslation } from "../../../domains/context/hooks/useTranslation";
 import LanguageSwitcher from "../../../shared/components/LanguageSwitcher/LanguageSwitcher";
 import { useAppContext } from "../../../shared/contexts/AppContext";
 
