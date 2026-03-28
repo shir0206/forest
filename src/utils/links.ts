@@ -1,5 +1,5 @@
 import { CONTACT_CONFIG } from "../config/links";
-import type { TextStructure } from "../types/translations";
+import type { TextStructure } from "../i18n/types";
 
 /**
  * Configuration types for link generation

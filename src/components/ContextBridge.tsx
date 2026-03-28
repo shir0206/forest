@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 
+import { AppContextType } from "../domains/context/types";
 import { AppContext } from "../shared/contexts/AppContext";
-import { AppContextType } from "../types/app";
 
 interface ContextBridgeProps {
   children: React.ReactNode;

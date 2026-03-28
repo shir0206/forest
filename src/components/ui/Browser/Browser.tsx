@@ -63,7 +63,7 @@ export default function Browser() {
                     key={id}
                     id={id}
                     isVisible={visibleScreenIds.has(id)}
-                    Screen={Screen}
+                    Screen={{ id, title: id, component: Screen }}
                     setRef={setScreenRef(id)}
                     containerRef={contentRef}
                   />

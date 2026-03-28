@@ -1,6 +1,6 @@
 import React from "react";
 
-import { SectionComponent } from "../../../types/app";
+import { SectionComponent } from "../../../domains/sections/types";
 
 interface WebsiteSectionProps {
   id: string;
@@ -18,7 +18,7 @@ const WebsiteSection = ({
   containerRef,
 }: WebsiteSectionProps) => (
   <div ref={setRef} id={id}>
-    <Screen isVisible={isVisible} containerRef={containerRef} />
+    <Screen.component isVisible={isVisible} containerRef={containerRef} />
   </div>
 );
 
