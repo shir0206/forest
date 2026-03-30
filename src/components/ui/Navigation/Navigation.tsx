@@ -3,9 +3,9 @@ import React, { useRef } from "react";
 import "./navigation.scss";
 
 import { SCREEN_IDS, ScreenIdType } from "../../../domains/browser/types";
-import { useScrollNavigation } from "../../../domains/navigation/hooks/useScrollNavigation";
 import { useTranslation } from "../../../domains/context/hooks/useTranslation";
-import LanguageSwitcher from "../../../shared/components/LanguageSwitcher/LanguageSwitcher";
+import LanguageSwitcher from "../../../domains/navigation/components/LanguageSwitcher/LanguageSwitcher";
+import { useScrollNavigation } from "../../../domains/navigation/hooks/useScrollNavigation";
 import { useAppContext } from "../../../shared/contexts/AppContext";
 
 interface NavigationItem {

@@ -2,11 +2,11 @@ import React from "react";
 
 import "./languageSwitcher.scss";
 
-import { useTranslation } from "../../../domains/context/hooks/useTranslation";
-import { LANGUAGE, LanguageType } from "../../../i18n/types";
-import { useAppContext } from "../../../shared/contexts/AppContext";
-import { Icon } from "../Icon/Icon";
-import { useLanguageDropdown } from "../../../domains/navigation/components/LanguageSwitcher/useLanguageDropdown";
+import { LANGUAGE, LanguageType } from "../../../../i18n/types";
+import { Icon } from "../../../../shared/components/Icon/Icon";
+import { useAppContext } from "../../../../shared/contexts/AppContext";
+import { useTranslation } from "../../../context/hooks/useTranslation";
+import { useLanguageDropdown } from "./useLanguageDropdown";
 
 interface LanguageSwitcherProps {
   onLanguageChange?: (langCode: LanguageType) => void;
