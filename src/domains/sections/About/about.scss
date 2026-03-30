@@ -1,13 +1,14 @@
-.about-me-container {
+.about-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 60px 40px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", sans-serif;
   background-color: #fff;
 }
 
-.about-me-title {
+.about-title {
   font-size: 3.5rem;
   font-weight: 400;
   margin-bottom: 1rem;
@@ -16,7 +17,7 @@
   align-self: start;
 }
 
-.about-me-content {
+.about-content {
   display: flex;
   gap: 80px;
   align-items: flex-start;
@@ -61,7 +62,7 @@
   object-fit: cover;
 }
 
-.about-me-text {
+.about-text {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -83,7 +84,7 @@
 
 /* Responsive design */
 @media (max-width: 768px) {
-  .about-me-content {
+  .about-content {
     flex-direction: column;
     gap: 40px;
     align-items: center;
@@ -94,7 +95,7 @@
     height: 220px;
   }
 
-  .about-me-title {
+  .about-title {
     font-size: 3.5rem;
     text-align: center;
   }

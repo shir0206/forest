@@ -1,5 +1,5 @@
 import { LanguageType } from "../../i18n/types";
-import { BrowserModeType, ScreenIdType } from "../browser/types";
+import { BrowserModeType, SectionIdType } from "../browser/types";
 import { DeviceType } from "../device";
 
 export interface AppState {
@@ -15,7 +15,7 @@ export interface AppContextType extends AppState {
   setDevice: (device: DeviceType) => void;
   runIntro: boolean;
   setRunIntro: (runIntro: boolean) => void;
-  visibleScreenIds: Set<ScreenIdType>;
-  setVisibleScreenIds: (screens: Set<ScreenIdType>) => void;
+  visibleSectionIds: Set<SectionIdType>;
+  setVisibleSectionIds: (sections: Set<SectionIdType>) => void;
   clearVisible: () => void;
 }

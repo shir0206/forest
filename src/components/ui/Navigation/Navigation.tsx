@@ -2,14 +2,14 @@ import React, { useRef } from "react";
 
 import "./navigation.scss";
 
-import { SCREEN_IDS, ScreenIdType } from "../../../domains/browser/types";
+import { SECTION_IDS, SectionIdType } from "../../../domains/browser/types";
 import { useTranslation } from "../../../domains/context/hooks/useTranslation";
 import LanguageSwitcher from "../../../domains/navigation/components/LanguageSwitcher/LanguageSwitcher";
 import { useScrollNavigation } from "../../../domains/navigation/hooks/useScrollNavigation";
 import { useAppContext } from "../../../shared/contexts/AppContext";
 
 interface NavigationItem {
-  id: ScreenIdType;
+  id: SectionIdType;
   label: string;
 }
 
@@ -27,12 +27,12 @@ const Navigation: React.FC<NavigationProps> = ({ containerRef }) => {
     return null;
   }
 
-  // Navigation items based on screens
+  // Navigation items based on sections
   const navigationItems: NavigationItem[] = [
-    { id: SCREEN_IDS.OVERVIEW, label: t.navigation.overview },
-    { id: SCREEN_IDS.ABOUT, label: t.navigation.about },
-    { id: SCREEN_IDS.SERVICE, label: t.navigation.service },
-    { id: SCREEN_IDS.CONTACT, label: t.navigation.contact },
+    { id: SECTION_IDS.OVERVIEW, label: t.navigation.overview },
+    { id: SECTION_IDS.ABOUT, label: t.navigation.about },
+    { id: SECTION_IDS.SERVICE, label: t.navigation.service },
+    { id: SECTION_IDS.CONTACT, label: t.navigation.contact },
   ];
 
   const navbarRef = useRef<HTMLElement | null>(null);
@@ -42,8 +42,8 @@ const Navigation: React.FC<NavigationProps> = ({ containerRef }) => {
     containerRef,
   });
 
-  const handleSectionClick = (screenId: ScreenIdType) => {
-    scrollToSection(screenId);
+  const handleSectionClick = (sectionId: SectionIdType) => {
+    scrollToSection(sectionId);
   };
 
   return (

@@ -5,9 +5,9 @@ import * as THREE from "three";
 
 import "./browser.scss";
 
-import { SCREENS } from "../../../domains/browser/config/screens";
+import { SECTIONS } from "../../../domains/browser/config/screens";
 import { useHtmlReady } from "../../../domains/browser/hooks/useHtmlReady";
-import { useScreenVisibility } from "../../../domains/navigation/hooks/useScreenVisibility";
+import { useSectionVisibility } from "../../../domains/navigation/hooks/useScreenVisibility";
 import { SCENE_CONFIG } from "../../../domains/scene/config/scene";
 import { LANGUAGE } from "../../../i18n/types";
 import { useAppContext } from "../../../shared/contexts/AppContext";
@@ -24,10 +24,10 @@ export default function Browser() {
     console.error("Browser: AppContext not found");
   }
 
-  const { browserMode, visibleScreenIds, language, runIntro } = appContext;
+  const { browserMode, visibleSectionIds, language, runIntro } = appContext;
 
   const { ref: contentRef, ready } = useHtmlReady<HTMLDivElement>();
-  const { setScreenRef } = useScreenVisibility(contentRef, ready);
+  const { setSectionRef } = useSectionVisibility(contentRef, ready);
 
   const vector3Position = useMemo(
     () => new THREE.Vector3(...position),
@@ -58,13 +58,13 @@ export default function Browser() {
             {!runIntro && (
               <>
                 <Navigation containerRef={contentRef} />
-                {SCREENS.map(({ id, Screen }) => (
+                {SECTIONS.map(({ id, Screen }) => (
                   <WebsiteSection
                     key={id}
                     id={id}
-                    isVisible={visibleScreenIds.has(id)}
+                    isVisible={visibleSectionIds.has(id)}
                     Screen={{ id, title: id, component: Screen }}
-                    setRef={setScreenRef(id)}
+                    setRef={setSectionRef(id)}
                     containerRef={contentRef}
                   />
                 ))}

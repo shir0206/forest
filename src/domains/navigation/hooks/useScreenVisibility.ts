@@ -1,22 +1,22 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
-import { SCREENS } from "../../../domains/browser/config/screens";
-import { ScreenIdType } from "../../../domains/browser/types";
+import { SECTIONS } from "../../../domains/browser/config/screens";
+import { SectionIdType } from "../../../domains/browser/types";
 
 /**
- * Configuration interface for screen visibility detection
+ * Configuration interface for section visibility detection
  */
-export interface ScreenVisibilityConfig {
-  /** Threshold for considering a screen visible (0-1) */
+export interface SectionVisibilityConfig {
+  /** Threshold for considering a section visible (0-1) */
   threshold: number;
   /** Whether to use passive scroll listeners */
   passive: boolean;
 }
 
 /**
- * Default configuration for screen visibility
+ * Default configuration for section visibility
  */
-const DEFAULT_CONFIG: ScreenVisibilityConfig = {
+const DEFAULT_CONFIG: SectionVisibilityConfig = {
   threshold: 0.3,
   passive: true,
 };
@@ -49,18 +49,18 @@ const isElementInContainer = (
 };
 
 /**
- * Handles scroll events to update visible screens
+ * Handles scroll events to update visible sections
  */
 const createScrollHandler = (
   container: HTMLDivElement,
-  screenRefs: React.MutableRefObject<Map<string, HTMLDivElement>>,
-  markVisible: (id: ScreenIdType) => void,
+  sectionRefs: React.MutableRefObject<Map<string, HTMLDivElement>>,
+  markVisible: (id: SectionIdType) => void,
   threshold: number
 ) => {
   return () => {
     const containerRect = container.getBoundingClientRect();
 
-    screenRefs.current.forEach((el, id) => {
+    sectionRefs.current.forEach((el, id) => {
       const rect = el.getBoundingClientRect();
 
       // Only check visibility if element is within container bounds
@@ -68,7 +68,7 @@ const createScrollHandler = (
         const ratio = calculateVisibilityRatio(rect, containerRect);
 
         if (ratio >= threshold) {
-          markVisible(id as ScreenIdType);
+          markVisible(id as SectionIdType);
         }
       }
     });
@@ -76,38 +76,38 @@ const createScrollHandler = (
 };
 
 /**
- * Hook for managing screen visibility detection
+ * Hook for managing section visibility detection
  */
-export function useScreenVisibility(
+export function useSectionVisibility(
   contentRef: React.RefObject<HTMLDivElement | null>,
   ready: boolean,
-  config: Partial<ScreenVisibilityConfig> = {}
+  config: Partial<SectionVisibilityConfig> = {}
 ) {
   const mergedConfig = { ...DEFAULT_CONFIG, ...config };
 
-  const [visibleScreens, setVisibleScreens] = useState<Set<ScreenIdType>>(
-    () => new Set([SCREENS[0].id])
+  const [visibleSections, setVisibleSections] = useState<Set<SectionIdType>>(
+    () => new Set([SECTIONS[0].id])
   );
 
-  const screenRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const sectionRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
-  const markVisible = useCallback((id: ScreenIdType) => {
-    setVisibleScreens((prev) => {
+  const markVisible = useCallback((id: SectionIdType) => {
+    setVisibleSections((prev) => {
       if (prev.has(id)) return prev;
       return new Set(prev).add(id);
     });
   }, []);
 
   const clearVisible = useCallback(() => {
-    setVisibleScreens(new Set());
+    setVisibleSections(new Set());
   }, []);
 
-  const setScreenRef = useCallback(
+  const setSectionRef = useCallback(
     (id: string) => (el: HTMLDivElement | null) => {
       if (el) {
-        screenRefs.current.set(id, el);
+        sectionRefs.current.set(id, el);
       } else {
-        screenRefs.current.delete(id);
+        sectionRefs.current.delete(id);
       }
     },
     []
@@ -119,7 +119,7 @@ export function useScreenVisibility(
     const container = contentRef.current;
     const handleScroll = createScrollHandler(
       container,
-      screenRefs,
+      sectionRefs,
       markVisible,
       mergedConfig.threshold
     );
@@ -134,9 +134,9 @@ export function useScreenVisibility(
   }, [ready, markVisible, mergedConfig, contentRef]);
 
   return {
-    visibleScreens,
+    visibleSections,
     clearVisible,
-    setScreenRef,
+    setSectionRef,
     config: mergedConfig,
   };
 }

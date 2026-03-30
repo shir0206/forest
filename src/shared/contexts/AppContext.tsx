@@ -9,7 +9,7 @@ import React, {
 import {
   BROWSER_MODE,
   BrowserModeType,
-  ScreenIdType,
+  SectionIdType,
 } from "../../domains/browser/types";
 import { AppContextType } from "../../domains/context/types";
 import { detectDevice, DeviceType } from "../../domains/device";
@@ -48,8 +48,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   const [browserMode, setBrowserModeState] = useState<BrowserModeType>(
     BROWSER_MODE.CLOSED
   );
-  const [visibleScreenIds, setVisibleScreenIdsState] = useState<
-    Set<ScreenIdType>
+  const [visibleSectionIds, setVisibleSectionIdsState] = useState<
+    Set<SectionIdType>
   >(new Set());
   const [language, setLanguageState] = useState<LanguageType>(LANGUAGE.EN);
   const [device, setDeviceState] = useState<DeviceType>(detectDevice());
@@ -67,12 +67,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     [browserMode]
   );
 
-  const setVisibleScreenIds = useCallback((screens: Set<ScreenIdType>) => {
-    setVisibleScreenIdsState(screens);
+  const setVisibleSectionIds = useCallback((sections: Set<SectionIdType>) => {
+    setVisibleSectionIdsState(sections);
   }, []);
 
   const clearVisible = useCallback(() => {
-    setVisibleScreenIdsState(new Set());
+    setVisibleSectionIdsState(new Set());
   }, []);
 
   const setLanguage = useCallback((lang: LanguageType) => {
@@ -87,12 +87,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     () => ({
       runIntro,
       browserMode,
-      visibleScreenIds,
+      visibleSectionIds,
       language,
       device,
       setRunIntro,
       setBrowserMode,
-      setVisibleScreenIds,
+      setVisibleSectionIds,
       clearVisible,
       setLanguage,
       setDevice,
@@ -100,12 +100,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     [
       runIntro,
       browserMode,
-      visibleScreenIds,
+      visibleSectionIds,
       language,
       device,
       setRunIntro,
       setBrowserMode,
-      setVisibleScreenIds,
+      setVisibleSectionIds,
       clearVisible,
       setLanguage,
       setDevice,

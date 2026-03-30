@@ -3,9 +3,9 @@ import React from "react";
 import "./overview.scss";
 
 import { ReactComponent as Branch } from "../../../assets/images/branch.svg";
-import { SCREEN_IDS } from "../../../domains/browser/types";
-import { useScrollNavigation } from "../../../domains/navigation/hooks/useScrollNavigation";
+import { SECTION_IDS } from "../../../domains/browser/types";
 import { useTranslation } from "../../../domains/context/hooks/useTranslation";
+import { useScrollNavigation } from "../../../domains/navigation/hooks/useScrollNavigation";
 
 interface OverviewProps {
   containerRef?: React.RefObject<HTMLDivElement | null>;
@@ -53,7 +53,7 @@ const Overview: React.FC<OverviewProps> = ({ containerRef }) => {
       <p className="overview-cta">{t.overview.cta}</p>
       <button
         className="overview-link"
-        onClick={() => scrollToSection(SCREEN_IDS.CONTACT)}
+        onClick={() => scrollToSection(SECTION_IDS.CONTACT)}
       >
         {t.overview.link}
       </button>

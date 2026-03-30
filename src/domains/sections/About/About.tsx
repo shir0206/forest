@@ -1,30 +1,30 @@
 import React from "react";
 
-import "./aboutMe.scss";
+import "./about.scss";
 
 import { ReactComponent as Circle } from "../../../assets/images/circle.svg";
 import imagePath from "../../../assets/images/shirzabolotny.png?url";
 import { useTranslation } from "../../../domains/context/hooks/useTranslation";
 
-interface AboutMeProps {
+interface AboutProps {
   isVisible: boolean;
   containerRef?: React.RefObject<HTMLDivElement | null>;
 }
 
-const AboutMe: React.FC<AboutMeProps> = () => {
+const About: React.FC<AboutProps> = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="about-me-container">
-      <h2 className="about-me-title">{t.aboutMe.title}</h2>
+    <div className="about-container">
+      <h2 className="about-title">{t.aboutMe.title}</h2>
 
-      <div className="about-me-content">
+      <div className="about-content">
         <div className="profile-image-wrapper">
           <Circle className="background-circle" aria-hidden />
           <img src={imagePath} alt="Profile" className="profile-image" />
         </div>
 
-        <div className="about-me-text">
+        <div className="about-text">
           <p className="text-paragraph">{t.aboutMe.paragraph1}</p>
 
           <p className="text-paragraph">{t.aboutMe.paragraph2}</p>
@@ -36,4 +36,4 @@ const AboutMe: React.FC<AboutMeProps> = () => {
   );
 };
 
-export default AboutMe;
+export default About;
