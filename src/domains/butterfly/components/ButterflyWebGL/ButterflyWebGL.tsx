@@ -1,17 +1,15 @@
 "use client";
 
-import React, { useMemo, useRef } from "react";
+import React, { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 
 import * as THREE from "three";
 
-import { easeFlap, flapPingPong, interpolateFlightPath } from "./animation";
 import {
-  getLowerBorderGeometry,
-  getLowerInnerBorderGeometry,
-  getUpperBorderGeometry,
-  getUpperInnerBorderGeometry,
-} from "./borderGeometry";
+  easeFlap,
+  flapPingPong,
+  interpolateFlightPath,
+} from "../../core/animation";
 import {
   ANIMATION_TIME_SCALE,
   BODY_ROTY,
@@ -19,24 +17,15 @@ import {
   BUTTERFLY_BASE_SCALE,
   DEG2RAD,
   FLAP,
-  INNER_Z_OFFSET,
-  LOWER_BIT_ROTZ,
-  UPPER_BIT_ROTZ,
   WING_INNER_OPACITY,
-} from "./constants";
-import {
-  BODY_SCALE,
-  getBodyGeometry,
-  getLowerInnerGeometry,
-  getLowerOuterGeometry,
-  getUpperInnerGeometry,
-  getUpperOuterGeometry,
-} from "./geometry";
+} from "../../core/constants";
+import { BODY_SCALE, getBodyGeometry } from "../../core/geometry";
 import {
   getBodyMaterial,
   getBorderMaterial,
   getWingOuterMaterial,
-} from "./materials";
+} from "../../core/materials";
+import WingMesh from "./WingMesh";
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
@@ -67,12 +56,12 @@ const BASE_POSE_RX = -80 * DEG2RAD;
 const BASE_POSE_RY = 55 * DEG2RAD;
 const BASE_POSE_RZ = -10 * DEG2RAD;
 
-// ─── Component ────────────────────────────────────────────────────────────────
-
 // ─── Decorative base-pose — gentle tilt for billboard-oriented butterflies ───
 const DECORATIVE_POSE_RX = 68 * DEG2RAD;
 const DECORATIVE_POSE_RY = 55 * DEG2RAD;
 const DECORATIVE_POSE_RZ = -30 * DEG2RAD;
+
+// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function ButterflyWebGL({
   flapDurationMs,
@@ -83,7 +72,7 @@ export default function ButterflyWebGL({
   flipPetals = false,
   mirrorX = true,
   useDecorativePose = false,
-}: ButterflyWebGLProps) {
+}: ButterflyWebGLProps): React.JSX.Element {
   // Input validation
   if (flapDurationMs <= 0) {
     console.warn(
@@ -97,26 +86,18 @@ export default function ButterflyWebGL({
   const leftFlapRef = useRef<THREE.Group>(null!);
   const rightFlapRef = useRef<THREE.Group>(null!);
 
-  // Shared geometries (module-level cache — zero allocation)
-  const upperOuterGeo = getUpperOuterGeometry();
-  const upperInnerGeo = getUpperInnerGeometry();
-  const lowerOuterGeo = getLowerOuterGeometry();
-  const lowerInnerGeo = getLowerInnerGeometry();
+  // Body geometry and material
   const bodyGeo = getBodyGeometry();
-  const upperBorderGeo = getUpperBorderGeometry();
-  const lowerBorderGeo = getLowerBorderGeometry();
-  const upperInnerBorderGeo = getUpperInnerBorderGeometry();
-  const lowerInnerBorderGeo = getLowerInnerBorderGeometry();
+  const bodyMat = getBodyMaterial().clone();
 
-  // Per-butterfly material clones (need independent opacity uniform)
-  const wingMat = useMemo(() => getWingOuterMaterial().clone(), []);
-  const wingInnerMat = useMemo(() => {
+  // Wing materials for opacity tracking
+  const wingMat = getWingOuterMaterial().clone();
+  const wingInnerMat = (() => {
     const mat = getWingOuterMaterial().clone();
     mat.uniforms.uOpacity.value = WING_INNER_OPACITY;
     return mat;
-  }, []);
-  const bodyMat = useMemo(() => getBodyMaterial().clone(), []);
-  const borderMat = useMemo(() => getBorderMaterial().clone(), []);
+  })();
+  const borderMat = getBorderMaterial().clone();
 
   // Track last opacity to avoid redundant uniform writes
   const lastOpacity = useRef(-1);
@@ -180,61 +161,12 @@ export default function ButterflyWebGL({
     const op = opacityRef.current;
     if (op !== lastOpacity.current) {
       lastOpacity.current = op;
-      // Wing: CSS .wing { opacity: 0.85 } × phase opacity
-      // Per-stop alpha is baked into the shader, uOpacity = element-level
       wingMat.uniforms.uOpacity.value = op * 0.85;
       wingInnerMat.uniforms.uOpacity.value = op * WING_INNER_OPACITY;
       bodyMat.uniforms.uOpacity.value = op;
       borderMat.opacity = op * BORDER_OPACITY;
     }
   });
-
-  // ─── Wing sub-tree (reused for left & right) ─────────────────────────────
-
-  const petalRY = flipPetals ? Math.PI : 0;
-
-  const WingPetals = useMemo(
-    () =>
-      function WingPetals() {
-        return (
-          <>
-            {/* Upper bit */}
-            <group rotation={[0, petalRY, UPPER_BIT_ROTZ + Math.PI]}>
-              {/* Outer surface + border */}
-              <mesh geometry={upperOuterGeo} material={wingMat} />
-              {/* Inner overlay — CSS left:-30px top:5px */}
-              <group position={[-0.3, -0.05, INNER_Z_OFFSET]}>
-                <mesh geometry={upperInnerGeo} material={wingInnerMat} />
-              </group>
-            </group>
-
-            {/* Lower bit */}
-            <group rotation={[0, petalRY, LOWER_BIT_ROTZ + Math.PI]}>
-              {/* Outer surface + border */}
-              <mesh geometry={lowerOuterGeo} material={wingMat} />
-              {/* Inner overlay — CSS left:-24px top:5px */}
-              <group position={[-0.24, -0.05, INNER_Z_OFFSET]}>
-                <mesh geometry={lowerInnerGeo} material={wingInnerMat} />
-              </group>
-            </group>
-          </>
-        );
-      },
-    [
-      upperOuterGeo,
-      upperInnerGeo,
-      lowerOuterGeo,
-      lowerInnerGeo,
-      upperBorderGeo,
-      lowerBorderGeo,
-      upperInnerBorderGeo,
-      lowerInnerBorderGeo,
-      wingMat,
-      wingInnerMat,
-      borderMat,
-      petalRY,
-    ]
-  );
 
   const poseRX = useDecorativePose ? DECORATIVE_POSE_RX : BASE_POSE_RX;
   const poseRY = useDecorativePose ? DECORATIVE_POSE_RY : BASE_POSE_RY;
@@ -258,14 +190,14 @@ export default function ButterflyWebGL({
         {/* ── Left wing hinge ────────────────────────────────────────────── */}
         <group position={[LEFT_HINGE_X, 0, 0]}>
           <group ref={leftFlapRef} rotation={[0, FLAP.left.from, 0]}>
-            <WingPetals />
+            <WingMesh flipPetals={flipPetals} />
           </group>
         </group>
 
         {/* ── Right wing hinge ───────────────────────────────────────────── */}
         <group position={[-LEFT_HINGE_X, 0, 0]}>
           <group ref={rightFlapRef} rotation={[0, FLAP.right.from, 0]}>
-            <WingPetals />
+            <WingMesh flipPetals={flipPetals} />
           </group>
         </group>
       </group>

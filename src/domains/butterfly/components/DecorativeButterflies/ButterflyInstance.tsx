@@ -1,6 +1,6 @@
 import React from "react";
 
-import ButterflyWebGL from "../../../../components/3d/ForestScene/butterfly/ButterflyWebGL";
+import { ButterflyWebGL } from "../ButterflyWebGL";
 import type { ButterflyConfig } from "./types";
 
 // ─── Props ────────────────────────────────────────────────────────────────────

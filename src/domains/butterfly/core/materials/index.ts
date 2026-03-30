@@ -7,7 +7,7 @@ import {
   BORDER_OPACITY,
   WING_GRADIENT_COLORS,
   WING_STOP_ALPHAS,
-} from "./constants";
+} from "../constants";
 
 // ─── GLSL ────────────────────────────────────────────────────────────────────
 

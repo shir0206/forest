@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-import { DIMS } from "./constants";
+import { DIMS } from "../constants";
 
 // ─── Border line helpers ──────────────────────────────────────────────────────
 

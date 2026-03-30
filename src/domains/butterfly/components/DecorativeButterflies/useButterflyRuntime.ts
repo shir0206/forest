@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-import { ANIMATION_TIME_SCALE } from "../../../../components/3d/ForestScene/butterfly/constants";
+import { ANIMATION_TIME_SCALE } from "../../core/constants";
 import type {
   ButterflyConfig,
   ButterflyRuntime,
