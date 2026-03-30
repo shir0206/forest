@@ -4,6 +4,7 @@ import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 
 import { BROWSER_MODE, BrowserModeType } from "../../../domains/browser/types";
+import DecorativeButterflies from "../../../domains/butterfly/components/DecorativeButterflies";
 import { SCENE_ANIMATION_POSITIONS } from "../../../domains/camera/config/presets";
 import { DEVICE_CONFIG } from "../../../domains/device/config";
 import { SCENE_CONFIG } from "../../../domains/scene/config/scene";
@@ -14,7 +15,6 @@ import Butterfly from "../../ui/Butterfly/Butterfly.tsx";
 import CameraControls from "../CameraControls/CameraControls.tsx";
 import CinematicEffects from "../CinematicEffects/CinematicEffects.tsx";
 import Background from "./Background.tsx";
-import DecorativeButterflies from "./Decorativebutterflies.tsx";
 
 /**
  * Handles canvas click events to close the browser window
