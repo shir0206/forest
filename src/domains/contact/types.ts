@@ -1,20 +1,36 @@
 export interface WhatsAppConfig {
   phoneNumber: string;
-  message?: string;
+  text?: string;
 }
 
 export interface GoogleCalendarConfig {
-  title: string;
-  description?: string;
-  location?: string;
-  startTime: string;
-  endTime: string;
+  action: string;
+  text: string;
+  dates: {
+    start: string;
+    end: string;
+  };
+  details: string;
+  location: string;
+  addGuests: string[];
+  conferenceDataVersion?: number;
+  conferenceSolution?: string;
 }
 
 export interface EmailConfig {
   to: string;
-  subject?: string;
-  body?: string;
-  cc?: string;
-  bcc?: string;
+  subject: string;
+  body: string;
+}
+
+/**
+ * Contact link configuration types
+ */
+export type ContactLinkType = "external" | "email" | "whatsapp" | "calendar";
+
+export interface ContactLinkConfig {
+  id: string;
+  icon: string;
+  type: ContactLinkType;
+  config: WhatsAppConfig | GoogleCalendarConfig | EmailConfig | { url: string };
 }
