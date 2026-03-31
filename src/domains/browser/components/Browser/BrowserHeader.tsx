@@ -2,10 +2,10 @@ import React, { useCallback } from "react";
 
 import "./browser.scss";
 
-import { BROWSER_MODE } from "../../../domains/browser/types";
-import { useTranslation } from "../../../domains/context/hooks/useTranslation";
-import { Icon } from "../../../shared/components/Icon/Icon";
-import { useEnhancedAppContext } from "../../../shared/contexts/AppContext";
+import { Icon } from "../../../../shared/components/Icon/Icon";
+import { useEnhancedAppContext } from "../../../../shared/contexts/AppContext";
+import { useTranslation } from "../../../context/hooks/useTranslation";
+import { BROWSER_MODE } from "../../types";
 
 export const BrowserHeader: React.FC = () => {
   const appContext = useEnhancedAppContext();

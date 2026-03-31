@@ -3,7 +3,7 @@ import { useLoader, useThree } from "@react-three/fiber";
 
 import * as THREE from "three";
 
-import { SCENE_CONFIG } from "../../../domains/scene/config/scene";
+import { SCENE_CONFIG } from "../../config/scene";
 
 export default function Background() {
   const { scene } = useThree();

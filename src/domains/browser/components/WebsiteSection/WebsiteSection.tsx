@@ -1,6 +1,6 @@
 import React from "react";
 
-import { SectionComponent } from "../../../domains/sections/types";
+import { SectionComponent } from "../../../sections/types";
 
 interface WebsiteSectionProps {
   id: string;

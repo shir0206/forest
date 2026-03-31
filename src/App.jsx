@@ -1,4 +1,4 @@
-import ForestScene from "./components/3d/ForestScene/ForestScene";
+import ForestScene from "./domains/scene/components/ForestScene/ForestScene";
 import { AppProvider } from "./shared/contexts/AppContext";
 
 function App() {

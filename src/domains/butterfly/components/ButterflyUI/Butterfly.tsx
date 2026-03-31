@@ -9,16 +9,13 @@ import { OrbitControls } from "three-stdlib";
 
 import "./butterfly.scss";
 
-import { BROWSER_MODE } from "../../../domains/browser/types";
-import { SCENE_ANIMATION_POSITIONS } from "../../../domains/camera/config/presets";
-import { CAMERA_ANIMATION_PRESETS } from "../../../domains/camera/config/presets";
-import { useCameraAnimation } from "../../../domains/camera/hooks/useCameraAnimation";
-import {
-  MOVING_DIRECTION,
-  MovingDirection,
-} from "../../../domains/camera/types";
-import { SCENE_CONFIG } from "../../../domains/scene/config/scene";
-import { useAppContext } from "../../../shared/contexts/AppContext";
+import { useAppContext } from "../../../../shared/contexts/AppContext";
+import { BROWSER_MODE } from "../../../browser/types";
+import { SCENE_ANIMATION_POSITIONS } from "../../../camera/config/presets";
+import { CAMERA_ANIMATION_PRESETS } from "../../../camera/config/presets";
+import { useCameraAnimation } from "../../../camera/hooks/useCameraAnimation";
+import { MOVING_DIRECTION, MovingDirection } from "../../../camera/types";
+import { SCENE_CONFIG } from "../../../scene/config/scene";
 
 type ButterflyProps = {
   controlsRef?: React.RefObject<OrbitControls | null>;

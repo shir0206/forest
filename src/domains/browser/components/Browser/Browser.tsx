@@ -5,15 +5,15 @@ import * as THREE from "three";
 
 import "./browser.scss";
 
-import { SECTIONS } from "../../../domains/browser/config/screens";
-import { useHtmlReady } from "../../../domains/browser/hooks/useHtmlReady";
-import { useSectionVisibility } from "../../../domains/navigation/hooks/useScreenVisibility";
-import { SCENE_CONFIG } from "../../../domains/scene/config/scene";
-import { LANGUAGE } from "../../../i18n/types";
-import { useAppContext } from "../../../shared/contexts/AppContext";
-import { ContextBridge } from "../../ContextBridge";
-import Navigation from "../Navigation/Navigation";
-import WebsiteSection from "../WebsiteScreen/WebsiteScreen.tsx";
+import { LANGUAGE } from "../../../../i18n/types";
+import { useAppContext } from "../../../../shared/contexts/AppContext";
+import { ContextBridge } from "../../../context/components/ContextBridge";
+import Navigation from "../../../navigation/components/Navigation/Navigation";
+import { useSectionVisibility } from "../../../navigation/hooks/useScreenVisibility";
+import { SCENE_CONFIG } from "../../../scene/config/scene";
+import { SECTIONS } from "../../config/screens";
+import { useHtmlReady } from "../../hooks/useHtmlReady";
+import WebsiteSection from "../WebsiteSection/WebsiteSection.tsx";
 import { BrowserHeader } from "./BrowserHeader";
 
 export default function Browser() {

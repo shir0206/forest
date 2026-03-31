@@ -3,18 +3,18 @@ import React, { Suspense, useCallback, useRef } from "react";
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 
-import { BROWSER_MODE, BrowserModeType } from "../../../domains/browser/types";
-import DecorativeButterflies from "../../../domains/butterfly/components/DecorativeButterflies";
-import { SCENE_ANIMATION_POSITIONS } from "../../../domains/camera/config/presets";
-import { DEVICE_CONFIG } from "../../../domains/device/config";
-import Loader from "../../../domains/scene/components/Loader";
-import { SCENE_CONFIG } from "../../../domains/scene/config/scene";
-import { useAppContext } from "../../../shared/contexts/AppContext";
-import Browser from "../../ui/Browser/Browser.tsx";
-import Butterfly from "../../ui/Butterfly/Butterfly.tsx";
-import CameraControls from "../CameraControls/CameraControls.tsx";
+import { useAppContext } from "../../../../shared/contexts/AppContext";
+import Browser from "../../../browser/components/Browser/Browser.tsx";
+import { BROWSER_MODE, BrowserModeType } from "../../../browser/types";
+import Butterfly from "../../../butterfly/components/ButterflyUI/Butterfly.tsx";
+import DecorativeButterflies from "../../../butterfly/components/DecorativeButterflies";
+import CameraControls from "../../../camera/components/CameraControls/CameraControls.tsx";
+import { SCENE_ANIMATION_POSITIONS } from "../../../camera/config/presets";
+import { DEVICE_CONFIG } from "../../../device/config";
+import { SCENE_CONFIG } from "../../config/scene";
+import Background from "../Background/Background.tsx";
 import CinematicEffects from "../CinematicEffects/CinematicEffects.tsx";
-import Background from "./Background.tsx";
+import Loader from "../Loader";
 
 /**
  * Handles canvas click events to close the browser window
