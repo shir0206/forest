@@ -2,7 +2,7 @@ import React from "react";
 
 import "./contact.scss";
 
-import { useTranslation } from "../../../domains/context/hooks/useTranslation";
+import { useTranslation } from "../../../i18n/hooks/useTranslation";
 import { Icon } from "../../../shared/components/Icon/Icon";
 import { generateContactLinks } from "../../contact/utils";
 

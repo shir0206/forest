@@ -4,8 +4,8 @@ import "./languageSwitcher.scss";
 
 import { LANGUAGE, LanguageType } from "../../../../i18n/types";
 import { Icon } from "../../../../shared/components/Icon/Icon";
-import { useAppContext } from "../../../../shared/contexts/AppContext";
-import { useTranslation } from "../../../context/hooks/useTranslation";
+import { useAppContext } from "../../../context";
+import { useTranslation } from "../../../../i18n/hooks/useTranslation";
 import { useLanguageDropdown } from "./useLanguageDropdown";
 
 interface LanguageSwitcherProps {

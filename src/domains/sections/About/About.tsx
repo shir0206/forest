@@ -4,7 +4,7 @@ import "./about.scss";
 
 import { ReactComponent as Circle } from "../../../assets/images/circle.svg";
 import imagePath from "../../../assets/images/shirzabolotny.png?url";
-import { useTranslation } from "../../../domains/context/hooks/useTranslation";
+import { useTranslation } from "../../../i18n/hooks/useTranslation";
 
 interface AboutProps {
   isVisible: boolean;

@@ -1,7 +1,6 @@
-import type { LanguageType } from "./types";
-import en from "./en.json";
-import he from "./he.json";
-import type { TextStructure } from "./types";
+import en from "./text/en.json";
+import he from "./text/he.json";
+import type { LanguageType, TextStructure } from "./types";
 
 export type { TextStructure };
 

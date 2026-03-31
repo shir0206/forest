@@ -3,8 +3,8 @@ import React, { useCallback } from "react";
 import "./browser.scss";
 
 import { Icon } from "../../../../shared/components/Icon/Icon";
-import { useEnhancedAppContext } from "../../../../shared/contexts/AppContext";
-import { useTranslation } from "../../../context/hooks/useTranslation";
+import { useEnhancedAppContext } from "../../../context";
+import { useTranslation } from "../../../../i18n/hooks/useTranslation";
 import { BROWSER_MODE } from "../../types";
 
 export const BrowserHeader: React.FC = () => {

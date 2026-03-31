@@ -5,7 +5,7 @@ import { useFrame } from "@react-three/fiber";
 
 import * as THREE from "three";
 
-import { useAppContext } from "../../../../shared/contexts/AppContext";
+import { useAppContext } from "../../../context";
 import { ANIMATION_TIME_SCALE } from "../../core/constants";
 import ButterflyInstance from "./ButterflyInstance";
 import type { ButterflyRuntime, DecorativeButterfliesProps } from "./types";

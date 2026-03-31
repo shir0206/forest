@@ -4,7 +4,7 @@ import "./overview.scss";
 
 import { ReactComponent as Branch } from "../../../assets/images/branch.svg";
 import { SECTION_IDS } from "../../../domains/browser/types";
-import { useTranslation } from "../../../domains/context/hooks/useTranslation";
+import { useTranslation } from "../../../i18n/hooks/useTranslation";
 import { useScrollNavigation } from "../../../domains/navigation/hooks/useScrollNavigation";
 
 interface OverviewProps {

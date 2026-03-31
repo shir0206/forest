@@ -9,12 +9,12 @@ import { OrbitControls } from "three-stdlib";
 
 import "./butterfly.scss";
 
-import { useAppContext } from "../../../../shared/contexts/AppContext";
 import { BROWSER_MODE } from "../../../browser/types";
 import { SCENE_ANIMATION_POSITIONS } from "../../../camera/config/presets";
 import { CAMERA_ANIMATION_PRESETS } from "../../../camera/config/presets";
 import { useCameraAnimation } from "../../../camera/hooks/useCameraAnimation";
 import { MOVING_DIRECTION, MovingDirection } from "../../../camera/types";
+import { useAppContext } from "../../../context";
 import { SCENE_CONFIG } from "../../../scene/config/scene";
 
 type ButterflyProps = {

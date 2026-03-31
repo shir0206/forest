@@ -1,5 +1,5 @@
-import { CONTACT_CONFIG } from "../../../config/links";
 import type { TextStructure } from "../../../i18n/types";
+import { CONTACT_CONFIG } from "../config";
 import type {
   ContactLinkConfig,
   EmailConfig,

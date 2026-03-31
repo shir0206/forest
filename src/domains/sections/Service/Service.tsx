@@ -2,7 +2,7 @@ import React from "react";
 
 import "./service.css";
 
-import { useTranslation } from "../../../domains/context/hooks/useTranslation";
+import { useTranslation } from "../../../i18n/hooks/useTranslation";
 import { Icon, IconName } from "../../../shared/components/Icon/Icon";
 
 interface ServiceCard {

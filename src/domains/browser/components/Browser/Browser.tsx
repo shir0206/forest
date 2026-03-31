@@ -6,8 +6,8 @@ import * as THREE from "three";
 import "./browser.scss";
 
 import { LANGUAGE } from "../../../../i18n/types";
-import { useAppContext } from "../../../../shared/contexts/AppContext";
-import { ContextBridge } from "../../../context/components/ContextBridge";
+import { useAppContext } from "../../../context";
+import { ContextBridge } from "../../../context/bridge/ContextBridge.tsx";
 import Navigation from "../../../navigation/components/Navigation/Navigation";
 import { useSectionVisibility } from "../../../navigation/hooks/useScreenVisibility";
 import { SCENE_CONFIG } from "../../../scene/config/scene";

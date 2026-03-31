@@ -3,13 +3,13 @@ import React, { Suspense, useCallback, useRef } from "react";
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 
-import { useAppContext } from "../../../../shared/contexts/AppContext";
 import Browser from "../../../browser/components/Browser/Browser.tsx";
 import { BROWSER_MODE, BrowserModeType } from "../../../browser/types";
 import Butterfly from "../../../butterfly/components/ButterflyUI/Butterfly.tsx";
 import DecorativeButterflies from "../../../butterfly/components/DecorativeButterflies";
 import CameraControls from "../../../camera/components/CameraControls/CameraControls.tsx";
 import { SCENE_ANIMATION_POSITIONS } from "../../../camera/config/presets";
+import { useAppContext } from "../../../context";
 import { DEVICE_CONFIG } from "../../../device/config";
 import { SCENE_CONFIG } from "../../config/scene";
 import Background from "../Background/Background.tsx";

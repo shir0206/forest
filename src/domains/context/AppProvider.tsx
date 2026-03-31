@@ -1,45 +1,9 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
-import {
-  BROWSER_MODE,
-  BrowserModeType,
-  SectionIdType,
-} from "../../domains/browser/types";
-import { AppContextType } from "../../domains/context/types";
-import { detectDevice, DeviceType } from "../../domains/device";
 import { LANGUAGE, LanguageType } from "../../i18n/types";
-
-export const AppContext = createContext<AppContextType | undefined>(undefined);
-
-export const useAppContext = (): AppContextType => {
-  const context = useContext(AppContext);
-
-  if (!context) {
-    throw new Error("useAppContext must be used within AppProvider");
-  }
-
-  return context;
-};
-
-/**
- * Enhanced hook with better error handling and debugging
- */
-export const useEnhancedAppContext = () => {
-  const context = useContext(AppContext);
-
-  if (!context) {
-    console.error("useEnhancedAppContext: context not found");
-    return null;
-  }
-
-  return context;
-};
+import { BROWSER_MODE, BrowserModeType, SectionIdType } from "../browser/types";
+import { detectDevice, DeviceType } from "../device";
+import { AppContext } from "./AppContext";
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   children,

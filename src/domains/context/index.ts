@@ -1,2 +1,6 @@
 // Context domain exports
-// This will be populated in Phase 7 when we move the context files
+export { AppContext } from "./AppContext";
+export { AppProvider } from "./AppProvider";
+export { ContextBridge } from "./bridge/ContextBridge";
+export type { AppContextType, AppState } from "./types/types";
+export { useAppContext, useEnhancedAppContext } from "./useAppContext";
