@@ -4,6 +4,14 @@ import * as THREE from "three";
 // 0.5 = half speed, 2.0 = double speed. Set back to 1.0 for production.
 export const ANIMATION_TIME_SCALE = 1.0;
 
+// ─── Time conversion ─────────────────────────────────────────────────────────
+
+/** Conversion factor: milliseconds → seconds */
+export const MS_PER_SEC = 1000;
+
+/** Full cycle in radians (2π) */
+export const FULL_CYCLE_RADIANS = 2 * Math.PI;
+
 // ─── Conversion ──────────────────────────────────────────────────────────────
 
 export const DEG2RAD = THREE.MathUtils.DEG2RAD;

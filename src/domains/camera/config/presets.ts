@@ -1,14 +1,40 @@
 import { PositionThreeD } from "../../../shared/types/primitives";
 
-// Camera animation positions for the scene tour
+// ─── Scene Tour Camera Positions ─────────────────────────────────────────────
+//
+// Each position is a 3D world-space coordinate [x, y, z] used as the
+// camera's orbit target during the cinematic scene tour.
+// - x: horizontal (-1 = left, +1 = right)
+// - y: vertical (-1 = below, +1 = above)
+// - z: depth (-1 = near, +1 = far)
+
+/** Starting position — focused on the forest area */
+export const POS_FOREST: PositionThreeD = [-0.9, -0.4, -0.25];
+
+/** Camera target for the winding path scene */
+export const POS_PATH: PositionThreeD = [-0.7074, -0.245, -0.3414];
+
+/** Camera target for the stone feature */
+export const POS_STONE: PositionThreeD = [0.0867, 0.4956, -0.7986];
+
+/** Camera target for the waterfall area */
+export const POS_WATERFALL: PositionThreeD = [0.9033, 0.3487, -0.25];
+
+/** Camera target for the valley panorama */
+export const POS_VALLEY: PositionThreeD = [0.9077, 0.2216, 0.3564];
+
+/** Camera target for the workspace area */
+export const POS_WORKSPACE: PositionThreeD = [0.3057, 0.1594, 0.9387];
+
+/** Ordered sequence of camera positions for the scene tour animation */
 export const SCENE_ANIMATION_POSITIONS: PositionThreeD[] = [
-  [-0.9, -0.4, -0.25], // forest
-  [-0.7074, -0.245, -0.3414], // path
-  [0.0867, 0.4956, -0.7986], // stone
-  [0.9033, 0.3487, -0.25], // waterfall
-  [0.9077, 0.2216, 0.3564], // vally
-  [0.3057, 0.1594, 0.9387], // workspace
-] as const;
+  POS_FOREST,
+  POS_PATH,
+  POS_STONE,
+  POS_WATERFALL,
+  POS_VALLEY,
+  POS_WORKSPACE,
+];
 
 export const CAMERA_ANIMATION_PRESETS = {
   /**

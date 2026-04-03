@@ -4,6 +4,8 @@ import {
   FLIGHT_PATH_KEYFRAMES,
   FLIGHT_PATH_TX_SCALE,
   FlightPathKeyframe,
+  FULL_CYCLE_RADIANS,
+  MS_PER_SEC,
 } from "./constants";
 
 // ─── Flap easing ─────────────────────────────────────────────────────────────
@@ -25,7 +27,7 @@ export function flapPingPong(
   elapsedSec: number,
   flapDurationMs: number
 ): number {
-  const speed = (2 * Math.PI) / (flapDurationMs / 1000);
+  const speed = FULL_CYCLE_RADIANS / (flapDurationMs / MS_PER_SEC);
   return (Math.sin(elapsedSec * speed) + 1) / 2;
 }
 
