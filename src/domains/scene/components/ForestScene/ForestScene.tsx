@@ -3,6 +3,7 @@ import React, { Suspense, useRef } from "react";
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 
+import { ErrorBoundary } from "../../../../shared/components/ErrorBoundary";
 import Browser from "../../../browser/components/Browser/Browser.tsx";
 import { BROWSER_MODE } from "../../../browser/types";
 import Butterfly from "../../../butterfly/components/ButterflyUI/Butterfly.tsx";
@@ -43,31 +44,43 @@ export default function ForestScene() {
 
   return (
     <div className="w-full h-openInfoscreen bg-black">
-      <Canvas
-        style={{ width: "100vw", height: "100vh" }}
-        camera={cameraConfig}
-        onClick={handleCanvasClick}
-      >
-        <Suspense fallback={<Loader />}>
-          <Background />
-          <CameraControls controlsRef={controlsRef} />
-          <CinematicEffects isAboutOpen={browserMode !== BROWSER_MODE.CLOSED} />
-          {runIntro && (
-            <DecorativeButterflies
-              count={butterflyCount}
-              flyAwayAfterMs={6500}
-              cameraPositions={SCENE_ANIMATION_POSITIONS}
-              spawnAnchor={[0.2, 0.2, 0.2]}
-              cameraFov={SCENE_CONFIG.cameraFov}
-              cameraTransitionDurationMs={SCENE_CONFIG.cameraTransitionDuration}
-              leadSteps={2}
-            />
-          )}
-          <Butterfly controlsRef={controlsRef} />
+      <ErrorBoundary componentName="Canvas">
+        <Canvas
+          style={{ width: "100vw", height: "100vh" }}
+          camera={cameraConfig}
+          onClick={handleCanvasClick}
+        >
+          <Suspense fallback={<Loader />}>
+            <Background />
+            <CameraControls controlsRef={controlsRef} />
+            <ErrorBoundary componentName="CinematicEffects">
+              <CinematicEffects
+                isAboutOpen={browserMode !== BROWSER_MODE.CLOSED}
+              />
+            </ErrorBoundary>
+            {runIntro && (
+              <ErrorBoundary componentName="DecorativeButterflies">
+                <DecorativeButterflies
+                  count={butterflyCount}
+                  flyAwayAfterMs={6500}
+                  cameraPositions={SCENE_ANIMATION_POSITIONS}
+                  spawnAnchor={[0.2, 0.2, 0.2]}
+                  cameraFov={SCENE_CONFIG.cameraFov}
+                  cameraTransitionDurationMs={
+                    SCENE_CONFIG.cameraTransitionDuration
+                  }
+                  leadSteps={2}
+                />
+              </ErrorBoundary>
+            )}
+            <ErrorBoundary componentName="Butterfly">
+              <Butterfly controlsRef={controlsRef} />
+            </ErrorBoundary>
 
-          <Browser />
-        </Suspense>
-      </Canvas>
+            <Browser />
+          </Suspense>
+        </Canvas>
+      </ErrorBoundary>
     </div>
   );
 }
