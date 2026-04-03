@@ -27,25 +27,37 @@ import {
 } from "../../core/materials";
 import WingMesh from "./WingMesh";
 
-// ─── Props ────────────────────────────────────────────────────────────────────
+// ─── Configuration Interfaces ──────────────────────────────────────────────
 
-export interface ButterflyWebGLProps {
+export interface AnimationConfig {
   /** Average flap duration in ms (per-wing values averaged). Must be > 0. */
   flapDurationMs: number;
-  /** Mutable ref the parent writes to control opacity (0–1). */
-  opacityRef: React.MutableRefObject<number>;
   /** Random time offset so butterflies don't flap/fly in sync. */
   timeOffset?: number;
-  /** Optional callback when butterfly completes animation cycle */
+  /** Optional callback when butterfly completes animation cycle. */
   onAnimationCycle?: () => void;
-  /** Performance mode for mobile devices */
-  lowPerformanceMode?: boolean;
+}
+
+export interface VisualConfig {
   /** Flip each wing petal 180° on its local Y axis (shows backface). */
   flipPetals?: boolean;
   /** Apply negative X scale from flight-path keyframes (CSS compat). Default: true. */
   mirrorX?: boolean;
   /** Use gentle tilt for billboard-oriented decorative butterflies. Default: false. */
   useDecorativePose?: boolean;
+}
+
+// ─── Props ────────────────────────────────────────────────────────────────────
+
+export interface ButterflyWebGLProps {
+  /** Animation timing and lifecycle configuration. */
+  animation: AnimationConfig;
+  /** Visual appearance configuration. */
+  visual?: VisualConfig;
+  /** Mutable ref the parent writes to control opacity (0–1). */
+  opacityRef: React.MutableRefObject<number>;
+  /** Performance mode for mobile devices. */
+  lowPerformanceMode?: boolean;
 }
 
 // ─── Pivot offset ─────────────────────────────────────────────────────────────
@@ -64,21 +76,27 @@ const DECORATIVE_POSE_RZ = -30 * DEG2RAD;
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function ButterflyWebGL({
-  flapDurationMs,
+  animation,
+  visual = {},
   opacityRef,
-  timeOffset = 0,
-  onAnimationCycle,
   lowPerformanceMode = false,
-  flipPetals = false,
-  mirrorX = true,
-  useDecorativePose = false,
 }: ButterflyWebGLProps): React.JSX.Element {
+  // Extract animation config with defaults
+  const { flapDurationMs, timeOffset = 0, onAnimationCycle } = animation;
+
+  // Extract visual config with defaults
+  const {
+    flipPetals = false,
+    mirrorX = true,
+    useDecorativePose = false,
+  } = visual;
+
   // Input validation
   if (flapDurationMs <= 0) {
     console.warn(
       "ButterflyWebGL: flapDurationMs must be positive, using default 300ms"
     );
-    flapDurationMs = 300;
+    animation.flapDurationMs = 300;
   }
 
   // Refs for animated groups

@@ -18,14 +18,17 @@ export default function ButterflyInstance({
 }: ButterflyInstanceProps): React.JSX.Element {
   return (
     <ButterflyWebGL
-      flapDurationMs={
-        (config.flapDuration.left + config.flapDuration.right) / 2
-      }
+      animation={{
+        flapDurationMs:
+          (config.flapDuration.left + config.flapDuration.right) / 2,
+        timeOffset: config.wave.phaseOffset,
+      }}
+      visual={{
+        flipPetals: false,
+        mirrorX: false,
+        useDecorativePose: true,
+      }}
       opacityRef={opacityRef}
-      timeOffset={config.wave.phaseOffset}
-      flipPetals={false}
-      mirrorX={false}
-      useDecorativePose
     />
   );
 }

@@ -1,7 +1,7 @@
-import { getText } from "..";
+import { useEnhancedAppContext } from "../../domains/context/useAppContext";
 import type { TextStructure } from "../types";
 import { LANGUAGE } from "../types";
-import { useEnhancedAppContext } from "../../domains/context/useAppContext";
+import { getText } from "..";
 
 const translations: Record<string, TextStructure> = {
   en: getText("en"),
