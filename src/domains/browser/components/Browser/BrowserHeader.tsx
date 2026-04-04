@@ -5,7 +5,7 @@ import "./browser.scss";
 import { Icon } from "../../../../shared/components/Icon/Icon";
 import { useEnhancedAppContext } from "../../../context";
 import { useTranslation } from "../../../../i18n/hooks/useTranslation";
-import { BROWSER_MODE } from "../../types";
+import { BROWSER_MODE } from "../../types/types";
 
 export const BrowserHeader: React.FC = () => {
   const appContext = useEnhancedAppContext();

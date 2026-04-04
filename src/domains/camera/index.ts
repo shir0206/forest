@@ -21,4 +21,4 @@ export type {
   CameraConfig,
   MovingDirection,
   SceneConfig,
-} from "./types";
+} from "./types/types";

@@ -1,5 +1,5 @@
 // Section configuration
-import { SECTION_IDS } from "../../browser/types";
+import { SECTION_IDS } from "../types/types";
 import About from "../../sections/About/About";
 import Contact from "../../sections/Contact/Contact";
 import Overview from "../../sections/Overview/Overview";

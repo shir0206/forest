@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { OrbitControls } from "@react-three/drei";
 
-import { BROWSER_MODE } from "../../../browser/types";
+import { BROWSER_MODE } from "../../../browser/types/types";
 import { useAppContext } from "../../../context";
 import { SCENE_ANIMATION_POSITIONS } from "../../config/presets";
 import { useCameraAnimation } from "../../hooks/useCameraAnimation";

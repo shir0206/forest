@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import { BROWSER_MODE, BrowserModeType } from "../../browser/types";
+import { BROWSER_MODE, BrowserModeType } from "../../browser/types/types";
 
 /**
  * Creates a canvas click handler that closes the browser window

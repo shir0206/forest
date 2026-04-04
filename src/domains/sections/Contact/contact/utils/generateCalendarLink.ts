@@ -1,4 +1,4 @@
-import type { GoogleCalendarConfig } from "../types";
+import type { GoogleCalendarConfig } from "../types/types";
 
 /**
  * Encodes URL parameters safely

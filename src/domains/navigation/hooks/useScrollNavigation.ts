@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { SECTION_IDS, SectionIdType } from "../../../domains/browser/types";
+import { SECTION_IDS, SectionIdType } from "../../browser/types/types";
 
 export interface UseScrollNavigationProps {
   containerRef: React.RefObject<HTMLElement | null>;

@@ -1,5 +1,5 @@
-import { PositionThreeD } from "../../../shared/types/primitives";
 import { SCENE_ANIMATION_POSITIONS } from "../../camera/config/presets";
+import { PositionThreeD } from "../../camera/types/types";
 
 // ─── Scene Configuration ─────────────────────────────────────────────────────
 

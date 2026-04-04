@@ -1,7 +1,11 @@
 import React, { useCallback, useMemo, useState } from "react";
 
 import { LANGUAGE, LanguageType } from "../../i18n/types";
-import { BROWSER_MODE, BrowserModeType, SectionIdType } from "../browser/types";
+import {
+  BROWSER_MODE,
+  BrowserModeType,
+  SectionIdType,
+} from "../browser/types/types";
 import { detectDevice, DeviceType } from "../device";
 import { AppContext } from "./AppContext";
 

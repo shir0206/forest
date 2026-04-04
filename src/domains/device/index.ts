@@ -9,8 +9,12 @@ export {
 } from "./services";
 
 // Types
-export type { DeviceConfig, DeviceDetectionResult, DeviceType } from "./types";
-export { DEVICE, isDeviceType } from "./types";
+export type {
+  DeviceConfig,
+  DeviceDetectionResult,
+  DeviceType,
+} from "./types/types";
+export { DEVICE, isDeviceType } from "./types/types";
 
 // Configuration
 export { DEVICE_CONFIG, DEVICE_DETECTION_CONFIG } from "./config";

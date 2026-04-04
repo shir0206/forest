@@ -1,6 +1,6 @@
 // Device Domain Configuration
 
-import { DEVICE, DeviceConfig } from "./types";
+import { DEVICE, DeviceConfig } from "./types/types";
 
 /**
  * Device configuration - single source of truth for device-specific settings

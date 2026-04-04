@@ -4,7 +4,7 @@ import "./contact.scss";
 
 import { useTranslation } from "../../../i18n/hooks/useTranslation";
 import { Icon } from "../../../shared/components/Icon/Icon";
-import { generateContactLinks } from "../../contact/utils";
+import { generateContactLinks } from "./contact/utils";
 
 // Types
 type IconName = "linkedin" | "mail" | "calendar" | "whatsapp";

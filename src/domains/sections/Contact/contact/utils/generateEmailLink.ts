@@ -1,4 +1,4 @@
-import type { EmailConfig } from "../types";
+import type { EmailConfig } from "../types/types";
 
 /**
  * Generates an email link with the provided configuration

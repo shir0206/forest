@@ -5,7 +5,7 @@ import { Canvas } from "@react-three/fiber";
 
 import { ErrorBoundary } from "../../../../shared/components/ErrorBoundary";
 import Browser from "../../../browser/components/Browser/Browser.tsx";
-import { BROWSER_MODE } from "../../../browser/types";
+import { BROWSER_MODE } from "../../../browser/types/types.ts";
 import Butterfly from "../../../butterfly/components/ButterflyUI/Butterfly.tsx";
 import DecorativeButterflies from "../../../butterfly/components/DecorativeButterflies";
 import CameraControls from "../../../camera/components/CameraControls/CameraControls.tsx";

@@ -2,9 +2,9 @@ import React, { useRef } from "react";
 
 import "./navigation.scss";
 
-import { SECTION_IDS, SectionIdType } from "../../../browser/types";
-import { useAppContext } from "../../../context";
 import { useTranslation } from "../../../../i18n/hooks/useTranslation";
+import { SECTION_IDS, SectionIdType } from "../../../browser/types/types";
+import { useAppContext } from "../../../context";
 import { useScrollNavigation } from "../../hooks/useScrollNavigation";
 import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
 

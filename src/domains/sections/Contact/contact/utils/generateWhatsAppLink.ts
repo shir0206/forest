@@ -1,4 +1,4 @@
-import type { WhatsAppConfig } from "../types";
+import type { WhatsAppConfig } from "../types/types";
 
 /**
  * Generates a WhatsApp link with the provided configuration

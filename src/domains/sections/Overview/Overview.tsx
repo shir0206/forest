@@ -3,7 +3,7 @@ import React from "react";
 import "./overview.scss";
 
 import { ReactComponent as Branch } from "../../../assets/images/branch.svg";
-import { SECTION_IDS } from "../../../domains/browser/types";
+import { SECTION_IDS } from "../../browser/types/types";
 import { useTranslation } from "../../../i18n/hooks/useTranslation";
 import { useScrollNavigation } from "../../../domains/navigation/hooks/useScrollNavigation";
 

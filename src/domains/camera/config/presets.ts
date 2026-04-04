@@ -1,4 +1,4 @@
-import { PositionThreeD } from "../../../shared/types/primitives";
+import { PositionThreeD } from "../../camera/types/types";
 
 // ─── Scene Tour Camera Positions ─────────────────────────────────────────────
 //

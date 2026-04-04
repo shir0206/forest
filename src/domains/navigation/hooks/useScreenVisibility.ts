@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { SECTIONS } from "../../../domains/browser/config/screens";
-import { SectionIdType } from "../../../domains/browser/types";
+import { SectionIdType } from "../../browser/types/types";
 
 /**
  * Configuration interface for section visibility detection

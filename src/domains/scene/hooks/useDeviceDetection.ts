@@ -1,6 +1,6 @@
 import { useAppContext } from "../../context";
 import { DEVICE_CONFIG } from "../../device/config";
-import { DeviceType } from "../../device/types";
+import { DeviceType } from "../../device/types/types";
 
 /**
  * Custom hook for device detection and device-specific configuration

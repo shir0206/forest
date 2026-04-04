@@ -1,11 +1,11 @@
-import type { TextStructure } from "../../../i18n/types";
-import { CONTACT_CONFIG } from "../config";
+import type { TextStructure } from "../../../../../i18n/types";
+import { CONTACT_CONFIG } from "../config/config";
 import type {
   ContactLinkConfig,
   EmailConfig,
   GoogleCalendarConfig,
   WhatsAppConfig,
-} from "../types";
+} from "../types/types";
 import { generateGoogleCalendarLink } from "./generateCalendarLink";
 import { generateEmailLink } from "./generateEmailLink";
 import { generateWhatsAppLink } from "./generateWhatsAppLink";
@@ -23,7 +23,7 @@ export type {
   EmailConfig,
   GoogleCalendarConfig,
   WhatsAppConfig,
-} from "../types";
+} from "../types/types";
 
 /**
  * Generates a complete set of contact links using the default configuration
@@ -102,6 +102,16 @@ export const CONTACT_LINKS_CONFIG: ContactLinkConfig[] = [
 ];
 
 /**
+ * Generated contact link structure
+ */
+export interface GeneratedContactLink {
+  id: string;
+  name: string;
+  icon: string;
+  url: string;
+}
+
+/**
  * Type-safe translation interface for contact links
  */
 interface ContactTranslation {
@@ -178,7 +188,7 @@ const generateCalendarLinkWithTranslation = (
  */
 export const generateContactLinks = (
   translations: TextStructure["contact"]["links"]
-) => {
+): GeneratedContactLink[] => {
   return CONTACT_LINKS_CONFIG.map((linkConfig) => {
     const translation = translations[
       linkConfig.id as keyof TextStructure["contact"]["links"]

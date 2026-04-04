@@ -1,7 +1,7 @@
 // Device Domain Services
 
 import { DEVICE_DETECTION_CONFIG } from "./config";
-import { DEVICE, DeviceDetectionResult, DeviceType } from "./types";
+import { DEVICE, DeviceDetectionResult, DeviceType } from "./types/types";
 
 export class DeviceDetectionService {
   static detectDevice(): DeviceDetectionResult {
