@@ -59,7 +59,7 @@ export const CONTACT_LINKS_CONFIG: ContactLinkConfig[] = [
     icon: "linkedin",
     type: "external",
     config: {
-      url: "https://www.linkedin.com/in/shirzabolotny/",
+      url: "https://www.linkedin.com/in/shir-zabolotny-a83b18109/",
     },
   },
   {
@@ -88,10 +88,6 @@ export const CONTACT_LINKS_CONFIG: ContactLinkConfig[] = [
     config: {
       action: "EVENTEDIT",
       text: "",
-      dates: {
-        start: "20240101T110000Z",
-        end: "20240101T120000Z",
-      },
       details: "",
       location: "Google Meet",
       addGuests: ["shirzabolotny@gmail.com"],
@@ -172,7 +168,6 @@ const generateCalendarLinkWithTranslation = (
   url: generateGoogleCalendarLink({
     action: (linkConfig.config as GoogleCalendarConfig).action,
     text: translation.text || "",
-    dates: (linkConfig.config as GoogleCalendarConfig).dates,
     details: translation.details || "",
     location: "Google Meet",
     addGuests: (linkConfig.config as GoogleCalendarConfig).addGuests,

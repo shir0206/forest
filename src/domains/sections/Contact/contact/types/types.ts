@@ -6,10 +6,6 @@ export interface WhatsAppConfig {
 export interface GoogleCalendarConfig {
   action: string;
   text: string;
-  dates: {
-    start: string;
-    end: string;
-  };
   details: string;
   location: string;
   addGuests: string[];
