@@ -1,7 +1,7 @@
 import React from "react";
 
 import { ButterflyWebGL } from "../ButterflyWebGL";
-import type { ButterflyConfig } from "./types";
+import type { ButterflyConfig } from "./types/types";
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 

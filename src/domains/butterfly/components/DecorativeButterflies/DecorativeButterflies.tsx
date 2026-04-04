@@ -1,10 +1,10 @@
 "use client";
 
-import { useAppContext } from "../../../context";
+import { useAppContext } from "../../../../shared/context";
 import { ANIMATION_TIME_SCALE } from "../../core/constants";
 import ButterflyInstance from "./ButterflyInstance";
-import type { DecorativeButterfliesProps } from "./types";
-import { useAnimationManager } from "./useAnimationManager";
+import { useAnimationManager } from "./hooks/useAnimationManager";
+import type { DecorativeButterfliesProps } from "./types/types";
 
 // ─── Component ────────────────────────────────────────────────────────────────
 

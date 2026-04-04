@@ -1,6 +1,9 @@
-import { LanguageType } from "../../../i18n/types";
-import { BrowserModeType, SectionIdType } from "../../browser/types/types";
+import {
+  BrowserModeType,
+  SectionIdType,
+} from "../../../domains/browser/types/types";
 import { DeviceType } from "../../device";
+import { LanguageType } from "../../../i18n/types";
 
 export interface AppState {
   browserMode: BrowserModeType;

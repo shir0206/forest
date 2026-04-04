@@ -2,10 +2,10 @@ import React from "react";
 
 import "./languageSwitcher.scss";
 
+import { useTranslation } from "../../../../i18n/hooks/useTranslation";
 import { LANGUAGE, LanguageType } from "../../../../i18n/types";
 import { Icon } from "../../../../shared/components/Icon/Icon";
-import { useAppContext } from "../../../context";
-import { useTranslation } from "../../../../i18n/hooks/useTranslation";
+import { useAppContext } from "../../../../shared/context";
 import { useLanguageDropdown } from "./useLanguageDropdown";
 
 interface LanguageSwitcherProps {

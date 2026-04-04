@@ -1,4 +1,4 @@
-import { useEnhancedAppContext } from "../../domains/context/useAppContext";
+import { useEnhancedAppContext } from "../../shared/context/useAppContext";
 import type { TextStructure } from "../types";
 import { LANGUAGE } from "../types";
 import { getText } from "..";

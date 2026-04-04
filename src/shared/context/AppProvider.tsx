@@ -1,12 +1,13 @@
 import React, { useCallback, useMemo, useState } from "react";
 
-import { LANGUAGE, LanguageType } from "../../i18n/types";
 import {
   BROWSER_MODE,
   BrowserModeType,
   SectionIdType,
-} from "../browser/types/types";
-import { detectDevice, DeviceType } from "../device";
+} from "../../domains/browser/types/types";
+import { LANGUAGE, LanguageType } from "../../i18n/types";
+import { DeviceType } from "../device";
+import { detectDevice } from "../device/hooks/useDeviceDetection";
 import { AppContext } from "./AppContext";
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -20,7 +21,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     Set<SectionIdType>
   >(new Set());
   const [language, setLanguageState] = useState<LanguageType>(LANGUAGE.EN);
-  const [device, setDeviceState] = useState<DeviceType>(detectDevice());
+  const [device, setDeviceState] = useState<DeviceType>(detectDevice().type);
 
   const setRunIntro = useCallback((run: boolean) => {
     setRunIntroState(run);

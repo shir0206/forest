@@ -3,12 +3,6 @@ import { useFrame } from "@react-three/fiber";
 
 import * as THREE from "three";
 
-import type {
-  ButterflyConfig,
-  ButterflyRuntime,
-  DecorativeButterfliesProps,
-} from "./types";
-import { BOUNDS, PHASE } from "./types";
 import {
   applyOpacity,
   applyScale,
@@ -17,11 +11,17 @@ import {
   tickSpawning,
   tickSwarming,
   tickWandering,
-} from "./useButterfliesPhase";
+} from "../hooks/useButterfliesPhase";
 import {
   createButterflyConfigs,
   createButterflyRuntime,
-} from "./useButterflyRuntime";
+} from "../hooks/useButterflyRuntime";
+import type {
+  ButterflyConfig,
+  ButterflyRuntime,
+  DecorativeButterfliesProps,
+} from "../types/types";
+import { BOUNDS, PHASE } from "../types/types";
 
 interface UseAnimationManagerProps {
   count: number;
@@ -209,7 +209,8 @@ export function useAnimationManager({
             flyAwayStart: runtime.flyAwayOrigin,
             flyAwayTarget: runtime.flyAwayDestination,
             wave: runtime.config.wave,
-            setSmoothedOpacity: (next) => applyOpacity(next, runtime, opRef),
+            setSmoothedOpacity: (next: number) =>
+              applyOpacity(next, runtime, opRef),
             onComplete: () => {
               runtime.active = false;
               setGoneIds((prev) => new Set(prev).add(runtime.config.id));

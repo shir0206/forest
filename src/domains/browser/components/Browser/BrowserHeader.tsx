@@ -2,9 +2,9 @@ import React, { useCallback } from "react";
 
 import "./browser.scss";
 
-import { Icon } from "../../../../shared/components/Icon/Icon";
-import { useEnhancedAppContext } from "../../../context";
 import { useTranslation } from "../../../../i18n/hooks/useTranslation";
+import { Icon } from "../../../../shared/components/Icon/Icon";
+import { useEnhancedAppContext } from "../../../../shared/context";
 import { BROWSER_MODE } from "../../types/types";
 
 export const BrowserHeader: React.FC = () => {

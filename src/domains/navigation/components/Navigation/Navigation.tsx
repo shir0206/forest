@@ -3,8 +3,8 @@ import React, { useRef } from "react";
 import "./navigation.scss";
 
 import { useTranslation } from "../../../../i18n/hooks/useTranslation";
+import { useAppContext } from "../../../../shared/context";
 import { SECTION_IDS, SectionIdType } from "../../../browser/types/types";
-import { useAppContext } from "../../../context";
 import { useScrollNavigation } from "../../hooks/useScrollNavigation";
 import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
 

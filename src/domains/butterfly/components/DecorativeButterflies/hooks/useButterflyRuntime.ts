@@ -1,11 +1,11 @@
 import * as THREE from "three";
 
-import { ANIMATION_TIME_SCALE } from "../../core/constants";
+import { ANIMATION_TIME_SCALE } from "../../../core/constants";
 import type {
   ButterflyConfig,
   ButterflyRuntime,
   ViewportBounds,
-} from "./types";
+} from "../types/types";
 import { PHASE_DURATION } from "./useButterfliesPhase";
 
 // ─── Scratch vectors — never re-allocated per frame ──────────────────────────

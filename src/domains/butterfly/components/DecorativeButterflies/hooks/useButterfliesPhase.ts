@@ -5,7 +5,7 @@ import type {
   FlyAwayTickParams,
   SwarmSlot,
   WaveParams,
-} from "./types";
+} from "../types/types";
 
 // ─── Phase durations (seconds) ───────────────────────────────────────────────
 

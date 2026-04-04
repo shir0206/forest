@@ -1,13 +1,5 @@
 // Device Domain Exports
 
-// Services
-export {
-  detectDevice,
-  DeviceDetectionService,
-  isDesktop,
-  isMobile,
-} from "./services";
-
 // Types
 export type {
   DeviceConfig,
