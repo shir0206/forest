@@ -1,3 +1,10 @@
+export type LanguageType = "en" | "he";
+
+export const LANGUAGE = {
+  EN: "en" as LanguageType,
+  HE: "he" as LanguageType,
+} as const;
+
 export interface TextStructure {
   browser: {
     windowControls: {
