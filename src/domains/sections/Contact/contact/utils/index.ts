@@ -41,7 +41,6 @@ export const getContactLinks = () => ({
   calendar: generateGoogleCalendarLink({
     action: CONTACT_CONFIG.calendar.action,
     text: CONTACT_CONFIG.calendar.text,
-    dates: CONTACT_CONFIG.calendar.dates,
     details: CONTACT_CONFIG.calendar.details,
     location: CONTACT_CONFIG.calendar.location,
     addGuests: [...CONTACT_CONFIG.calendar.addGuests],

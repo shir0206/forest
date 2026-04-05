@@ -1,11 +1,6 @@
 import type { GoogleCalendarConfig } from "../types/types";
 
 /**
- * Encodes URL parameters safely
- */
-const encodeUrlParam = (value: string): string => encodeURIComponent(value);
-
-/**
  * Builds optional conference parameters for Google Calendar links
  */
 const buildConferenceParams = (
