@@ -1,6 +1,5 @@
 $font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
 $line-height: 1.5;
-$font-weight: 400;
 $text-color: rgba(255, 255, 255, 0.87);
 $background-color: #242424;
 $mobile-font-size: 10px;
@@ -10,7 +9,6 @@ html {
   font-size: $default-font-size;
   font-family: $font-family;
   line-height: $line-height;
-  font-weight: $font-weight;
   color-scheme: light dark;
   color: $text-color;
   background-color: $background-color;
